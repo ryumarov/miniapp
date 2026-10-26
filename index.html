@@ -59,6 +59,46 @@
     /* App-like selection policy; editable controls remain selectable. */
     #app,.chat-item,.date-divider,.header-identity,.icon-btn,.ctx-item,.avatar-edit,.settings-row,.reply-ref{-webkit-user-select:none;user-select:none}
     #message-list .bubble-text{-webkit-user-select:text;user-select:text}
+
+    /* Telegram iOS-style media preview before sending and in-chat image viewer. */
+    .bubble.has-image{padding:4px 5px 5px;max-width:100%}
+    .photo-message{position:relative;display:block;width:fit-content;max-width:min(76vw,420px);min-width:130px;min-height:100px;padding:0;border:0;border-radius:13px;overflow:hidden;background:var(--surface-2);cursor:zoom-in;text-align:left;isolation:isolate}
+    .photo-message img{display:block;width:auto;height:auto;max-width:100%;max-height:480px;object-fit:contain;opacity:0;transition:opacity .16s ease;background:var(--surface-2)}
+    .photo-message.is-loaded img{opacity:1}
+    .photo-message.is-loaded{min-width:0;min-height:0;background:transparent}
+    .photo-message-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;color:var(--muted);font-size:12px;text-align:center;pointer-events:none}
+    .photo-message.is-loaded .photo-message-status{display:none}
+    .photo-message.is-error{cursor:pointer;min-height:70px}
+    .bubble.has-image .bubble-text{padding:3px 5px 1px;white-space:pre-wrap}
+    .attachment-preview-overlay{position:fixed;inset:0;z-index:400;display:flex;flex-direction:column;background:rgba(8,11,16,.96);color:#fff;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);animation:fade-in .15s ease}
+    .attachment-preview-overlay.hidden{display:none!important}
+    .attachment-preview-header{height:58px;min-height:58px;display:flex;align-items:center;gap:10px;padding:0 12px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .attachment-preview-title{flex:1;min-width:0;font-size:16px;font-weight:650;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .attachment-preview-header .icon-btn{color:#fff;background:rgba(255,255,255,.08)}
+    .attachment-preview-send{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;flex-shrink:0}
+    .attachment-preview-stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:14px;overflow:hidden}
+    #attachment-preview-img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:5px;box-shadow:0 8px 35px rgba(0,0,0,.22)}
+    .attachment-preview-footer{padding:12px 14px 14px;background:rgba(20,23,29,.96);border-top:1px solid rgba(255,255,255,.12)}
+    .attachment-preview-file{font-size:12px;color:rgba(255,255,255,.68);margin:0 2px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #attachment-caption{width:100%;min-height:44px;max-height:112px;resize:none;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.09);color:#fff;padding:11px 13px;font-size:15px;line-height:1.4;outline:none}
+    #attachment-caption::placeholder{color:rgba(255,255,255,.5)}
+    .attachment-preview-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px}
+    .attachment-preview-hint{font-size:12px;color:rgba(255,255,255,.55)}
+    .attachment-send-label{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 17px;border-radius:22px;background:var(--accent);color:#fff;font-size:14px;font-weight:700}
+    .attachment-send-label:disabled{opacity:.55}
+    .image-viewer{position:fixed;inset:0;z-index:450;display:flex;flex-direction:column;background:rgba(5,7,11,.98);color:#fff;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px);animation:fade-in .14s ease}
+    .image-viewer.hidden{display:none!important}
+    .image-viewer-header{height:58px;min-height:58px;display:flex;align-items:center;gap:10px;padding:0 12px;background:rgba(10,12,17,.72)}
+    .image-viewer-title{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+    .image-viewer-header .icon-btn{color:white;background:rgba(255,255,255,.09)}
+    .image-viewer-stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;overflow:auto;overscroll-behavior:contain;padding:8px;touch-action:pan-x pan-y pinch-zoom}
+    #viewer-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;user-select:none;-webkit-user-drag:none;transition:transform .18s ease;transform-origin:center center}
+    #viewer-image.zoomed{max-width:none;max-height:none;transform:scale(2);cursor:zoom-out}
+    .image-viewer-caption{min-height:0;max-height:24vh;overflow:auto;padding:8px 18px 14px;text-align:center;font-size:14px;line-height:1.45;color:rgba(255,255,255,.88);white-space:pre-wrap;overflow-wrap:anywhere}
+    .image-viewer-caption:empty{display:none}
+    .image-viewer-status{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);text-align:center;color:rgba(255,255,255,.7);font-size:14px;pointer-events:none}
+    @media(max-width:767px){.photo-message{max-width:min(78vw,380px)}.photo-message img{max-height:420px}.attachment-preview-stage{padding:8px}.attachment-preview-footer{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}.image-viewer-stage{padding:4px}.image-viewer-caption{max-height:20vh}}
+
   </style>
 </head>
 <body>
@@ -112,6 +152,41 @@
     </main>
   </div>
 
+
+  <!-- Full-screen image picker preview, with an optional caption before sending. -->
+  <section id="attachment-preview-overlay" class="attachment-preview-overlay hidden" role="dialog" aria-modal="true" aria-label="Photo preview">
+    <div class="attachment-preview-header">
+      <button class="icon-btn" id="attachment-preview-cancel" type="button" aria-label="Cancel photo" title="Cancel">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="attachment-preview-title">Photo preview</div>
+      <button class="attachment-preview-send" id="attachment-preview-send-top" type="button" aria-label="Send photo" title="Send photo">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      </button>
+    </div>
+    <div class="attachment-preview-stage"><img id="attachment-preview-img" alt="Selected photo preview"><div id="attachment-preview-loading" class="image-viewer-status hidden">Preparing preview…</div></div>
+    <div class="attachment-preview-footer">
+      <div class="attachment-preview-file" id="attachment-preview-file"></div>
+      <textarea id="attachment-caption" rows="1" maxlength="4000" placeholder="Add a caption…" aria-label="Photo caption"></textarea>
+      <div class="attachment-preview-bottom"><span class="attachment-preview-hint" id="attachment-preview-hint">Photo will be sent in this chat</span><button class="attachment-send-label" id="attachment-preview-send" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>Send photo</span></button></div>
+    </div>
+  </section>
+
+  <!-- Full-screen in-app image viewer. -->
+  <section id="image-viewer" class="image-viewer hidden" role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <div class="image-viewer-header">
+      <button class="icon-btn" id="image-viewer-close" type="button" aria-label="Close photo" title="Close">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="image-viewer-title" id="image-viewer-title">Photo</div>
+      <button class="icon-btn" id="image-viewer-open-original" type="button" aria-label="Open original image" title="Open original image">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>
+      </button>
+    </div>
+    <div class="image-viewer-stage" id="image-viewer-stage"><div id="image-viewer-status" class="image-viewer-status">Loading photo…</div><img id="viewer-image" alt="Full-size photo" class="hidden"></div>
+    <div id="image-viewer-caption" class="image-viewer-caption"></div>
+  </section>
+
   <div id="ctx-menu" role="menu" aria-label="Message actions">
     <button class="ctx-item" id="ctx-copy" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>Copy</button>
     <button class="ctx-item" id="ctx-reply" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>Reply</button>
@@ -155,7 +230,8 @@
     pollingTimer:null, ownerListTimer:null, isSending:false, isUploading:false,
     audioEnabled:true, soundSettings:{send:true,receive:true,error:true}, audioCtx:null, audioUnlocked:false,
     signedUrlCache:new Map(), pendingAvatarPath:null, profileMode:'own', profileTarget:null,
-    renderedMessageSignature:'', ownerListSignature:'', lastLoadToken:0, previewObjectUrl:null
+    renderedMessageSignature:'', ownerListSignature:'', lastLoadToken:0, previewObjectUrl:null,
+    pendingAttachment:null, pendingAttachmentObjectUrl:null, viewerMessage:null, viewerUrl:null
   };
 
   function escapeHTML(value){return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -194,7 +270,10 @@
   const AVATAR_COLORS=['#438fc7','#7464c7','#369b75','#c77a4c','#b38a38','#8a718a','#4a96a2'];
   function avatarColor(text){let h=0;for(const ch of String(text||'?'))h=(h*31+ch.charCodeAt(0))>>>0;return AVATAR_COLORS[h%AVATAR_COLORS.length];}
   function initials(name){const bits=String(name||'').trim().split(/\s+/).filter(Boolean);return (bits[0]?.[0]||'M').concat(bits[1]?.[0]||'').toUpperCase();}
-  function isPath(value){return typeof value==='string'&&(value.startsWith('avatars/')||value.startsWith('messages/'));}
+  function isPath(value){return typeof value==='string'&&(value.startsWith('avatars/')||value.startsWith('messages/'))&&!value.split('/').some(part=>part==='..');}
+  function isImageMessage(msg){const type=String(msg?.file_type||'').toLowerCase();if(type.startsWith('image/'))return true;const name=String(msg?.file_name||'').toLowerCase();return /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif)$/.test(name);}
+  function formatBytes(bytes){if(!Number.isFinite(bytes)||bytes<0)return '';if(bytes<1024)return `${bytes} B`;if(bytes<1024*1024)return `${(bytes/1024).toFixed(0)} KB`;return `${(bytes/(1024*1024)).toFixed(1)} MB`;}
+  function isImageFile(file){return ['image/jpeg','image/png','image/webp','image/gif','image/avif','image/bmp'].includes(String(file?.type||'').toLowerCase())||/\.(jpe?g|png|webp|gif|bmp|avif)$/.test(String(file?.name||'').toLowerCase());}
   async function signedFileUrl(path){
     if(!path)return null;const direct=safeHttpUrl(path);if(direct)return direct;
     if(!isPath(path))return null;
@@ -232,18 +311,47 @@
   function makeFileCard(msg){
     const btn=document.createElement('button');btn.type='button';btn.className='file-attach';btn.dataset.filePath=String(msg.file_url||'');
     const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');icon.setAttribute('width','23');icon.setAttribute('height','23');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','1.8');icon.setAttribute('stroke-linecap','round');icon.setAttribute('stroke-linejoin','round');icon.innerHTML='<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/>';
-    const info=document.createElement('div');info.className='file-attach-info';const name=document.createElement('div');name.className='file-attach-name';name.textContent=msg.file_name||'Attachment';const type=document.createElement('div');type.className='file-attach-size';type.textContent=msg.file_type||'File';info.append(name,type);btn.append(icon,info);btn.addEventListener('click',async()=>{btn.disabled=true;try{const path=btn.dataset.filePath;const url=await signedFileUrl(path);if(url)window.open(url,'_blank','noopener,noreferrer');else showToast('File is unavailable');}catch(e){showToast(e.message||'Unable to open file');playError();}finally{btn.disabled=false;}});return btn;
+    const info=document.createElement('div');info.className='file-attach-info';const name=document.createElement('div');name.className='file-attach-name';name.textContent=msg.file_name||'Attachment';const type=document.createElement('div');type.className='file-attach-size';type.textContent=msg.file_type||'File';info.append(name,type);btn.append(icon,info);btn.addEventListener('click',async()=>{btn.disabled=true;try{const url=await signedFileUrl(btn.dataset.filePath);if(url)window.open(url,'_blank','noopener,noreferrer');else showToast('File is unavailable');}catch(e){showToast(e.message||'Unable to open file');playError();}finally{btn.disabled=false;}});return btn;
+  }
+  function makeImageMessage(msg){
+    const btn=document.createElement('button');btn.type='button';btn.className='photo-message';btn.setAttribute('aria-label',`View image: ${msg.file_name||'Photo'}`);btn.title='View photo';
+    const img=document.createElement('img');img.alt=msg.file_name||'Photo';img.loading='lazy';img.decoding='async';img.draggable=false;
+    const status=document.createElement('span');status.className='photo-message-status';status.textContent='Loading photo…';btn.append(img,status);
+    const path=String(msg.file_url||'');
+    signedFileUrl(path).then(url=>{
+      if(!btn.isConnected)return;
+      if(!url)throw new Error('Photo unavailable');
+      img.src=url;
+    }).catch(()=>{if(!btn.isConnected)return;btn.classList.add('is-error');status.textContent='Photo unavailable — tap to retry';});
+    img.addEventListener('load',()=>{btn.classList.remove('is-error');btn.classList.add('is-loaded');status.textContent='';},{once:true});
+    img.addEventListener('error',()=>{btn.classList.remove('is-loaded');btn.classList.add('is-error');status.textContent='Photo unavailable — tap to retry';});
+    btn.addEventListener('click',()=>{if(btn.classList.contains('is-error')){btn.classList.remove('is-error');status.textContent='Loading photo…';signedFileUrl(path).then(url=>{if(url)img.src=url;else throw new Error('Photo unavailable');}).catch(()=>{btn.classList.add('is-error');status.textContent='Photo unavailable — tap to retry';});return;}openImageViewer(msg);});
+    return btn;
   }
   function buildBubble(msg,isOut){
     const bubble=document.createElement('div');bubble.className='bubble'+(msg._sending?' sending':'')+(msg._failed?' failed':'');
     const reply=buildReplyReference(msg);if(reply)bubble.appendChild(reply);
+    const imageMessage=Boolean(msg.file_url&&isImageMessage(msg));
+    if(imageMessage){bubble.classList.add('has-image');bubble.appendChild(makeImageMessage(msg));}
     if(messageText(msg)){const text=document.createElement('div');text.className='bubble-text';text.textContent=messageText(msg);bubble.appendChild(text);}
-    if(msg.file_url)bubble.appendChild(makeFileCard(msg));
+    if(msg.file_url&&!imageMessage)bubble.appendChild(makeFileCard(msg));
     const meta=document.createElement('div');meta.className='bubble-meta';const time=document.createElement('span');time.textContent=fmtTime(msg.created_at);meta.appendChild(time);
     if(msg.edited_at){const edited=document.createElement('span');edited.className='edited-mark';edited.textContent='edited';meta.appendChild(edited);}
     if(msg._sending){const sending=document.createElement('span');sending.textContent='Sending';meta.appendChild(sending);}else if(msg._failed){const fail=document.createElement('span');fail.style.color='var(--danger)';fail.textContent='Failed';meta.appendChild(fail);}
     bubble.appendChild(meta);return bubble;
   }
+  function openImageViewer(msg){
+    state.viewerMessage=msg;$('image-viewer-title').textContent=msg.file_name||'Photo';$('image-viewer-caption').textContent=messageText(msg);$('image-viewer-status').textContent='Loading photo…';$('image-viewer-status').classList.remove('hidden');$('viewer-image').classList.add('hidden');$('viewer-image').classList.remove('zoomed');$('viewer-image').removeAttribute('src');$('image-viewer').classList.remove('hidden');
+    signedFileUrl(msg.file_url).then(url=>{if(state.viewerMessage?.id!==msg.id)return;if(!url)throw new Error('Photo unavailable');state.viewerUrl=url;$('viewer-image').src=url;}).catch(e=>{if(state.viewerMessage?.id===msg.id){$('image-viewer-status').textContent=e.message||'Unable to load photo';playError();}});
+  }
+  function closeImageViewer(){ $('image-viewer').classList.add('hidden');$('viewer-image').removeAttribute('src');$('viewer-image').classList.remove('zoomed');state.viewerMessage=null;state.viewerUrl=null; }
+  $('image-viewer-close').addEventListener('click',closeImageViewer);
+  $('image-viewer').addEventListener('click',e=>{if(e.target===$('image-viewer')||e.target===$('image-viewer-stage'))closeImageViewer();});
+  $('viewer-image').addEventListener('load',()=>{$('image-viewer-status').classList.add('hidden');$('viewer-image').classList.remove('hidden');});
+  $('viewer-image').addEventListener('error',()=>{$('image-viewer-status').classList.remove('hidden');$('image-viewer-status').textContent='Unable to load photo';$('viewer-image').classList.add('hidden');});
+  $('viewer-image').addEventListener('dblclick',()=>{$('viewer-image').classList.toggle('zoomed');});
+  $('image-viewer-open-original').addEventListener('click',async()=>{try{const msg=state.viewerMessage;if(!msg)return;const url=state.viewerUrl||await signedFileUrl(msg.file_url);if(url)window.open(url,'_blank','noopener,noreferrer');else showToast('Original image is unavailable');}catch(e){showToast(e.message||'Unable to open original image');playError();}});
+
   function makeMessageRow(msg){
     const outgoing=state.isOwner?msg.sender_type==='owner':msg.sender_type==='customer';
     const row=document.createElement('div');row.className=`msg-row ${outgoing?'outgoing':'incoming'}`;row.dataset.messageId=String(msg.id);row.dataset.senderType=msg.sender_type;
@@ -280,7 +388,7 @@
     const row=findMessageRow(msg.id);row?.classList.add('menu-target');if(row)row.querySelector('.bubble').style.filter='brightness(.88)';
   }
   function closeContextMenu(){ctxMenu.classList.remove('open');if(ctxMsg){const row=findMessageRow(ctxMsg.id);if(row)row.querySelector('.bubble').style.filter='';}ctxMsg=null;}
-  document.addEventListener('click',e=>{if(!ctxMenu.contains(e.target))closeContextMenu();});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContextMenu();if($('profile-panel').classList.contains('open'))closeProfile();if($('settings-panel').classList.contains('open'))closeSettings();}});
+  document.addEventListener('click',e=>{if(!ctxMenu.contains(e.target))closeContextMenu();});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContextMenu();if(!$('image-viewer').classList.contains('hidden')){closeImageViewer();return;}if(!$('attachment-preview-overlay').classList.contains('hidden')){closeAttachmentPreview();return;}if($('profile-panel').classList.contains('open'))closeProfile();if($('settings-panel').classList.contains('open'))closeSettings();}});
   $('ctx-copy').addEventListener('click',async()=>{const msg=ctxMsg;closeContextMenu();if(!msg)return;const text=messageText(msg)||msg.file_name||'';if(!text){showToast('Nothing to copy');return;}unlockAudio();try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);else throw new Error('Clipboard unavailable');showToast('Copied');}catch{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch{}ta.remove();showToast(ok?'Copied':'Copy is unavailable in this browser');}});
   $('ctx-reply').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)startReply(m);});$('ctx-edit').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)startEdit(m);});$('ctx-delete').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)confirmDelete(m);});
 
@@ -308,12 +416,52 @@
     finally{state.isSending=false;updateSendButton();}
   }
 
-  // File upload contract: send a private Storage path, not a public URL. Reads use get_file_url.
+  // Photo selection opens an iOS-style preview and optional caption. Other files upload directly.
+  function openAttachmentPreview(file){
+    state.pendingAttachment=file;
+    if(state.pendingAttachmentObjectUrl)URL.revokeObjectURL(state.pendingAttachmentObjectUrl);
+    state.pendingAttachmentObjectUrl=URL.createObjectURL(file);
+    $('attachment-preview-img').src=state.pendingAttachmentObjectUrl;
+    $('attachment-preview-img').alt=file.name||'Selected photo';
+    $('attachment-preview-file').textContent=`${file.name} · ${formatBytes(file.size)}`;
+    $('attachment-caption').value='';$('attachment-caption').style.height='auto';$('attachment-caption').style.height=Math.min($('attachment-caption').scrollHeight,112)+'px';
+    $('attachment-preview-hint').textContent='Photo will be sent in this chat';
+    $('attachment-preview-send').disabled=false;$('attachment-preview-send-top').disabled=false;$('attachment-preview-send').querySelector('span').textContent='Send photo';
+    $('attachment-preview-overlay').classList.remove('hidden');
+  }
+  function closeAttachmentPreview(force=false){if(state.isUploading&&!force)return;$('attachment-preview-overlay').classList.add('hidden');$('attachment-preview-img').removeAttribute('src');if(state.pendingAttachmentObjectUrl){URL.revokeObjectURL(state.pendingAttachmentObjectUrl);state.pendingAttachmentObjectUrl=null;}state.pendingAttachment=null;$('attachment-caption').value='';}
+  $('attachment-preview-cancel').addEventListener('click',()=>closeAttachmentPreview());
+  $('attachment-preview-overlay').addEventListener('click',e=>{if(e.target===$('attachment-preview-overlay'))closeAttachmentPreview();});
+  $('attachment-caption').addEventListener('input',()=>{$('attachment-caption').style.height='auto';$('attachment-caption').style.height=Math.min($('attachment-caption').scrollHeight,112)+'px';});
+  $('attachment-preview-send').addEventListener('click',sendPendingPhoto);
+  $('attachment-preview-send-top').addEventListener('click',sendPendingPhoto);
+  async function sendPendingPhoto(){const file=state.pendingAttachment;if(!file||state.isUploading)return;await uploadAndSendFile(file,$('attachment-caption').value,true);}
   $('attach-btn').addEventListener('click',()=>{if(!state.activeChatId||state.isUploading)return;$('file-input').click();});
-  $('file-input').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(!state.activeChatId)return;if(file.size>MAX_FILE_BYTES){showToast('File must be 10 MB or smaller');return;}const type=(file.type||'').toLowerCase();if(!ALLOWED_TYPES.has(type)){showToast('This file type is not supported');return;}unlockAudio();state.isUploading=true;setComposerEnabled(false);const progress=$('upload-progress');progress.style.display='block';progress.textContent=`Uploading ${file.name}`;
-    try{const signed=await callAPI({action:'get_upload_url',chat_id:state.activeChatId,file_name:file.name,file_type:type,file_size:file.size});const put=await fetch(signed.upload_url,{method:'PUT',headers:{'Content-Type':type,'x-upsert':'false'},body:file});if(!put.ok){const detail=await put.text().catch(()=> '');throw new Error(`Upload failed (${put.status})${detail?': '+detail.slice(0,120):''}`);}progress.textContent='Sending attachment…';const result=await callAPI({action:'send_message',chat_id:state.activeChatId,content:'',file_url:signed.path,file_name:file.name,file_type:type});state.messages.push(result.message);state.messages.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));renderMessages(state.messages,false);scrollBottom(true);playSend();if(state.isOwner)refreshOwnerList(false);
-    }catch(err){showToast(err.message||'Upload failed');playError();}finally{state.isUploading=false;progress.style.display='none';progress.textContent='';setComposerEnabled(true);updateSendButton();}
-  });
+  $('file-input').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(!state.activeChatId)return;if(file.size>MAX_FILE_BYTES){showToast('File must be 10 MB or smaller');return;}const type=(file.type||'').toLowerCase();if(!ALLOWED_TYPES.has(type)){showToast('This file type is not supported');return;}unlockAudio();if(isImageFile(file)){openAttachmentPreview(file);return;}await uploadAndSendFile(file,'',false);});
+
+  async function uploadAndSendFile(file,caption='',fromPreview=false){
+    if(!state.activeChatId||state.isUploading)return;
+    const chatId=state.activeChatId;const type=(file.type||'application/octet-stream').toLowerCase();const replyId=state.replyTo?.id||null;
+    if(file.size>MAX_FILE_BYTES){showToast('File must be 10 MB or smaller');return;}
+    if(!ALLOWED_TYPES.has(type)){showToast('This file type is not supported');return;}
+    const cleanCaption=String(caption||'').trim();if(cleanCaption.length>4000){showToast('Caption is too long');return;}
+    state.isUploading=true;setComposerEnabled(false);$('attach-btn').disabled=true;
+    const progress=$('upload-progress');progress.style.display='block';progress.textContent=`Uploading ${file.name}…`;
+    if(fromPreview){$('attachment-preview-send').disabled=true;$('attachment-preview-send-top').disabled=true;$('attachment-preview-send').querySelector('span').textContent='Sending…';$('attachment-preview-hint').textContent='Uploading securely…';}
+    try{
+      const signed=await callAPI({action:'get_upload_url',chat_id:chatId,file_name:file.name,file_type:type,file_size:file.size});
+      if(!signed?.upload_url||!signed?.path)throw new Error('The server did not return a valid upload URL.');
+      const put=await fetch(signed.upload_url,{method:'PUT',headers:{'Content-Type':type,'x-upsert':'false'},body:file});
+      if(!put.ok){const detail=await put.text().catch(()=> '');throw new Error(`Upload failed (${put.status})${detail?': '+detail.slice(0,120):''}`);}
+      progress.textContent='Saving message…';
+      const result=await callAPI({action:'send_message',chat_id:chatId,content:cleanCaption,file_url:signed.path,file_name:file.name,file_type:type,reply_to_message_id:replyId||undefined});
+      if(state.activeChatId===chatId){const idx=state.messages.findIndex(m=>m.id===result.message.id);if(idx>=0)state.messages[idx]=result.message;else state.messages.push(result.message);state.messages.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));state.renderedMessageSignature=messageSignature(state.messages);renderMessages(state.messages,false);scrollBottom(true);}
+      if(replyId){state.replyTo=null;$('reply-bar').classList.remove('visible');}
+      playSend();if(state.isOwner)refreshOwnerList(false);
+      if(fromPreview)closeAttachmentPreview(true);
+    }catch(err){showToast(err.message||'Upload failed');playError();if(fromPreview){$('attachment-preview-hint').textContent='Could not send. Your photo and caption are still here.';$('attachment-preview-send').disabled=false;$('attachment-preview-send-top').disabled=false;$('attachment-preview-send').querySelector('span').textContent='Try again';}}
+    finally{state.isUploading=false;progress.style.display='none';progress.textContent='';setComposerEnabled(true);$('attach-btn').disabled=false;updateSendButton();}
+  }
 
   // Messages are synchronized through the authenticated Edge Function because direct anonymous table access is revoked.
   async function loadMessages(chatId){const token=++state.lastLoadToken;const list=$('message-list');list.innerHTML='<div class="loading-inline"><div class="spinner" aria-label="Loading messages"></div></div>';try{const data=await callAPI({action:'list_messages',chat_id:chatId});if(token!==state.lastLoadToken||state.activeChatId!==chatId)return;state.messages=Array.isArray(data.messages)?data.messages:[];state.renderedMessageSignature=messageSignature(state.messages);renderMessages(state.messages,false);}
