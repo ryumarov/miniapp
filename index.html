@@ -25,7 +25,7 @@
     button,input,textarea{font:inherit}button{color:inherit;border:0;background:none;cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}input,textarea{color:inherit;background:transparent;border:0;outline:none}svg{display:block;flex-shrink:0}img{-webkit-user-drag:none;user-select:none}a{color:inherit}
     button:focus-visible,[tabindex]:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
-    #app{display:flex;position:relative;width:100%;height:100vh;height:var(--messages-app-height,var(--tg-viewport-stable-height,100dvh));min-height:0;overflow:hidden;padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+    #app{display:flex;position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
     #sidebar{width:var(--sidebar-width);max-width:42vw;flex:0 0 var(--sidebar-width);display:flex;flex-direction:column;min-width:0;border-right:1px solid var(--border);background:var(--bg);z-index:10}
     #chat-panel{min-width:0;min-height:0;flex:1;display:flex;flex-direction:column;position:relative;background:var(--bg)}#app.customer-mode #sidebar{display:none}
     .sidebar-header,.panel-header{height:var(--header-height);min-height:var(--header-height);display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid var(--border);background:var(--overlay);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
@@ -98,39 +98,6 @@
     .image-viewer-caption:empty{display:none}
     .image-viewer-status{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);text-align:center;color:rgba(255,255,255,.7);font-size:14px;pointer-events:none}
     @media(max-width:767px){.photo-message{max-width:min(78vw,380px)}.photo-message img{max-height:420px}.attachment-preview-stage{padding:8px}.attachment-preview-footer{padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}.image-viewer-stage{padding:4px}.image-viewer-caption{max-height:20vh}}
-
-  
-    /* Four-digit app lock: Telegram/iOS-inspired, with the app's existing accent color. */
-    .pin-screen{position:fixed;inset:0;z-index:650;display:flex;align-items:center;justify-content:center;overflow:auto;overscroll-behavior:contain;padding:calc(24px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));background:radial-gradient(ellipse at 50% 10%,color-mix(in srgb,var(--accent) 17%,transparent),transparent 48%),var(--bg);color:var(--text);animation:pin-screen-in .24s var(--ease)}
-    .pin-screen.hidden{display:none!important}@keyframes pin-screen-in{from{opacity:0}to{opacity:1}}
-    .pin-card{width:min(100%,360px);display:flex;flex-direction:column;align-items:center;text-align:center;margin:auto;padding:10px 0 4px}
-    .pin-brand-mark{width:72px;height:72px;border-radius:24px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--accent),var(--accent-strong));box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 28%,transparent);margin-bottom:23px;animation:pin-mark-in .42s var(--ease)}
-    @keyframes pin-mark-in{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:none}}
-    .pin-overline{font-size:11px;letter-spacing:1.6px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
-    .pin-title{font-size:25px;line-height:1.2;letter-spacing:-.55px;font-weight:760;margin:0 0 9px}
-    .pin-description{font-size:14px;line-height:1.5;color:var(--muted);max-width:300px;min-height:21px;margin:0 auto}
-    .pin-dots{display:flex;align-items:center;justify-content:center;gap:16px;margin:27px 0 11px;min-height:22px}
-    .pin-dot{width:13px;height:13px;border-radius:50%;border:1.7px solid color-mix(in srgb,var(--accent) 70%,var(--subtle));background:transparent;transition:transform .16s var(--ease),background .16s,border-color .16s,box-shadow .16s}
-    .pin-dot.filled{background:var(--accent);border-color:var(--accent);transform:scale(1.08);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent)}
-    .pin-dot.error{border-color:var(--danger);background:var(--danger);animation:pin-shake .32s ease}
-    @keyframes pin-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
-    .pin-error{min-height:21px;font-size:12px;line-height:1.5;color:var(--danger);margin:0 0 12px;max-width:310px}
-    .pin-keypad{width:min(100%,292px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px 17px;margin:8px auto 0}
-    .pin-key{aspect-ratio:1;max-width:78px;width:100%;justify-self:center;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:25px;font-weight:520;transition:background .13s,transform .13s,border-color .13s;box-shadow:0 2px 5px rgba(0,0,0,.025);-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-    .pin-key:active{transform:scale(.93);background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:color-mix(in srgb,var(--accent) 38%,var(--border))}
-    .pin-key.utility{font-size:13px;color:var(--muted);background:transparent;border-color:transparent;box-shadow:none}
-    .pin-key.submit{background:var(--accent);border-color:var(--accent);color:white;box-shadow:0 5px 14px color-mix(in srgb,var(--accent) 22%,transparent)}
-    .pin-key:disabled{opacity:.35;cursor:not-allowed}
-    .pin-forgot{border:0;background:transparent;color:var(--accent);padding:13px 16px;margin-top:16px;font-size:13px;font-weight:650;border-radius:10px}
-    .pin-forgot:active{background:var(--surface)}
-    .pin-cancel{border:0;background:transparent;color:var(--muted);padding:9px 14px;font-size:13px;border-radius:10px;margin-top:2px}
-    .pin-status{min-height:18px;margin-top:8px;font-size:11px;color:var(--subtle);line-height:1.45;max-width:310px}
-    .pin-screen.busy .pin-keypad{pointer-events:none;opacity:.55}
-    .settings-action{border:1px solid var(--border);background:var(--surface);color:var(--accent);font-size:13px;font-weight:700;padding:9px 12px;border-radius:10px;flex-shrink:0;max-width:48%}
-    .settings-action.destructive{color:var(--danger)}
-    .pin-settings-row{align-items:center}
-    @media(max-height:650px){.pin-screen{align-items:flex-start;padding-top:calc(14px + env(safe-area-inset-top,0px))}.pin-brand-mark{width:54px;height:54px;border-radius:18px;margin-bottom:12px}.pin-title{font-size:22px}.pin-dots{margin:18px 0 6px}.pin-keypad{gap:7px 14px;max-width:255px}.pin-key{max-width:64px;font-size:22px}.pin-forgot{margin-top:7px;padding:9px 14px}}
-    @media(prefers-reduced-motion:reduce){.pin-screen,.pin-brand-mark,.pin-dot,.pin-key{animation:none!important;transition:none!important}}
 
   </style>
 </head>
@@ -237,28 +204,7 @@
 
   <section id="settings-panel" class="side-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="side-panel-header"><button class="icon-btn" id="settings-close-btn" type="button" aria-label="Close settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button><h2 id="settings-title">Settings</h2><div style="width:40px"></div></div>
-    <div class="settings-section" id="app-lock-settings"><div class="settings-section-title">Privacy</div><div class="settings-row pin-settings-row"><div style="min-width:0;flex:1"><div style="font-weight:650">App passcode</div><div id="pin-setting-status" style="font-size:12px;color:var(--muted);margin-top:4px">Loading passcode status…</div></div><button class="settings-action" id="manage-pin-btn" type="button">Set PIN</button></div><div class="settings-row pin-settings-row" id="disable-pin-row" hidden><div style="min-width:0;flex:1"><div style="font-weight:650">Turn off passcode</div><div style="font-size:12px;color:var(--muted);margin-top:4px">Requires your current PIN</div></div><button class="settings-action destructive" id="disable-pin-btn" type="button">Turn off</button></div><p style="font-size:11px;color:var(--subtle);line-height:1.5;margin:10px 0 0">This adds an app-opening lock. It does not encrypt messages or replace Telegram authentication.</p></div>
     <div class="settings-section"><div class="settings-section-title">Sound</div><div class="settings-row"><span>Message sounds</span><button class="toggle" id="sound-toggle" type="button" role="switch" aria-label="Message sounds" aria-checked="true"></button></div><div class="settings-row"><span>Incoming message sound</span><button class="toggle" id="incoming-sound-toggle" type="button" role="switch" aria-label="Incoming message sound" aria-checked="true"></button></div><div class="settings-row"><span>Error sound</span><button class="toggle" id="error-sound-toggle" type="button" role="switch" aria-label="Error sound" aria-checked="true"></button></div><div class="settings-row"><span>Send sound</span><button class="toggle" id="send-sound-toggle" type="button" role="switch" aria-label="Send sound" aria-checked="true"></button></div></div>
-  </section>
-
-  <section id="pin-lock-screen" class="pin-screen hidden" role="dialog" aria-modal="true" aria-labelledby="pin-title" aria-describedby="pin-description">
-    <div class="pin-card">
-      <div class="pin-brand-mark" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="m9.5 15 1.7 1.7 3.6-3.8"/></svg></div>
-      <div class="pin-overline" id="pin-overline">Private messages</div>
-      <h1 class="pin-title" id="pin-title">Enter your PIN</h1>
-      <p class="pin-description" id="pin-description">Enter your 4-digit passcode to continue.</p>
-      <div class="pin-dots" id="pin-dots" aria-label="Four-digit passcode" aria-live="polite"><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span></div>
-      <p class="pin-error" id="pin-error" role="status" aria-live="polite"></p>
-      <div class="pin-keypad" id="pin-keypad" aria-label="PIN keypad">
-        <button class="pin-key" type="button" data-pin-digit="1" aria-label="1">1</button><button class="pin-key" type="button" data-pin-digit="2" aria-label="2">2</button><button class="pin-key" type="button" data-pin-digit="3" aria-label="3">3</button>
-        <button class="pin-key" type="button" data-pin-digit="4" aria-label="4">4</button><button class="pin-key" type="button" data-pin-digit="5" aria-label="5">5</button><button class="pin-key" type="button" data-pin-digit="6" aria-label="6">6</button>
-        <button class="pin-key" type="button" data-pin-digit="7" aria-label="7">7</button><button class="pin-key" type="button" data-pin-digit="8" aria-label="8">8</button><button class="pin-key" type="button" data-pin-digit="9" aria-label="9">9</button>
-        <button class="pin-key utility" id="pin-clear-btn" type="button" aria-label="Clear PIN">Clear</button><button class="pin-key" type="button" data-pin-digit="0" aria-label="0">0</button><button class="pin-key utility" id="pin-backspace-btn" type="button" aria-label="Delete last digit"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-5 8 5 8h13z"/><path d="m11 9 6 6m0-6-6 6"/></svg></button>
-      </div>
-      <button id="forgot-pin-btn" class="pin-forgot" type="button">Forgot PIN?</button>
-      <button id="pin-cancel-btn" class="pin-cancel hidden" type="button">Cancel</button>
-      <div class="pin-status" id="pin-status">Your PIN is never stored as plain text.</div>
-    </div>
   </section>
 
   <script>
@@ -268,9 +214,6 @@
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_1BZvdMAeYZ9BL4bxy3tPRw_4XI5cdCh';
   const API = `${SUPABASE_URL}/functions/v1/chat-api`;
   const AUTH_EP = `${SUPABASE_URL}/functions/v1/telegram-auth`;
-  const MOCKAPI_PIN_URL = 'https://6a2e50d1c9776ca6c0c47df2.mockapi.io/umarov';
-  const PIN_RECORD_TYPE = 'messages_app_pin_v1';
-  const PIN_HASH_ITERATIONS = 180000;
   const MAX_FILE_BYTES = 10 * 1024 * 1024;
   const ALLOWED_TYPES = new Set([
     'image/jpeg','image/png','image/webp','image/gif','video/mp4','video/webm',
@@ -288,8 +231,7 @@
     audioEnabled:true, soundSettings:{send:true,receive:true,error:true}, audioCtx:null, audioUnlocked:false,
     signedUrlCache:new Map(), pendingAvatarPath:null, profileMode:'own', profileTarget:null,
     renderedMessageSignature:'', ownerListSignature:'', lastLoadToken:0, previewObjectUrl:null,
-    pendingAttachment:null, pendingAttachmentObjectUrl:null, viewerMessage:null, viewerUrl:null,
-    pinRecord:null, pinMode:'', pinDigits:'', pinFirstValue:'', pinAttempts:0, pinLockedUntil:0, pinBusy:false, pinUnlockResolve:null, pinUserId:null
+    pendingAttachment:null, pendingAttachmentObjectUrl:null, viewerMessage:null, viewerUrl:null
   };
 
   function escapeHTML(value){return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -328,7 +270,7 @@
   const AVATAR_COLORS=['#438fc7','#7464c7','#369b75','#c77a4c','#b38a38','#8a718a','#4a96a2'];
   function avatarColor(text){let h=0;for(const ch of String(text||'?'))h=(h*31+ch.charCodeAt(0))>>>0;return AVATAR_COLORS[h%AVATAR_COLORS.length];}
   function initials(name){const bits=String(name||'').trim().split(/\s+/).filter(Boolean);return (bits[0]?.[0]||'M').concat(bits[1]?.[0]||'').toUpperCase();}
-  function isPath(value){if(typeof value!=='string'||value.length>500||value.split('/').some(part=>!part||part==='.'||part==='..'))return false;if(value.startsWith('avatars/')||value.startsWith('messages/'))return value.split('/').every(part=>/^[A-Za-z0-9._-]+$/.test(part));const parts=value.split('/');return parts.length===2&&/^\d{1,20}$/.test(parts[0])&&/^[A-Za-z0-9._-]{1,240}$/.test(parts[1]);}
+  function isPath(value){return typeof value==='string'&&(value.startsWith('avatars/')||value.startsWith('messages/'))&&!value.split('/').some(part=>part==='..');}
   function isImageMessage(msg){const type=String(msg?.file_type||'').toLowerCase();if(type.startsWith('image/'))return true;const name=String(msg?.file_name||'').toLowerCase();return /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif)$/.test(name);}
   function formatBytes(bytes){if(!Number.isFinite(bytes)||bytes<0)return '';if(bytes<1024)return `${bytes} B`;if(bytes<1024*1024)return `${(bytes/1024).toFixed(0)} KB`;return `${(bytes/(1024*1024)).toFixed(1)} MB`;}
   function isImageFile(file){return ['image/jpeg','image/png','image/webp','image/gif','image/avif','image/bmp'].includes(String(file?.type||'').toLowerCase())||/\.(jpe?g|png|webp|gif|bmp|avif)$/.test(String(file?.name||'').toLowerCase());}
@@ -558,102 +500,11 @@
 
   // Settings and sound controls.
   const settingsPanel=$('settings-panel');function closeSettings(){settingsPanel.classList.remove('open');}
-  $('settings-btn').addEventListener('click',()=>{closeProfile();settingsPanel.classList.add('open');syncSoundToggles();updatePinSettingsUI();});$('chat-settings-btn').addEventListener('click',()=>{closeProfile();settingsPanel.classList.add('open');syncSoundToggles();updatePinSettingsUI();});$('settings-close-btn').addEventListener('click',closeSettings);
+  $('settings-btn').addEventListener('click',()=>{closeProfile();settingsPanel.classList.add('open');syncSoundToggles();});$('chat-settings-btn').addEventListener('click',()=>{closeProfile();settingsPanel.classList.add('open');syncSoundToggles();});$('settings-close-btn').addEventListener('click',closeSettings);
   function setToggle(id,value){$(id).classList.toggle('on',!!value);$(id).setAttribute('aria-checked',String(!!value));}
   function syncSoundToggles(){setToggle('sound-toggle',state.audioEnabled);setToggle('incoming-sound-toggle',state.soundSettings.receive);setToggle('error-sound-toggle',state.soundSettings.error);setToggle('send-sound-toggle',state.soundSettings.send);}
   function bindToggle(id,fn){const el=$(id);el.addEventListener('click',()=>{const v=el.getAttribute('aria-checked')!=='true';setToggle(id,v);fn(v);saveSoundPrefs();});el.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();el.click();}});}
   bindToggle('sound-toggle',v=>{state.audioEnabled=v;if(v)unlockAudio();});bindToggle('incoming-sound-toggle',v=>state.soundSettings.receive=v);bindToggle('error-sound-toggle',v=>state.soundSettings.error=v);bindToggle('send-sound-toggle',v=>state.soundSettings.send=v);
-
-
-  // App-opening passcode stored in MockAPI. Only a salted PBKDF2 hash is sent; never store the PIN itself.
-  function currentPinUserId(){const id=state.user?.id;if(id===undefined||id===null||String(id).trim()==='')throw new Error('The verified Telegram user ID was not returned by authentication.');return String(id);}
-  function b64FromBytes(bytes){let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin);}
-  function bytesFromB64(value){const bin=atob(value);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out;}
-  function bytesToHex(bytes){return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');}
-  async function derivePinHash(pin,saltB64,iterations=PIN_HASH_ITERATIONS){
-    if(!window.crypto?.subtle)throw new Error('Secure PIN hashing is not available in this browser. Open the Mini App in Telegram over HTTPS.');
-    const safeIterations=Math.max(100000,Math.min(300000,Number(iterations)||PIN_HASH_ITERATIONS));
-    const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(pin),'PBKDF2',false,['deriveBits']);
-    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:bytesFromB64(saltB64),iterations:safeIterations,hash:'SHA-256'},base,256);
-    return bytesToHex(new Uint8Array(bits));
-  }
-  function constantTimeTextEqual(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;}
-  async function mockApiRequest(url,options={}){
-    const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);
-    try{const response=await fetch(url,{...options,cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json',...(options.headers||{})}});const text=await response.text();let data;try{data=text?JSON.parse(text):{};}catch{data={};}if(!response.ok)throw new Error(`PIN service request failed (${response.status}).`);return data;}
-    catch(error){if(error.name==='AbortError')throw new Error('PIN service timed out. Check your connection and retry.');throw error;}
-    finally{clearTimeout(timeout);}
-  }
-  async function loadPinRecord(){
-    const userId=currentPinUserId();state.pinUserId=userId;
-    const url=new URL(MOCKAPI_PIN_URL);url.searchParams.set('telegram_user_id',userId);url.searchParams.set('record_type',PIN_RECORD_TYPE);url.searchParams.set('limit','100');
-    const data=await mockApiRequest(url.href,{method:'GET'});
-    if(!Array.isArray(data))throw new Error('MockAPI did not return a list. Check that /umarov is a MockAPI resource endpoint.');
-    const records=data.filter(r=>String(r.telegram_user_id)===userId&&r.record_type===PIN_RECORD_TYPE);
-    records.sort((a,b)=>String(b.updated_at||b.created_at||'').localeCompare(String(a.updated_at||a.created_at||'')));
-    state.pinRecord=records.find(r=>r.enabled===true||r.enabled==='true')||records[0]||null;
-    return state.pinRecord;
-  }
-  function isPinEnabled(){return !!state.pinRecord&&(state.pinRecord.enabled===true||state.pinRecord.enabled==='true')&&typeof state.pinRecord.pin_hash==='string'&&typeof state.pinRecord.salt==='string';}
-  function updatePinSettingsUI(){const enabled=isPinEnabled();$('pin-setting-status').textContent=enabled?'Enabled — required when the app opens':'Disabled — no app PIN is set';$('manage-pin-btn').textContent=enabled?'Change PIN':'Set PIN';$('disable-pin-row').hidden=!enabled;}
-  async function savePinRecord(pin){
-    if(!/^[0-9]{4}$/.test(pin))throw new Error('PIN must contain exactly four digits.');
-    const bytes=crypto.getRandomValues(new Uint8Array(16));const salt=b64FromBytes(bytes);const pinHash=await derivePinHash(pin,salt,PIN_HASH_ITERATIONS);const now=new Date().toISOString();
-    const payload={telegram_user_id:state.pinUserId||currentPinUserId(),record_type:PIN_RECORD_TYPE,enabled:true,salt,pin_hash:pinHash,iterations:PIN_HASH_ITERATIONS,updated_at:now};
-    let record=state.pinRecord;
-    if(record?.id){const data=await mockApiRequest(`${MOCKAPI_PIN_URL}/${encodeURIComponent(record.id)}`,{method:'PATCH',body:JSON.stringify(payload)});state.pinRecord=data;}
-    else{payload.created_at=now;const data=await mockApiRequest(MOCKAPI_PIN_URL,{method:'POST',body:JSON.stringify(payload)});if(!data?.id)throw new Error('MockAPI did not return a record ID; check the resource schema and write permissions.');state.pinRecord=data;}
-    updatePinSettingsUI();
-  }
-  async function setPinDisabled(){if(!state.pinRecord?.id)return;const data=await mockApiRequest(`${MOCKAPI_PIN_URL}/${encodeURIComponent(state.pinRecord.id)}`,{method:'PATCH',body:JSON.stringify({enabled:false,updated_at:new Date().toISOString()})});state.pinRecord=data;updatePinSettingsUI();}
-  function pinScreenText(title,description,overline='Private messages'){ $('pin-title').textContent=title;$('pin-description').textContent=description;$('pin-overline').textContent=overline; }
-  function updatePinDots(error=false){const dots=$('pin-dots').querySelectorAll('.pin-dot');dots.forEach((dot,index)=>{dot.classList.toggle('filled',index<state.pinDigits.length);dot.classList.toggle('error',error);});$('pin-dots').setAttribute('aria-label',`${state.pinDigits.length} of 4 digits entered`);}
-  function setPinError(message){$('pin-error').textContent=message||'';updatePinDots(!!message);}
-  function setPinBusy(busy){state.pinBusy=busy;$('pin-lock-screen').classList.toggle('busy',busy);$('pin-keypad').querySelectorAll('button').forEach(b=>b.disabled=busy);}
-  function showPinScreen(mode){state.pinMode=mode;state.pinDigits='';state.pinFirstValue='';setPinError('');setPinBusy(false);$('pin-lock-screen').classList.remove('hidden');$('pin-cancel-btn').classList.toggle('hidden',mode==='unlock');$('forgot-pin-btn').classList.toggle('hidden',mode==='setup-first'||mode==='setup-confirm');$('pin-status').textContent='The four-digit PIN is stored as a salted hash.';updatePinDots();
-    if(mode==='unlock')pinScreenText('Enter your PIN','Enter your 4-digit passcode to continue.');
-    else if(mode==='setup-first')pinScreenText('Create a PIN','Choose a new 4-digit passcode.','App lock');
-    else if(mode==='setup-confirm')pinScreenText('Confirm your PIN','Enter the same four digits again.','App lock');
-    else if(mode==='change-current')pinScreenText('Current PIN','Verify your current PIN before changing it.','App lock');
-    else if(mode==='disable-current')pinScreenText('Turn off app lock','Enter your current PIN to disable the lock.','App lock');
-    requestAnimationFrame(()=>$('pin-keypad').querySelector('button:not(:disabled)')?.focus({preventScroll:true}));
-  }
-  function hidePinScreen(){ $('pin-lock-screen').classList.add('hidden');state.pinMode='';state.pinDigits='';setPinBusy(false);updatePinDots(); }
-  function startSetupOrChangePin(){if(isPinEnabled())showPinScreen('change-current');else showPinScreen('setup-first');}
-  function addPinDigit(digit){if(state.pinBusy||$('pin-lock-screen').classList.contains('hidden')||state.pinDigits.length>=4)return;if(Date.now()<state.pinLockedUntil){$('pin-status').textContent='Too many attempts. Please wait before trying again.';return;}if(!/^[0-9]$/.test(digit))return;state.pinDigits+=digit;setPinError('');updatePinDots();if(state.pinDigits.length===4)window.setTimeout(handlePinComplete,100);}
-  function clearPinDigits(){if(state.pinBusy)return;state.pinDigits='';setPinError('');updatePinDots();}
-  function backspacePinDigit(){if(state.pinBusy)return;state.pinDigits=state.pinDigits.slice(0,-1);setPinError('');updatePinDots();}
-  async function verifyEnteredPin(pin){const rec=state.pinRecord;if(!isPinEnabled()||!rec)return false;const hash=await derivePinHash(pin,rec.salt,rec.iterations);return constantTimeTextEqual(hash,rec.pin_hash);}
-  async function handlePinComplete(){if(state.pinBusy||state.pinDigits.length!==4)return;if(Date.now()<state.pinLockedUntil){state.pinDigits='';updatePinDots();setPinError('Please wait before trying again.');return;}const pin=state.pinDigits;const mode=state.pinMode;setPinBusy(true);setPinError('');
-    try{
-      if(mode==='unlock'||mode==='change-current'||mode==='disable-current'){
-        const allowed=await verifyEnteredPin(pin);
-        if(!allowed){state.pinAttempts++;state.pinDigits='';updatePinDots(true);setPinBusy(false);if(state.pinAttempts>=5){state.pinAttempts=0;state.pinLockedUntil=Date.now()+15000;$('pin-status').textContent='Too many attempts. Wait 15 seconds before trying again.';setTimeout(()=>{$('pin-status').textContent='Enter your four-digit PIN.';state.pinLockedUntil=0;},15000);setPinError('Incorrect PIN. Please try again.');setTimeout(()=>{if(Date.now()>=state.pinLockedUntil)setPinError('');},15000);}else{setPinError(`Incorrect PIN. ${5-state.pinAttempts} attempts remaining before a short pause.`);setTimeout(()=>{if(!$('pin-lock-screen').classList.contains('hidden'))setPinError('');},1700);}playError();return;}
-        state.pinAttempts=0;
-        if(mode==='unlock'){hidePinScreen();if(typeof state.pinUnlockResolve==='function'){const resolve=state.pinUnlockResolve;state.pinUnlockResolve=null;resolve(true);}return;}
-        if(mode==='change-current'){state.pinFirstValue='';state.pinDigits='';state.pinMode='setup-first';pinScreenText('Create a new PIN','Choose a new 4-digit passcode.','App lock');$('pin-cancel-btn').classList.remove('hidden');$('forgot-pin-btn').classList.add('hidden');setPinBusy(false);updatePinDots();return;}
-        if(mode==='disable-current'){await setPinDisabled();hidePinScreen();showToast('App PIN disabled');updatePinSettingsUI();setPinBusy(false);return;}
-      }
-      if(mode==='setup-first'){state.pinFirstValue=pin;state.pinDigits='';state.pinMode='setup-confirm';pinScreenText('Confirm your PIN','Enter the same four digits again.','App lock');$('pin-cancel-btn').classList.remove('hidden');$('forgot-pin-btn').classList.add('hidden');setPinBusy(false);updatePinDots();return;}
-      if(mode==='setup-confirm'){
-        if(pin!==state.pinFirstValue){state.pinFirstValue='';state.pinDigits='';state.pinMode='setup-first';setPinBusy(false);pinScreenText('PINs did not match','Start again and carefully enter your new PIN.','App lock');setPinError('The two PIN entries did not match.');updatePinDots(true);setTimeout(()=>{if(state.pinMode==='setup-first'){setPinError('');pinScreenText('Create a PIN','Choose a new 4-digit passcode.','App lock');}},1500);return;}
-        await savePinRecord(pin);hidePinScreen();updatePinSettingsUI();showToast('App PIN saved');return;
-      }
-    }catch(error){setPinBusy(false);state.pinDigits='';updatePinDots(true);setPinError(error.message||'PIN operation failed. Check your connection and retry.');playError();}
-    finally{if(!$('pin-lock-screen').classList.contains('hidden')&&state.pinBusy)setPinBusy(false);}
-  }
-  function requestPinUnlock(){return new Promise(resolve=>{state.pinUnlockResolve=resolve;showPinScreen('unlock');});}
-  async function prepareAppLock(){
-    try{await loadPinRecord();updatePinSettingsUI();if(isPinEnabled())await requestPinUnlock();return true;}
-    catch(error){showAuthError(`Could not check the app-lock setting. ${error.message||'Check your connection and retry.'}`,true);return false;}
-  }
-  function openForgotPinChat(){const text='Salom meni shaxsiy miniapp parolimni tiklab bering';const url=`https://t.me/umarov_py?text=${encodeURIComponent(text)}`;try{const tg=window.Telegram?.WebApp;if(tg&&typeof tg.openTelegramLink==='function')tg.openTelegramLink(url);else window.open(url,'_blank','noopener,noreferrer');}catch{window.location.href=url;}}
-  $('pin-keypad').addEventListener('click',e=>{const btn=e.target.closest('button');if(!btn)return;if(btn.dataset.pinDigit!==undefined)addPinDigit(btn.dataset.pinDigit);});
-  $('pin-backspace-btn').addEventListener('click',backspacePinDigit);$('pin-clear-btn').addEventListener('click',clearPinDigits);$('forgot-pin-btn').addEventListener('click',openForgotPinChat);
-  $('pin-cancel-btn').addEventListener('click',()=>{if(state.pinMode==='unlock')return;hidePinScreen();state.pinFirstValue='';updatePinSettingsUI();});
-  $('manage-pin-btn').addEventListener('click',()=>{settingsPanel.classList.remove('open');startSetupOrChangePin();});
-  $('disable-pin-btn').addEventListener('click',()=>{settingsPanel.classList.remove('open');showPinScreen('disable-current');});
-  document.addEventListener('keydown',e=>{if($('pin-lock-screen').classList.contains('hidden'))return;if(/^[0-9]$/.test(e.key)){e.preventDefault();addPinDigit(e.key);}else if(e.key==='Backspace'){e.preventDefault();backspacePinDigit();}else if(e.key==='Escape'&&state.pinMode!=='unlock'){e.preventDefault();hidePinScreen();updatePinSettingsUI();}});
 
   // Avoid browser context menus on the app surface while keeping normal editing and paste in controls.
   document.addEventListener('contextmenu',e=>{if(e.target.closest('.msg-row')){e.preventDefault();return;}if(!e.target.closest('input,textarea,[contenteditable="true"]'))e.preventDefault();});
@@ -663,34 +514,10 @@
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.activeChatId){startChatPolling(state.activeChatId);if(state.isOwner)refreshOwnerList(false);}});
   window.addEventListener('resize',()=>{if(window.innerWidth>=768)$('sidebar').classList.remove('mobile-open');else if(state.isOwner&&!state.activeChatId)$('sidebar').classList.add('mobile-open');});
 
-  function syncTelegramViewport(tg){
-    // Prefer Telegram's stable viewport height so the composer and message list
-    // settle to the native Mini App size after the sheet finishes resizing.
-    const stable=Number(tg?.viewportStableHeight);
-    const current=Number(tg?.viewportHeight);
-    const height=stable>0?stable:current;
-    if(Number.isFinite(height)&&height>0){
-      document.documentElement.style.setProperty('--messages-app-height',`${Math.round(height)}px`);
-    }
-  }
-
-  async function init(){loadSoundPrefs();syncSoundToggles();const tg=window.Telegram?.WebApp;if(!tg){showAuthError('This application must be opened using its Telegram bot button.',false);return;}
-    try{
-      tg.ready();
-      // Do not force-expand every launch: Main Mini Apps already use Telegram's
-      // configured launch mode. Keep native vertical drag/resize gestures enabled.
-      if(typeof tg.enableVerticalSwipes==='function')tg.enableVerticalSwipes();
-      syncTelegramViewport(tg);
-      if(typeof tg.onEvent==='function'){
-        tg.onEvent('viewportChanged',event=>{if(event?.isStateStable!==false)syncTelegramViewport(tg);});
-        tg.onEvent('safeAreaChanged',()=>syncTelegramViewport(tg));
-      }
-    }catch{}
+  async function init(){loadSoundPrefs();syncSoundToggles();const tg=window.Telegram?.WebApp;if(!tg){showAuthError('This application must be opened using its Telegram bot button.',false);return;}try{tg.ready();tg.expand();if(tg.disableVerticalSwipes)tg.disableVerticalSwipes();}catch{}
     const initData=typeof tg.initData==='string'?tg.initData:'';if(!initData){showAuthError('Telegram session data is missing. Close this window and reopen the app from Telegram.',true);return;}state.initData=initData;state.user=tg.initDataUnsafe?.user||null;
     if(!SUPABASE_PUBLISHABLE_KEY||SUPABASE_PUBLISHABLE_KEY==='YOUR_SUPABASE_PUBLISHABLE_KEY'){showAuthError('Set your Supabase Publishable key in index.html, then deploy the page again.',false);return;}
-    try{setLoadingText('Verifying your Telegram account…');const auth=await callAuth(initData);state.isOwner=Boolean(auth.is_owner??auth.isOwner);if(auth.user)state.user=auth.user;if(auth.profile)state.myProfile=auth.profile;
-      const pinReady=await prepareAppLock();if(!pinReady)return;
-      const app=$('app');app.classList.remove('hidden');app.classList.add(state.isOwner?'owner-mode':'customer-mode');$('loading-screen').classList.add('hidden');
+    try{setLoadingText('Verifying your Telegram account…');const auth=await callAuth(initData);state.isOwner=Boolean(auth.is_owner??auth.isOwner);if(auth.user)state.user=auth.user;if(auth.profile)state.myProfile=auth.profile;const app=$('app');app.classList.remove('hidden');app.classList.add(state.isOwner?'owner-mode':'customer-mode');$('loading-screen').classList.add('hidden');
       if(state.isOwner){$('sidebar').classList.add('mobile-open');$('my-profile-btn').classList.remove('hidden');await refreshOwnerList(true);state.ownerListTimer=setInterval(()=>{if(document.visibilityState==='visible')refreshOwnerList(false);},8000);}
       else{$('my-profile-btn').classList.add('hidden');try{const data=await callAPI({action:'get_my_chat'});state.myProfile=data.profile||state.myProfile;const chat=data.chat;if(!chat?.id)throw new Error('The private conversation was not returned by the server.');await openChat(chat.id,'Support',null,null);$('header-name').textContent='Support';$('header-status').textContent='Private conversation';}catch(e){showAuthError(`Your private conversation could not be opened. ${e.message||''}`.trim(),true);}}
     }catch(e){showAuthError(`Authentication failed. ${e.message||'Please reopen the app from Telegram.'}`,true);}}
