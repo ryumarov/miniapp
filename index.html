@@ -1109,6 +1109,58 @@
       color: var(--muted)
     }
 
+    #telegram-link-text {
+      height: auto;
+      min-height: 104px;
+      resize: vertical;
+      padding: 12px;
+      line-height: 1.45;
+      white-space: pre-wrap
+    }
+
+    .generated-link-row {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .generated-link-value {
+      display: block;
+      min-width: 0;
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 11px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      text-decoration: underline;
+      text-decoration-color: var(--accent);
+      color: var(--accent)
+    }
+
+    .copy-generated-link {
+      flex: 0 0 44px;
+      width: 44px;
+      height: auto;
+      min-height: 44px;
+      border-radius: 11px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      color: var(--accent)
+    }
+
+    .generated-link-meta {
+      font-size: 12px;
+      line-height: 1.45;
+      color: var(--muted);
+      margin-top: 8px
+    }
+
     .field-error {
       font-size: 12px;
       line-height: 1.4;
@@ -2679,6 +2731,32 @@
       <div class="settings-row"><span>Send sound</span><button class="toggle" id="send-sound-toggle" type="button"
           role="switch" aria-label="Send sound" aria-checked="true"></button></div>
     </div>
+    <div class="settings-section" id="telegram-text-link-section">
+      <div class="settings-section-title">Telegram message link</div>
+      <div class="profile-field">
+        <div class="field-label">Text to prepare in @umarov_py chat</div>
+        <textarea class="field-input" id="telegram-link-text" maxlength="4000" rows="4"
+          placeholder="Write the message here…"></textarea>
+      </div>
+      <button class="primary-wide" id="telegram-link-generate" type="button">Generate</button>
+      <div class="generated-link-meta" id="telegram-link-status" aria-live="polite">Generate a link that stays active
+        until you generate another one.</div>
+      <div id="telegram-link-output" class="hidden">
+        <div class="field-label" style="margin-top:14px">Active link</div>
+        <div class="generated-link-row">
+          <a class="generated-link-value" id="telegram-link-value" href="#" target="_blank"
+            rel="noopener noreferrer">Generated link appears here</a>
+          <button class="copy-generated-link" id="telegram-link-copy" type="button" aria-label="Copy generated link"
+            title="Copy link"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="8" y="8" width="12" height="12" rx="2" />
+              <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
+            </svg></button>
+        </div>
+        <div class="generated-link-meta">The link opens Telegram and fills in the message. The recipient must press
+          Send. The previous link stops working after your next successful Generate.</div>
+      </div>
+    </div>
     <div class="settings-section hidden" id="owner-notification-settings">
       <div class="settings-section-title">Telegram bot notifications</div>
 
@@ -3118,6 +3196,51 @@
       try { const result = await callAPI({ action: 'update_profile', ...updates }); state.myProfile = result.profile; state.pendingAvatarPath = null; const name = personName(state.myProfile, state.user, 'Profile'); if (!state.isOwner) { $('header-name').textContent = 'Support'; } renderAvatar($('profile-avatar-big'), name, state.myProfile.avatar_url); if (state.isOwner) {/* Owner profile is not a customer conversation avatar. */ } closeProfile(); showToast('Profile saved'); if (state.isOwner) refreshOwnerList(false); } catch (err) { errorEl.textContent = err.message || 'Profile could not be saved'; errorEl.classList.remove('hidden'); playError(); } finally { btn.disabled = false; btn.textContent = 'Save changes'; }
     });
 
+    // Rotating Telegram message link: one active link per Telegram user.
+    const initialTelegramUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'unknown';
+    const savedGeneratedLinkKey = `messages.telegramTextLink.v1.${initialTelegramUserId}`;
+    function restoreGeneratedTelegramLink() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(savedGeneratedLinkKey) || 'null');
+        if (!saved || typeof saved.url !== 'string' || !/^https:\/\//i.test(saved.url)) return;
+        $('telegram-link-value').href = saved.url;
+        $('telegram-link-value').textContent = saved.url;
+        if (typeof saved.text === 'string' && !$('telegram-link-text').value) $('telegram-link-text').value = saved.text;
+        $('telegram-link-output').classList.remove('hidden');
+        $('telegram-link-status').textContent = 'Your last generated link is shown here. It may have expired if you generated a newer one.';
+      } catch { /* Storage may be disabled in a restricted webview. */ }
+    }
+    $('telegram-link-generate').addEventListener('click', async () => {
+      const text = $('telegram-link-text').value;
+      const status = $('telegram-link-status');
+      const button = $('telegram-link-generate');
+      if (!text.trim()) { status.textContent = 'Please enter a message first.'; $('telegram-link-text').focus(); return; }
+      button.disabled = true; button.textContent = 'Generating…'; status.textContent = 'Generating your active link…';
+      try {
+        const result = await callAPI({ action: 'generate_telegram_text_link', text });
+        if (typeof result.url !== 'string' || !result.url.startsWith('https://')) throw new Error('The server did not return a valid link.');
+        $('telegram-link-value').href = result.url;
+        $('telegram-link-value').textContent = result.url;
+        $('telegram-link-output').classList.remove('hidden');
+        try { localStorage.setItem(savedGeneratedLinkKey, JSON.stringify({ url: result.url, text, generatedAt: Date.now() })); } catch { }
+        status.textContent = 'Link generated. Your previous link is now inactive.';
+        showToast('Telegram link generated');
+      } catch (error) {
+        status.textContent = error.message || 'Could not generate the link.';
+        playError();
+      } finally { button.disabled = false; button.textContent = 'Generate'; }
+    });
+    $('telegram-link-copy').addEventListener('click', async () => {
+      const url = $('telegram-link-value').href;
+      if (!url || url === location.href || url.endsWith('#')) return;
+      try {
+        if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
+        else { const field = document.createElement('textarea'); field.value = url; field.style.position = 'fixed'; field.style.opacity = '0'; document.body.appendChild(field); field.select(); const ok = document.execCommand('copy'); field.remove(); if (!ok) throw new Error('Copy failed'); }
+        showToast('Link copied');
+      } catch { showToast('Could not copy the link. Tap and hold the link to copy it.'); }
+    });
+    restoreGeneratedTelegramLink();
+
     // Settings and sound controls.
     const settingsPanel = $('settings-panel'); function closeSettings() { settingsPanel.classList.remove('open'); }
     async function loadNotificationSettings() {
@@ -3186,7 +3309,30 @@
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && state.activeChatId) { startChatPolling(state.activeChatId); if (state.isOwner) refreshOwnerList(false); } });
     window.addEventListener('resize', () => { if (window.innerWidth >= 768) $('sidebar').classList.remove('mobile-open'); else if (state.isOwner && !state.activeChatId) $('sidebar').classList.add('mobile-open'); });
 
+    async function handleTelegramMessageLink(token) {
+      $('app').classList.add('hidden');
+      $('loading-screen').classList.remove('hidden');
+      $('auth-error-screen').classList.add('hidden');
+      setLoadingText('Opening Telegram message…');
+      try {
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) throw new Error('This link is invalid or has expired.');
+        const response = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY },
+          body: JSON.stringify({ action: 'resolve_telegram_text_link', token })
+        });
+        const result = await readResponse(response);
+        if (typeof result.text !== 'string' || !result.text.trim()) throw new Error('This link is no longer active.');
+        const draftText = result.text.startsWith('@') ? ' ' + result.text : result.text;
+        location.replace('https://t.me/umarov_py?text=' + encodeURIComponent(draftText));
+      } catch (error) {
+        showAuthError(error.message || 'This link is no longer active. Generate a new link in the Mini App.', false);
+      }
+    }
+
     async function init() {
+      const generatedToken = new URLSearchParams(window.location.search).get('message-link');
+      if (generatedToken) { await handleTelegramMessageLink(generatedToken); return; }
       loadSoundPrefs(); syncSoundToggles(); const tg = window.Telegram?.WebApp; if (!tg) { showAuthError('This application must be opened using its Telegram bot button.', false); return; } try {
         tg.ready();
         const appColor = tg.colorScheme === 'dark' ? '#17212b' : '#ffffff';
