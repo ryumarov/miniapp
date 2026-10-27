@@ -146,7 +146,16 @@
       overflow: hidden;
       padding-top: env(safe-area-inset-top, 0px);
       background: var(--bg);
+        padding-top: max(
+    env(safe-area-inset-top, 0px),
+    var(--messages-content-safe-top, 0px));
+      padding-right: max(
+    env(safe-area-inset-right, 0px),
+    var(--messages-content-safe-right, 0px)
+  );
     }
+
+
 
     #sidebar {
       width: var(--sidebar-width);
@@ -2394,47 +2403,79 @@
         }
 
         // Keep the app fitted to Telegram's actual viewport.
-        function syncTelegramViewport() {
-          const stableHeight = Number(tg.viewportStableHeight);
-          const currentHeight = Number(tg.viewportHeight);
+function syncTelegramViewport() {
+  // 1. Telegram oynasining balandligini aniqlash
+  const stableHeight = Number(tg.viewportStableHeight);
+  const currentHeight = Number(tg.viewportHeight);
 
-          const height =
-            stableHeight > 0 ? stableHeight : currentHeight;
+  const height =
+    stableHeight > 0 ? stableHeight : currentHeight;
 
-          if (Number.isFinite(height) && height > 0) {
-            document.documentElement.style.setProperty(
-              '--messages-app-height',
-              `${Math.round(height)}px`
-            );
-          }
-        }
+  if (Number.isFinite(height) && height > 0) {
+    document.documentElement.style.setProperty(
+      '--messages-app-height',
+      `${Math.round(height)}px`
+    );
+  }
 
+  // 2. Telegram interfeysi va qurilmaning xavfsiz hududlari
+  const safe = tg.safeAreaInset || {};
+  const content = tg.contentSafeAreaInset || {};
+
+  // 3. Yuqori va o'ng tomondagi bo'shliqni hisoblash
+  for (const side of ['top', 'right']) {
+    const safeValue = Number(safe[side]) || 0;
+    const contentValue = Number(content[side]) || 0;
+
+    const inset = Math.max(safeValue, contentValue);
+
+    document.documentElement.style.setProperty(
+      `--messages-content-safe-${side}`,
+      `${inset}px`
+    );
+  }
+}
         // Update height after Telegram finishes resizing.
         syncTelegramViewport();
 
-        if (typeof tg.onEvent === 'function') {
-          tg.onEvent('viewportChanged', event => {
-            if (event?.isStateStable !== false) {
-              requestAnimationFrame(syncTelegramViewport);
-            }
-          });
+       if (typeof tg.onEvent === 'function') {
+  // Viewport o'lchami o'zgarganda
+  tg.onEvent('viewportChanged', event => {
+    if (event?.isStateStable !== false) {
+      requestAnimationFrame(() => {
+        syncTelegramViewport();
+      });
+    }
+  });
 
-          tg.onEvent('fullscreenChanged', () => {
-            requestAnimationFrame(syncTelegramViewport);
-          });
+  // Fullscreen rejimi o'zgarganda
+  tg.onEvent('fullscreenChanged', () => {
+    requestAnimationFrame(() => {
+      syncTelegramViewport();
+    });
+  });
 
-          tg.onEvent('safeAreaChanged', syncTelegramViewport);
+  // Qurilmaning xavfsiz hududi o'zgarganda
+  tg.onEvent('safeAreaChanged', () => {
+    syncTelegramViewport();
+  });
 
-          // Graceful fallback when fullscreen is unavailable.
-          tg.onEvent('fullscreenFailed', () => {
-            if (typeof tg.expand === 'function') {
-              tg.expand();
-            }
+  // Telegram tugmalari uchun ajratilgan kontent hududi o'zgarganda
+  tg.onEvent('contentSafeAreaChanged', () => {
+    syncTelegramViewport();
+  });
 
-            requestAnimationFrame(syncTelegramViewport);
-          });
-        }
+  // Fullscreen ishlamasa, mavjud balandlikka kengayish
+  tg.onEvent('fullscreenFailed', () => {
+    if (typeof tg.expand === 'function') {
+      tg.expand();
+    }
 
+    requestAnimationFrame(() => {
+      syncTelegramViewport();
+    });
+  });
+}
         // Request true fullscreen on supported Telegram clients.
         const supportsFullscreen =
           typeof tg.isVersionAtLeast === 'function' &&
