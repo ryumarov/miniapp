@@ -2349,6 +2349,35 @@
         max-height: none;
       }
     }
+
+
+    /* Telegram Android fullscreen/header safe-area fix.
+       Telegram's native Close/menu controls can overlay the WebView; move the
+       app header, profile, and settings surfaces below Telegram's content-safe inset. */
+    #app {
+      height: var(--messages-app-height, 100vh);
+      height: var(--messages-app-height, 100dvh);
+      padding-top: max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px));
+      min-height: 0;
+    }
+
+    .side-panel {
+      padding-top: max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px));
+    }
+
+    .overlay {
+      padding-top: max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px));
+    }
+
+    #loading-screen,
+    #auth-error-screen {
+      padding-top: calc(30px + max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px)));
+    }
+
+    #chat-header,
+    .side-panel-header {
+      flex: 0 0 var(--header-height);
+    }
   </style>
 </head>
 
@@ -2706,7 +2735,7 @@
     }
 
     const state = {
-      initData: '', user: null, isOwner: false, myProfile: null, activeChatId: null, activeChatProfile: null,
+      initData: '', user: null, isOwner: false, myProfile: null, supportProfile: null, activeChatId: null, activeChatProfile: null,
       presenceSessionId: createPresenceSessionId(), presenceStatus: null, presenceTimer: null,
       chats: [], messages: [], replyTo: null, editMsg: null, contextTarget: null,
       pollingTimer: null, ownerListTimer: null, isSending: false, isUploading: false,
@@ -2823,24 +2852,51 @@
     function isImageMessage(msg) { const type = String(msg?.file_type || '').toLowerCase(); if (type.startsWith('image/')) return true; const name = String(msg?.file_name || '').toLowerCase(); return /\.(jpe?g|png|webp|gif|bmp|avif|heic|heif)$/.test(name); }
     function formatBytes(bytes) { if (!Number.isFinite(bytes) || bytes < 0) return ''; if (bytes < 1024) return `${bytes} B`; if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`; return `${(bytes / (1024 * 1024)).toFixed(1)} MB`; }
     function isImageFile(file) { return ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif', 'image/bmp'].includes(String(file?.type || '').toLowerCase()) || /\.(jpe?g|png|webp|gif|bmp|avif)$/.test(String(file?.name || '').toLowerCase()); }
-    async function signedFileUrl(path) {
+    async function signedFileUrl(path, forceRefresh = false) {
       if (!path) return null; const direct = safeHttpUrl(path); if (direct) return direct;
       if (!isPath(path)) return null;
-      const cached = state.signedUrlCache.get(path); if (cached && cached.expires > Date.now() + 15000) return cached.url;
+      const cached = state.signedUrlCache.get(path); if (!forceRefresh && cached && cached.expires > Date.now() + 60000) return cached.url;
+      if (forceRefresh) state.signedUrlCache.delete(path);
       const data = await callAPI({ action: 'get_file_url', path }); const url = safeHttpUrl(data.url); if (!url) throw new Error('Invalid file URL returned by server.');
-      state.signedUrlCache.set(path, { url, expires: Date.now() + Math.max(60, Number(data.expires_in) || 3600) * 1000 }); return url;
+      // Keep the cache slightly shorter than the server URL lifetime to avoid near-expiry image failures.
+      const ttl = Math.max(60, (Number(data.expires_in) || 3600) - 60);
+      state.signedUrlCache.set(path, { url, expires: Date.now() + ttl * 1000 }); return url;
     }
     function renderAvatar(el, name, url) {
       el.replaceChildren(); el.style.background = avatarColor(name || '?'); el.style.color = '#fff'; el.textContent = initials(name || '?');
       if (!url) return;
       const token = Symbol(); el._avatarToken = token;
-      const assign = async () => { try { const resolved = isPath(url) ? await signedFileUrl(url) : (String(url).startsWith('blob:') ? url : safeHttpUrl(url)); if (!resolved || el._avatarToken !== token) return; const img = document.createElement('img'); img.alt = ''; img.decoding = 'async'; img.referrerPolicy = 'no-referrer'; img.src = resolved; img.addEventListener('error', () => { if (el._avatarToken === token) { el.replaceChildren(); el.textContent = initials(name || '?'); } }, { once: true }); el.replaceChildren(img); } catch {/* Initials remain when a private or external avatar is unavailable. */ } };
+      const avatarName = name || '?';
+      const assign = async () => {
+        try {
+          const raw = String(url);
+          const resolved = isPath(raw) ? await signedFileUrl(raw) : (raw.startsWith('blob:') ? raw : safeHttpUrl(raw));
+          if (!resolved || el._avatarToken !== token) return;
+          const img = document.createElement('img'); img.alt = ''; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
+          let retried = false;
+          img.addEventListener('error', async () => {
+            if (el._avatarToken !== token) return;
+            // Private Supabase Storage URLs expire. Refresh a failed avatar URL once instead of
+            // permanently replacing the image with initials after a temporary/expired URL.
+            if (isPath(raw) && !retried) {
+              retried = true;
+              try {
+                const fresh = await signedFileUrl(raw, true);
+                if (fresh && el._avatarToken === token) { img.src = fresh; return; }
+              } catch {/* Fall through to initials only if the fresh URL cannot be obtained. */ }
+            }
+            if (el._avatarToken === token) { el.replaceChildren(); el.textContent = initials(avatarName); }
+          });
+          el.replaceChildren(img);
+          img.src = resolved;
+        } catch {/* Initials remain when a private or external avatar is unavailable. */ }
+      };
       assign();
     }
     function personName(profile, user, fallback = 'Customer') { return String(profile?.display_name || [profile?.first_name || user?.first_name, profile?.last_name || user?.last_name].filter(Boolean).join(' ') || profile?.username && `@${String(profile.username).replace(/^@/, '')}` || fallback); }
     function myDisplayName() { return personName(state.myProfile, state.user, state.isOwner ? 'Owner' : 'You'); }
     function getChatProfile(chat) { let p = chat?.chat_profiles; if (Array.isArray(p)) p = p[0]; return p || null; }
-    function getOtherSenderName(msg) { if (msg.sender_type === 'owner') return state.isOwner ? 'You' : 'Support'; if (!state.isOwner) return 'You'; const p = state.activeChatProfile; return personName(p, null, 'Customer'); }
+    function getOtherSenderName(msg) { if (msg.sender_type === 'owner') return state.isOwner ? 'You' : personName(state.supportProfile, null, 'Support'); if (!state.isOwner) return 'You'; const p = state.activeChatProfile; return personName(p, null, 'Customer'); }
     function messageText(msg) { return typeof msg.content === 'string' ? msg.content : ''; }
     function messagePreview(msg) { if (!msg) return 'No messages yet'; if (msg.content) return msg.content; if (msg.file_name) return msg.file_name; return 'Attachment'; }
     function fmtTime(value) { const d = new Date(value); if (Number.isNaN(d.getTime())) return ''; return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
@@ -3050,7 +3106,7 @@
     function setProfileReadonly(readonly) { ['profile-display-name', 'profile-first-name', 'profile-last-name', 'profile-username'].forEach(id => $(id).disabled = readonly); $('avatar-edit-btn').classList.toggle('hidden', readonly); $('profile-save-btn').classList.toggle('hidden', readonly); $('profile-note').textContent = readonly ? 'Customer profile' : 'Changes apply to this chat profile only.'; }
     function openProfilePanel(own = true) { closeSettings(); state.profileMode = own ? 'own' : 'readonly'; state.profileTarget = own ? state.myProfile : state.activeChatProfile; const p = state.profileTarget || {}; const user = own ? state.user : null; const name = personName(p, user, own ? 'Profile' : 'Customer'); $('profile-display-name').value = p.display_name || personName(null, user, name); $('profile-first-name').value = p.first_name || user?.first_name || ''; $('profile-last-name').value = p.last_name || user?.last_name || ''; $('profile-username').value = (p.username || user?.username || '').replace(/^@/, ''); $('profile-error').classList.add('hidden'); state.pendingAvatarPath = null; if (state.previewObjectUrl) { URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = null; } renderAvatar($('profile-avatar-big'), name, p.avatar_url || user?.photo_url || null); setProfileReadonly(!own); $('profile-panel-title').textContent = own ? 'Edit profile' : 'Profile'; profilePanel.classList.add('open'); }
     function closeProfile() { profilePanel.classList.remove('open'); if (state.previewObjectUrl) { URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = null; } }
-    $('profile-close-btn').addEventListener('click', closeProfile); $('profile-btn').addEventListener('click', () => openProfilePanel(!state.isOwner)); $('header-identity').addEventListener('click', () => openProfilePanel(!state.isOwner)); $('header-identity').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProfilePanel(!state.isOwner); } }); $('my-profile-btn').addEventListener('click', () => openProfilePanel(true));
+    $('profile-close-btn').addEventListener('click', closeProfile); $('profile-btn').addEventListener('click', () => openProfilePanel(!state.isOwner)); $('header-identity').addEventListener('click', () => openProfilePanel(false)); $('header-identity').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProfilePanel(false); } }); $('my-profile-btn').addEventListener('click', () => openProfilePanel(true));
     $('avatar-edit-btn').addEventListener('click', () => $('avatar-file-input').click()); $('profile-avatar-big').addEventListener('click', () => { if (state.profileMode === 'own') $('avatar-file-input').click(); });
     $('avatar-file-input').addEventListener('change', async e => {
       const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; if (!file.type.startsWith('image/') || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) { showToast('Choose a JPEG, PNG, WebP, or GIF image'); return; } if (file.size > 5 * 1024 * 1024) { showToast('Avatar must be 5 MB or smaller'); return; } if (state.previewObjectUrl) URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = URL.createObjectURL(file); renderAvatar($('profile-avatar-big'), $('profile-display-name').value || 'Profile', state.previewObjectUrl);
@@ -3178,7 +3234,7 @@
       try {
         setLoadingText('Verifying your Telegram account…'); const auth = await callAuth(initData); state.isOwner = Boolean(auth.is_owner ?? auth.isOwner); if (auth.user) state.user = auth.user; if (auth.profile) state.myProfile = auth.profile; startMiniAppPresenceTracking(tg); $('owner-notification-settings').classList.toggle('hidden', !state.isOwner); const app = $('app'); app.classList.remove('hidden'); app.classList.add(state.isOwner ? 'owner-mode' : 'customer-mode'); $('loading-screen').classList.add('hidden');
         if (state.isOwner) { $('sidebar').classList.add('mobile-open'); $('my-profile-btn').classList.remove('hidden'); await refreshOwnerList(true); state.ownerListTimer = setInterval(() => { if (document.visibilityState === 'visible') refreshOwnerList(false); }, 8000); }
-        else { $('my-profile-btn').classList.add('hidden'); try { const data = await callAPI({ action: 'get_my_chat' }); state.myProfile = data.profile || state.myProfile; const chat = data.chat; if (!chat?.id) throw new Error('The private conversation was not returned by the server.'); await openChat(chat.id, 'Support', null, null); $('header-name').textContent = 'Support'; $('header-status').textContent = 'Private conversation'; } catch (e) { showAuthError(`Your private conversation could not be opened. ${e.message || ''}`.trim(), true); } }
+        else { $('my-profile-btn').classList.add('hidden'); try { const data = await callAPI({ action: 'get_my_chat' }); state.myProfile = data.profile || state.myProfile; state.supportProfile = data.support_profile || null; const chat = data.chat; if (!chat?.id) throw new Error('The private conversation was not returned by the server.'); const supportName = personName(state.supportProfile, null, 'Support'); await openChat(chat.id, supportName, state.supportProfile?.avatar_url || null, state.supportProfile); $('header-name').textContent = supportName; $('header-status').textContent = 'Support'; } catch (e) { showAuthError(`Your private conversation could not be opened. ${e.message || ''}`.trim(), true); } }
       } catch (e) { showAuthError(`Authentication failed. ${e.message || 'Please reopen the app from Telegram.'}`, true); }
     }
     $('auth-retry-btn').addEventListener('click', () => location.reload());
