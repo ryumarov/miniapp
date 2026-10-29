@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="uz">
 
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="theme-color" content="#ffffff">
-  <title>Messages</title>
+  <title>Umarov — Xabarlar</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
@@ -2853,7 +2853,7 @@
 <body>
   <div id="loading-screen">
     <div class="spinner" aria-hidden="true"></div>
-    <p class="loading-text" id="loading-text">Verifying your Telegram session…</p>
+    <p class="loading-text" id="loading-text">Telegram seansi tekshirilmoqda…</p>
   </div>
   <div id="auth-error-screen" class="hidden" role="alert">
     <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -2861,23 +2861,23 @@
       <circle cx="12" cy="12" r="10" />
       <path d="M12 8v4m0 4h.01" />
     </svg>
-    <p class="auth-title">Unable to open Messages</p>
-    <p class="auth-body" id="auth-error-msg">Open this app from Telegram to continue.</p>
-    <button class="retry-btn hidden" id="auth-retry-btn" type="button">Try again</button>
+    <p class="auth-title">Xabarlar oynasini ochib bo‘lmadi</p>
+    <p class="auth-body" id="auth-error-msg">Davom etish uchun ilovani Telegram ichidan oching.</p>
+    <button class="retry-btn hidden" id="auth-retry-btn" type="button">Qayta urinish</button>
   </div>
 
   <div id="app" class="hidden">
-    <aside id="sidebar" aria-label="Conversations">
+    <aside id="sidebar" aria-label="Suhbatlar">
       <div class="sidebar-header">
-        <h1>Messages</h1>
-        <button class="icon-btn" id="my-profile-btn" type="button" aria-label="My profile" title="My profile">
+        <h1>Xabarlar</h1>
+        <button class="icon-btn" id="my-profile-btn" type="button" aria-label="Mening profilim" title="Mening profilim">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
         </button>
-        <button class="icon-btn" id="settings-btn" type="button" aria-label="Settings" title="Settings">
+        <button class="icon-btn" id="settings-btn" type="button" aria-label="Sozlamalar" title="Sozlamalar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3" />
@@ -2894,12 +2894,12 @@
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.4-4.4" />
           </svg>
-          <input id="search-input" type="search" placeholder="Search conversations" aria-label="Search conversations"
+          <input id="search-input" type="search" placeholder="Suhbatlarni qidirish" aria-label="Suhbatlarni qidirish"
             autocomplete="off">
         </div>
       </div>
       <div id="chat-list">
-        <div class="empty-list" id="chat-list-empty">Loading conversations…</div>
+        <div class="empty-list" id="chat-list-empty">Suhbatlar yuklanmoqda…</div>
       </div>
     </aside>
 
@@ -2910,73 +2910,73 @@
             <path
               d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8z" />
           </svg></div>
-        <p>Select a conversation</p>
+        <p>Suhbatni tanlang</p>
       </div>
-      <section id="active-chat" class="hidden" aria-label="Active conversation">
+      <section id="active-chat" class="hidden" aria-label="Faol suhbat">
         <header class="panel-header" id="chat-header">
-          <button class="icon-btn back-btn" id="back-btn" type="button" aria-label="Back to conversations"
-            title="Back"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          <button class="icon-btn back-btn" id="back-btn" type="button" aria-label="Suhbatlar ro‘yxatiga qaytish"
+            title="Orqaga"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="m15 18-6-6 6-6" />
             </svg></button>
-          <div class="header-identity" id="header-identity" role="button" tabindex="0" aria-label="View profile">
+          <div class="header-identity" id="header-identity" role="button" tabindex="0" aria-label="Profilni ko‘rish">
             <div class="avatar small" id="header-avatar"></div>
             <div class="header-copy">
-              <div class="header-name" id="header-name">Messages</div>
-              <div class="header-status" id="header-status">Private conversation</div>
+              <div class="header-name" id="header-name">Xabarlar</div>
+              <div class="header-status" id="header-status">Shaxsiy suhbat</div>
             </div>
           </div>
           <div class="header-actions"><button class="icon-btn" id="chat-settings-btn" type="button"
-              aria-label="Settings" title="Settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+              aria-label="Sozlamalar" title="Sozlamalar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="3" />
                 <path
                   d="M19.4 15l1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4L7.1 13a7 7 0 0 1 0-2L5.7 9.9l1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4L19.4 11a7 7 0 0 1 0 2z"
                   transform="translate(-1 0)" />
-              </svg></button><button class="icon-btn" id="profile-btn" type="button" aria-label="Profile"
-              title="Profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              </svg></button><button class="icon-btn" id="profile-btn" type="button" aria-label="Profil"
+              title="Profil"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
-              </svg></button><button class="icon-btn" id="chat-more-btn" type="button" aria-label="Chat actions"
-              title="Chat actions"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+              </svg></button><button class="icon-btn" id="chat-more-btn" type="button" aria-label="Chat amallari"
+              title="Chat amallari"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
                 aria-hidden="true">
                 <circle cx="5" cy="12" r="1.8" />
                 <circle cx="12" cy="12" r="1.8" />
                 <circle cx="19" cy="12" r="1.8" />
               </svg></button></div>
-          <div id="selection-toolbar" class="selection-toolbar hidden" aria-label="Message selection"><button
-              class="icon-btn" id="selection-cancel-btn" type="button" aria-label="Cancel selection" title="Cancel"><svg
-                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-                stroke-linecap="round">
+          <div id="selection-toolbar" class="selection-toolbar hidden" aria-label="Xabarlarni tanlash"><button
+              class="icon-btn" id="selection-cancel-btn" type="button" aria-label="Tanlashni bekor qilish"
+              title="Bekor qilish"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2.2" stroke-linecap="round">
                 <path d="M18 6 6 18M6 6l12 12" />
-              </svg></button><span id="selection-count" class="selection-count">0 selected</span><button
-              class="icon-btn" id="selection-select-all-btn" type="button" aria-label="Select all messages"
-              title="Select all"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              </svg></button><span id="selection-count" class="selection-count">0 ta tanlandi</span><button
+              class="icon-btn" id="selection-select-all-btn" type="button" aria-label="Barcha xabarlarni tanlash"
+              title="Barchasini tanlash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="4" />
                 <path d="m7 12 3.2 3.2L17 8.5" />
               </svg></button><button class="icon-btn" id="selection-delete-btn" type="button"
-              aria-label="Delete selected messages" title="Delete selected" disabled><svg width="20" height="20"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                stroke-linejoin="round">
+              aria-label="Tanlangan xabarlarni o‘chirish" title="Tanlanganlarni o‘chirish" disabled><svg width="20"
+                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
               </svg></button></div>
         </header>
-        <div id="chat-actions-menu" class="chat-actions-menu hidden" role="menu" aria-label="Chat actions"><button
+        <div id="chat-actions-menu" class="chat-actions-menu hidden" role="menu" aria-label="Chat amallari"><button
             class="ctx-item" id="chat-select-messages-btn" type="button" role="menuitem"><svg width="17" height="17"
               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
               stroke-linejoin="round">
               <rect x="3" y="3" width="18" height="18" rx="4" />
               <path d="m7 12 3.2 3.2L17 8.5" />
-            </svg>Select messages</button>
+            </svg>Xabarlarni tanlash</button>
           <div class="ctx-divider"></div><button class="ctx-item destructive" id="chat-clear-history-btn" type="button"
             role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
-            </svg>Clear chat history</button>
+            </svg>Suhbat tarixini tozalash</button>
         </div>
-        <div id="message-list" role="log" aria-live="polite" aria-label="Messages"></div>
+        <div id="message-list" role="log" aria-live="polite" aria-label="Xabarlar"></div>
         <footer id="composer-wrap">
           <div id="reply-bar">
             <div class="bar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2985,11 +2985,11 @@
                 <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
               </svg></div>
             <div class="bar-content">
-              <div class="bar-label" id="reply-sender-label">Reply</div>
+              <div class="bar-label" id="reply-sender-label">Javob berish</div>
               <div class="bar-text" id="reply-preview-text"></div>
-            </div><button class="icon-btn" id="cancel-reply-btn" type="button" aria-label="Cancel reply"><svg width="17"
-                height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-                stroke-linecap="round">
+            </div><button class="icon-btn" id="cancel-reply-btn" type="button"
+              aria-label="Javob yozishni bekor qilish"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg></button>
           </div>
@@ -3000,27 +3000,27 @@
                 <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
               </svg></div>
             <div class="bar-content">
-              <div class="bar-label">Edit message</div>
+              <div class="bar-label">Xabarni tahrirlash</div>
               <div class="bar-text" id="edit-preview-text"></div>
-            </div><button class="icon-btn" id="cancel-edit-btn" type="button" aria-label="Cancel edit"><svg width="17"
-                height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
-                stroke-linecap="round">
+            </div><button class="icon-btn" id="cancel-edit-btn" type="button"
+              aria-label="Tahrirlashni bekor qilish"><svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
                 <path d="M18 6 6 18M6 6l12 12" />
               </svg></button>
           </div>
           <div id="composer-row">
-            <button class="attach-btn" id="attach-btn" type="button" aria-label="Attach file" title="Attach file"><svg
-                width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
-                stroke-linecap="round" stroke-linejoin="round">
+            <button class="attach-btn" id="attach-btn" type="button" aria-label="Fayl biriktirish"
+              title="Fayl biriktirish"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
                 <path
                   d="m21.4 11.1-9.2 9.2a6 6 0 0 1-8.5-8.5l8.6-8.6a4 4 0 1 1 5.7 5.7l-8.6 8.6a2 2 0 0 1-2.8-2.8l8.5-8.5" />
               </svg></button>
-            <input id="file-input" class="hidden" type="file" aria-label="Choose attachment"
+            <input id="file-input" class="hidden" type="file" aria-label="Biriktiriladigan faylni tanlang"
               accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,audio/mpeg,audio/mp4,audio/ogg,audio/wav,audio/webm,audio/aac,application/pdf,text/plain,text/csv,application/zip,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation">
-            <div id="composer-input" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Message"
-              data-placeholder="Message" spellcheck="true"></div>
-            <button id="send-btn" type="button" aria-label="Send message" title="Send message" disabled><svg width="20"
-                height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            <div id="composer-input" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Xabar"
+              data-placeholder="Xabar yozing…" spellcheck="true"></div>
+            <button id="send-btn" type="button" aria-label="Xabar yuborish" title="Xabar yuborish" disabled><svg
+                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="m22 2-7 20-4-9-9-4Z" />
                 <path d="M22 2 11 13" />
@@ -3033,19 +3033,20 @@
   </div>
 
 
-  <!-- Full-screen image picker preview, with an optional caption before sending. -->
+  <!-- Rasmni to‘liq ekranda ko‘rib chiqish va yuborishdan oldin izoh qo‘shish oynasi. -->
   <section id="attachment-preview-overlay" class="attachment-preview-overlay hidden" role="dialog" aria-modal="true"
-    aria-label="Photo preview">
+    aria-label="Rasmni ko‘rib chiqish">
     <div class="attachment-preview-header">
-      <button class="icon-btn" id="attachment-preview-cancel" type="button" aria-label="Cancel photo" title="Cancel">
+      <button class="icon-btn" id="attachment-preview-cancel" type="button" aria-label="Rasmni bekor qilish"
+        title="Bekor qilish">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round">
           <path d="M18 6 6 18M6 6l12 12" />
         </svg>
       </button>
-      <div class="attachment-preview-title">Photo preview</div>
-      <button class="attachment-preview-send" id="attachment-preview-send-top" type="button" aria-label="Send photo"
-        title="Send photo">
+      <div class="attachment-preview-title">Rasmni ko‘rib chiqish</div>
+      <button class="attachment-preview-send" id="attachment-preview-send-top" type="button"
+        aria-label="Rasmni yuborish" title="Rasmni yuborish">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="m22 2-7 20-4-9-9-4Z" />
@@ -3053,35 +3054,36 @@
         </svg>
       </button>
     </div>
-    <div class="attachment-preview-stage"><img id="attachment-preview-img" alt="Selected photo preview">
-      <div id="attachment-preview-loading" class="image-viewer-status hidden">Preparing preview…</div>
+    <div class="attachment-preview-stage"><img id="attachment-preview-img" alt="Tanlangan rasm ko‘rinishi">
+      <div id="attachment-preview-loading" class="image-viewer-status hidden">Ko‘rib chiqish tayyorlanmoqda…</div>
     </div>
     <div class="attachment-preview-footer">
       <div class="attachment-preview-file" id="attachment-preview-file"></div>
-      <textarea id="attachment-caption" rows="1" maxlength="4000" placeholder="Add a caption…"
-        aria-label="Photo caption"></textarea>
-      <div class="attachment-preview-bottom"><span class="attachment-preview-hint" id="attachment-preview-hint">Photo
-          will be sent in this chat</span><button class="attachment-send-label" id="attachment-preview-send"
-          type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <textarea id="attachment-caption" rows="1" maxlength="4000" placeholder="Rasmga izoh yozing…"
+        aria-label="Rasm izohi"></textarea>
+      <div class="attachment-preview-bottom"><span class="attachment-preview-hint" id="attachment-preview-hint">Rasm shu
+          chatga yuboriladi</span><button class="attachment-send-label" id="attachment-preview-send" type="button"><svg
+            width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="m22 2-7 20-4-9-9-4Z" />
             <path d="M22 2 11 13" />
-          </svg><span>Send photo</span></button></div>
+          </svg><span>Rasmni yuborish</span></button></div>
     </div>
   </section>
 
-  <!-- Full-screen in-app image viewer. -->
-  <section id="image-viewer" class="image-viewer hidden" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <!-- Ilova ichidagi rasmni to‘liq ekranda ko‘rish oynasi. -->
+  <section id="image-viewer" class="image-viewer hidden" role="dialog" aria-modal="true"
+    aria-label="Rasm ko‘ruvchi oyna">
     <div class="image-viewer-header">
-      <button class="icon-btn" id="image-viewer-close" type="button" aria-label="Close photo" title="Close">
+      <button class="icon-btn" id="image-viewer-close" type="button" aria-label="Rasm oynasini yopish" title="Yopish">
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
           stroke-linecap="round">
           <path d="M18 6 6 18M6 6l12 12" />
         </svg>
       </button>
-      <div class="image-viewer-title" id="image-viewer-title">Photo</div>
-      <button class="icon-btn" id="image-viewer-open-original" type="button" aria-label="Open original image"
-        title="Open original image">
+      <div class="image-viewer-title" id="image-viewer-title">Rasm</div>
+      <button class="icon-btn" id="image-viewer-open-original" type="button" aria-label="Asl rasmni ochish"
+        title="Asl rasmni ochish">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M14 3h7v7" />
@@ -3091,57 +3093,58 @@
       </button>
     </div>
     <div class="image-viewer-stage" id="image-viewer-stage">
-      <div id="image-viewer-status" class="image-viewer-status">Loading photo…</div><img id="viewer-image"
-        alt="Full-size photo" class="hidden">
+      <div id="image-viewer-status" class="image-viewer-status">Rasm yuklanmoqda…</div><img id="viewer-image"
+        alt="To‘liq o‘lchamdagi rasm" class="hidden">
     </div>
     <div id="image-viewer-caption" class="image-viewer-caption"></div>
   </section>
 
-  <div id="ctx-menu" role="menu" aria-label="Message actions">
+  <div id="ctx-menu" role="menu" aria-label="Xabar amallari">
     <button class="ctx-item" id="ctx-copy" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="8" y="8" width="13" height="13" rx="2" />
         <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
-      </svg>Copy</button>
+      </svg>Nusxalash</button>
     <button class="ctx-item" id="ctx-reply" type="button" role="menuitem"><svg width="17" height="17"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
         stroke-linejoin="round">
         <polyline points="9 14 4 9 9 4" />
         <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
-      </svg>Reply</button>
+      </svg>Javob berish</button>
     <button class="ctx-item" id="ctx-select" type="button" role="menuitem"><svg width="17" height="17"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
         stroke-linejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="4" />
         <path d="m7 12 3.2 3.2L17 8.5" />
-      </svg>Select</button>
+      </svg>Tanlash</button>
     <button class="ctx-item" id="ctx-edit" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 20h9" />
         <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
-      </svg>Edit</button>
+      </svg>Tahrirlash</button>
     <div class="ctx-divider" id="ctx-divider"></div>
     <button class="ctx-item destructive" id="ctx-delete" type="button" role="menuitem"><svg width="17" height="17"
         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
         stroke-linejoin="round">
         <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
-      </svg>Delete</button>
+      </svg>O‘chirish</button>
   </div>
 
   <section id="profile-panel" class="side-panel" role="dialog" aria-modal="true" aria-labelledby="profile-panel-title">
     <div class="side-panel-header"><button class="icon-btn" id="profile-close-btn" type="button"
-        aria-label="Close profile"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        aria-label="Profilni yopish"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m15 18-6-6 6-6" />
         </svg></button>
-      <h2 id="profile-panel-title">Profile</h2>
+      <h2 id="profile-panel-title">Profil</h2>
       <div style="width:40px"></div>
     </div>
     <div class="panel-scroll">
       <div class="profile-avatar-wrap">
         <div class="avatar large" id="profile-avatar-big"></div><button class="avatar-edit" id="avatar-edit-btn"
-          type="button" aria-label="Change avatar" title="Change avatar"><svg width="14" height="14" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          type="button" aria-label="Profil rasmini almashtirish" title="Profil rasmini almashtirish"><svg width="14"
+            height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+            stroke-linejoin="round">
             <path d="M12 20h9" />
             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z" />
           </svg></button><input type="file" id="avatar-file-input" accept="image/jpeg,image/png,image/webp,image/gif"
@@ -3149,105 +3152,99 @@
       </div>
       <div class="profile-fields">
         <div class="profile-field">
-          <div class="field-label">Display name</div><input class="field-input" id="profile-display-name" type="text"
-            maxlength="100" autocomplete="off">
+          <div class="field-label">Ism</div><input class="field-input" id="profile-first-name" type="text"
+            maxlength="100" autocomplete="given-name" placeholder="Ismingiz">
         </div>
         <div class="profile-field">
-          <div class="field-label">First name</div><input class="field-input" id="profile-first-name" type="text"
-            maxlength="100" autocomplete="given-name">
-        </div>
-        <div class="profile-field">
-          <div class="field-label">Last name</div><input class="field-input" id="profile-last-name" type="text"
-            maxlength="100" autocomplete="family-name">
-        </div>
-        <div class="profile-field">
-          <div class="field-label">Username</div><input class="field-input" id="profile-username" type="text"
-            maxlength="32" autocomplete="off" placeholder="username">
+          <div class="field-label">Foydalanuvchi nomi</div><input class="field-input" id="profile-username" type="text"
+            maxlength="32" autocomplete="off" placeholder="foydalanuvchi_nomi">
         </div>
         <div class="profile-field hidden" id="profile-support-label-wrap">
-          <div class="field-label">Support label (visible to all users)</div><input class="field-input"
-            id="profile-support-label" type="text" maxlength="60" autocomplete="off" placeholder="Support">
+          <div class="field-label">Yordam nomi (barchaga ko‘rinadi)</div><input class="field-input"
+            id="profile-support-label" type="text" maxlength="60" autocomplete="off" placeholder="Yordam">
         </div>
         <div class="field-error hidden" id="profile-error"></div><button class="primary-wide" id="profile-save-btn"
-          type="button">Save changes</button>
-        <div class="panel-subtitle" id="profile-note">Your profile photo is saved in the Mini App and visible to other
-          participants.</div>
+          type="button">O‘zgarishlarni saqlash</button>
+        <div class="panel-subtitle" id="profile-note">Profil rasmingiz Mini App’da saqlanadi va suhbatdoshingizga
+          ko‘rinadi.</div>
       </div>
     </div>
   </section>
 
   <section id="settings-panel" class="side-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="side-panel-header"><button class="icon-btn" id="settings-close-btn" type="button"
-        aria-label="Close settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        aria-label="Sozlamalarni yopish"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m15 18-6-6 6-6" />
         </svg></button>
-      <h2 id="settings-title">Settings</h2>
+      <h2 id="settings-title">Sozlamalar</h2>
       <div style="width:40px"></div>
     </div>
     <div class="settings-section">
-      <div class="settings-section-title">Sound</div>
-      <div class="settings-row"><span>Message sounds</span><button class="toggle" id="sound-toggle" type="button"
-          role="switch" aria-label="Message sounds" aria-checked="true"></button></div>
-      <div class="settings-row"><span>Incoming message sound</span><button class="toggle" id="incoming-sound-toggle"
-          type="button" role="switch" aria-label="Incoming message sound" aria-checked="true"></button></div>
-      <div class="settings-row"><span>Error sound</span><button class="toggle" id="error-sound-toggle" type="button"
-          role="switch" aria-label="Error sound" aria-checked="true"></button></div>
-      <div class="settings-row"><span>Send sound</span><button class="toggle" id="send-sound-toggle" type="button"
-          role="switch" aria-label="Send sound" aria-checked="true"></button></div>
+      <div class="settings-section-title">Ovoz</div>
+      <div class="settings-row"><span>Xabar tovushlari</span><button class="toggle" id="sound-toggle" type="button"
+          role="switch" aria-label="Xabar tovushlari" aria-checked="true"></button></div>
+      <div class="settings-row"><span>Kiruvchi xabar tovushi</span><button class="toggle" id="incoming-sound-toggle"
+          type="button" role="switch" aria-label="Kiruvchi xabar tovushi" aria-checked="true"></button></div>
+      <div class="settings-row"><span>Xatolik tovushi</span><button class="toggle" id="error-sound-toggle" type="button"
+          role="switch" aria-label="Xatolik tovushi" aria-checked="true"></button></div>
+      <div class="settings-row"><span>Yuborish tovushi</span><button class="toggle" id="send-sound-toggle" type="button"
+          role="switch" aria-label="Yuborish tovushi" aria-checked="true"></button></div>
     </div>
     <div class="settings-section" id="telegram-text-link-section">
-      <div class="settings-section-title">Telegram message link</div>
+      <div class="settings-section-title">Telegram xabar havolasi</div>
       <div class="profile-field">
-        <div class="field-label">Text to prepare in @umarov_py chat</div>
+        <div class="field-label">@umarov_py chatida tayyor turadigan xabar matni</div>
         <textarea class="field-input" id="telegram-link-text" maxlength="4000" rows="4"
-          placeholder="Write the message here…"></textarea>
+          placeholder="Xabar matnini shu yerga yozing…"></textarea>
       </div>
-      <button class="primary-wide" id="telegram-link-generate" type="button">Generate</button>
-      <div class="generated-link-meta" id="telegram-link-status" aria-live="polite">Generate a link that stays active
-        until you generate another one.</div>
+      <button class="primary-wide" id="telegram-link-generate" type="button">Havola yaratish</button>
+      <div class="generated-link-meta" id="telegram-link-status" aria-live="polite">Yangi havola yaratmaguningizcha bu
+        havola faol bo‘lib turadi.</div>
       <div id="telegram-link-output" class="hidden">
-        <div class="field-label" style="margin-top:14px">Active link</div>
+        <div class="field-label" style="margin-top:14px">Faol havola</div>
         <div class="generated-link-row">
           <a class="generated-link-value" id="telegram-link-value" href="#" target="_blank"
-            rel="noopener noreferrer">Generated link appears here</a>
-          <button class="copy-generated-link" id="telegram-link-copy" type="button" aria-label="Copy generated link"
-            title="Copy link"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            rel="noopener noreferrer">Yaratilgan havola shu yerda ko‘rinadi</a>
+          <button class="copy-generated-link" id="telegram-link-copy" type="button"
+            aria-label="Yaratilgan havolani nusxalash" title="Havolani nusxalash"><svg width="19" height="19"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
               <rect x="8" y="8" width="12" height="12" rx="2" />
               <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
             </svg></button>
         </div>
-        <div class="generated-link-meta">The link opens Telegram and fills in the message. The recipient must press
-          Send. The previous link stops working after your next successful Generate.</div>
+        <div class="generated-link-meta">Havola Telegram’ni ochib, xabar matnini kiritadi. Xabarni qabul qiluvchi
+          “Yuborish” tugmasini o‘zi bosadi. Yangi havola yaratilganda avvalgi havola ishlamay qoladi.</div>
       </div>
     </div>
     <div class="settings-section hidden" id="owner-notification-settings">
-      <div class="settings-section-title">Telegram bot notifications</div>
+      <div class="settings-section-title">Telegram bot bildirishnomalari</div>
 
       <div class="profile-field">
-        <div class="field-label">When a customer sends you a message</div>
+        <div class="field-label">Mijoz sizga xabar yuborganda</div>
         <input class="field-input" id="notify-owner-message-title" type="text" maxlength="180" value="Yangi xabar"
           autocomplete="off">
       </div>
 
       <div class="profile-field">
-        <div class="field-label">When a new user enters the app</div>
+        <div class="field-label">Yangi foydalanuvchi ilovaga kirganda</div>
         <input class="field-input" id="notify-new-user-title" type="text" maxlength="180" value="Yangi foydalanuvchi"
           autocomplete="off">
       </div>
 
       <div class="profile-field">
-        <div class="field-label">When you reply to a customer</div>
+        <div class="field-label">Mijozga javob yuborganingizda</div>
         <input class="field-input" id="notify-customer-reply-title" type="text" maxlength="180"
           value="Umarov sizga javob berdi" autocomplete="off">
       </div>
 
       <div class="panel-subtitle notification-help">
-        These titles are used in Telegram bot notifications. Each title can contain up to 180 characters. Notifications
-        are sent only when the recipient's Mini App is inactive.
+        Bu sarlavhalar Telegram bot bildirishnomalarida ishlatiladi. Har biri 180 belgigacha bo‘lishi mumkin.
+        Bildirishnoma qabul qiluvchining Mini App’i faol bo‘lmaganda yuboriladi.
       </div>
-      <button class="primary-wide" id="notification-settings-save" type="button">Save notification texts</button>
+      <button class="primary-wide" id="notification-settings-save" type="button">Bildirishnoma matnlarini
+        saqlash</button>
       <div class="panel-subtitle" id="notification-settings-status" aria-live="polite"></div>
     </div>
   </section>
@@ -3306,9 +3303,75 @@
     }
     function parseJsonSafe(text) { try { return JSON.parse(text); } catch { return {}; } }
     async function readResponse(res) { const raw = await res.text(); const data = parseJsonSafe(raw); if (!res.ok) throw new Error(typeof data.error === 'string' ? data.error : `Request failed (${res.status})`); return data; }
+    function uiError(value) {
+      const text = String(value || '').trim(); if (!text) return '';
+      const map = {
+        'Telegram session is missing. Reopen the app from Telegram.': 'Telegram seans ma’lumoti topilmadi. Ilovani Telegram ichidan qayta oching.',
+        'Add your Supabase Publishable key to index.html first.': 'index.html fayliga Supabase Publishable kalitini kiriting.',
+        'Request timed out. Check your connection and try again.': 'So‘rov vaqti tugadi. Internet aloqasini tekshirib, qayta urinib ko‘ring.',
+        'Invalid file URL returned by server.': 'Server noto‘g‘ri fayl havolasini qaytardi.',
+        'Forbidden': 'Bu amalni bajarishga ruxsatingiz yo‘q.',
+        'No active conversation': 'Faol suhbat topilmadi.',
+        'Message not found': 'Xabar topilmadi.',
+        'Failed to update profile': 'Profilni yangilab bo‘lmadi.',
+        'Failed to clear chat history': 'Suhbat tarixini tozalab bo‘lmadi.',
+        'Only the owner can change the public support label': 'Yordam nomini faqat egasi o‘zgartira oladi.',
+        'No profile fields to update': 'Saqlash uchun o‘zgarish topilmadi.',
+        'display_name cannot be empty': 'Ism maydoni bo‘sh bo‘lmasligi kerak.',
+        'first_name cannot be empty': 'Ism maydoni bo‘sh bo‘lmasligi kerak.',
+        'Invalid Telegram initData': 'Telegram seans ma’lumotlari noto‘g‘ri.',
+        'Telegram initData is required': 'Telegram seans ma’lumoti talab qilinadi.',
+        'Could not load the user profile': 'Foydalanuvchi profilini yuklab bo‘lmadi.',
+        'Failed to load messages': 'Xabarlarni yuklab bo‘lmadi.',
+        'Upload failed': 'Faylni yuklab bo‘lmadi.',
+        'No messages yet': 'Hozircha xabar yo‘q',
+        'This link is no longer active. Generate a new link in the Mini App.': 'Bu havola endi faol emas. Mini App’da yangi havola yarating.',
+        'Profile lookup failed': 'Profilni topib bo‘lmadi.',
+        'Profile creation failed': 'Profilni yaratib bo‘lmadi.',
+        'Chat lookup failed': 'Suhbatni topib bo‘lmadi.',
+        'Invalid JSON body': 'So‘rov ma’lumotlari noto‘g‘ri.',
+        'Message text is required': 'Xabar matnini kiriting.',
+        'Invalid session_id': 'Seans identifikatori noto‘g‘ri.',
+        'Failed to update Mini App presence': 'Mini App holatini yangilab bo‘lmadi.',
+        'Failed to save notification settings. Run the notification SQL migration first.': 'Bildirishnoma sozlamalarini saqlab bo‘lmadi. Avval kerakli ma’lumotlar bazasi sozlamalarini bajaring.',
+        'Failed to create chat': 'Suhbatni yaratib bo‘lmadi.',
+        'Failed to load conversations': 'Suhbatlarni yuklab bo‘lmadi.',
+        'Invalid or missing chat_id': 'Suhbat identifikatori noto‘g‘ri yoki ko‘rsatilmagan.',
+        'Message too long': 'Xabar juda uzun.',
+        'Invalid attachment path': 'Biriktirilgan fayl manzili noto‘g‘ri.',
+        'Unsupported attachment type': 'Bu turdagi faylni yuborib bo‘lmaydi.',
+        'Invalid reply_to_message_id': 'Javob berilayotgan xabar identifikatori noto‘g‘ri.',
+        'Failed to validate reply': 'Javob yuboriladigan xabarni tekshirib bo‘lmadi.',
+        'Reply target not found': 'Javob beriladigan xabar topilmadi.',
+        'Failed to send message': 'Xabarni yuborib bo‘lmadi.',
+        'Failed to edit message': 'Xabarni tahrirlab bo‘lmadi.',
+        'Failed to delete message': 'Xabarni o‘chirib bo‘lmadi.',
+        'Invalid message ID in selection': 'Tanlangan xabar identifikatori noto‘g‘ri.',
+        'Failed to delete selected messages': 'Tanlangan xabarlarni o‘chirib bo‘lmadi.',
+        'Failed to update profile': 'Profilni yangilab bo‘lmadi.',
+        'support_label must be text': 'Yordam nomi matn ko‘rinishida bo‘lishi kerak.',
+        'support_label must be 60 characters or fewer': 'Yordam nomi 60 belgidan oshmasligi kerak.',
+        'username must be text': 'Foydalanuvchi nomi matn ko‘rinishida bo‘lishi kerak.',
+        'username must contain 5–32 letters, digits, or underscores': 'Foydalanuvchi nomi 5–32 ta lotin harfi, raqam yoki pastki chiziqdan iborat bo‘lishi kerak.',
+        'avatar_url must be text': 'Profil rasmi manzili matn ko‘rinishida bo‘lishi kerak.',
+        'avatar_url is too long': 'Profil rasmi manzili juda uzun.',
+        'avatar_url must be an HTTPS URL or your own uploaded avatar path': 'Profil rasmi uchun HTTPS havolasi yoki o‘zingiz yuklagan rasmni tanlang.',
+        'Could not generate link. Run the Telegram text-link SQL migration first.': 'Havola yaratib bo‘lmadi. Avval havola funksiyasi uchun ma’lumotlar bazasi sozlamasini bajaring.',
+        'Only the owner can change the public support label': 'Ommaviy yordam nomini faqat egasi o‘zgartira oladi.'
+      };
+      if (map[text]) return map[text];
+      let m = text.match(/^File must be (\d+) MB or smaller$/); if (m) return `Fayl hajmi ${m[1]} MB dan oshmasligi kerak.`;
+      m = text.match(/^Message must be (\d+) characters or fewer$/); if (m) return `Xabar ${m[1]} belgidan oshmasligi kerak.`;
+      m = text.match(/^Message must be at most (\d+) characters$/); if (m) return `Xabar ${m[1]} belgidan oshmasligi kerak.`;
+      m = text.match(/^Request failed \((\d+)\)$/); if (m) return `Server so‘rovi bajarilmadi (xatolik kodi: ${m[1]}).`;
+      // Do not expose raw English technical messages in the Uzbek interface.
+      if (/^[A-Za-z][A-Za-z0-9 .:_()'/-]{2,}$/.test(text) && /[A-Za-z]/.test(text) && /\s/.test(text)) return 'Kutilmagan xatolik yuz berdi. Internetni tekshirib, qayta urinib ko‘ring.';
+      if (/^(?:Request failed|Upload failed|Failed to |Could not |Unable to |Invalid |Unsupported |Only the owner|The private conversation|Authentication failed|Error:)/i.test(text)) return 'Amalni bajarib bo‘lmadi. Internetni tekshirib, qayta urinib ko‘ring.';
+      return text;
+    }
     function setLoadingText(text) { $('loading-text').textContent = text; }
-    function showToast(text) { const old = document.querySelector('.toast'); if (old) old.remove(); const el = document.createElement('div'); el.className = 'toast'; el.textContent = text; document.body.appendChild(el); setTimeout(() => el.remove(), 2200); }
-    function showAuthError(message, retry = true) { $('loading-screen').classList.add('hidden'); $('app').classList.add('hidden'); $('auth-error-screen').classList.remove('hidden'); $('auth-error-msg').textContent = message; $('auth-retry-btn').classList.toggle('hidden', !retry); }
+    function showToast(text) { const old = document.querySelector('.toast'); if (old) old.remove(); const el = document.createElement('div'); el.className = 'toast'; el.textContent = uiError(text) || text; document.body.appendChild(el); setTimeout(() => el.remove(), 2200); }
+    function showAuthError(message, retry = true) { $('loading-screen').classList.add('hidden'); $('app').classList.add('hidden'); $('auth-error-screen').classList.remove('hidden'); $('auth-error-msg').textContent = uiError(message) || message; $('auth-retry-btn').classList.toggle('hidden', !retry); }
 
     // Audio feedback (browser/WebView audio requires a user gesture first).
     function loadSoundPrefs() { try { const raw = localStorage.getItem('messages.soundPrefs'); if (raw) { const d = JSON.parse(raw); if (d && typeof d === 'object') { state.soundSettings = { ...state.soundSettings, ...d.sounds }; if (typeof d.enabled === 'boolean') state.audioEnabled = d.enabled; } } } catch { } }
@@ -3320,13 +3383,13 @@
     function playError() { if (state.soundSettings.error) tone(230, .13, 'triangle', .06); }
 
     async function callAPI(payload) {
-      if (!state.initData) throw new Error('Telegram session is missing. Reopen the app from Telegram.');
-      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') throw new Error('Add your Supabase Publishable key to index.html first.');
+      if (!state.initData) throw new Error('Telegram seans ma’lumoti topilmadi. Ilovani Telegram ichidan qayta oching.');
+      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') throw new Error('Avval index.html fayliga Supabase Publishable kalitini kiriting.');
       const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 20000);
       try {
         const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY, 'x-telegram-init-data': state.initData }, body: JSON.stringify({ ...payload, initData: state.initData }), signal: controller.signal });
         return await readResponse(res);
-      } catch (e) { if (e.name === 'AbortError') throw new Error('Request timed out. Check your connection and try again.'); throw e; } finally { clearTimeout(timeout); }
+      } catch (e) { if (e.name === 'AbortError') throw new Error('So‘rov vaqti tugadi. Internet aloqasini tekshirib, qayta urinib ko‘ring.'); throw e; } finally { clearTimeout(timeout); }
     }
     async function sendMiniAppPresence(active, keepalive = false) {
       if (!state.initData || !state.presenceSessionId) return;
@@ -3391,7 +3454,7 @@
     }
 
     async function callAuth(initData) {
-      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') throw new Error('Add your Supabase Publishable key to index.html first.');
+      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') throw new Error('Avval index.html fayliga Supabase Publishable kalitini kiriting.');
       const res = await fetch(AUTH_EP, { method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY }, body: JSON.stringify({ initData }) });
       return await readResponse(res);
     }
@@ -3414,7 +3477,7 @@
       if (!isPath(path)) return null;
       const cached = state.signedUrlCache.get(path); if (!forceRefresh && cached && cached.expires > Date.now() + 60000) return cached.url;
       if (forceRefresh) state.signedUrlCache.delete(path);
-      const data = await callAPI({ action: 'get_file_url', path }); const url = safeHttpUrl(data.url); if (!url) throw new Error('Invalid file URL returned by server.');
+      const data = await callAPI({ action: 'get_file_url', path }); const url = safeHttpUrl(data.url); if (!url) throw new Error('Server noto‘g‘ri fayl havolasini qaytardi.');
       // Keep the cache slightly shorter than the server URL lifetime to avoid near-expiry image failures.
       const ttl = Math.max(60, (Number(data.expires_in) || 3600) - 60);
       state.signedUrlCache.set(path, { url, expires: Date.now() + ttl * 1000 }); return url;
@@ -3440,7 +3503,7 @@
               try {
                 const fresh = await signedFileUrl(storagePath, true);
                 if (fresh && el._avatarToken === token) { img.src = fresh; return; }
-              } catch (error) { console.warn('Could not refresh profile avatar URL:', error?.message || 'unavailable'); }
+              } catch (error) { console.warn('Profil rasmi havolasini yangilab bo‘lmadi:', error?.message || 'unavailable'); }
             }
             if (el._avatarToken === token) { el.replaceChildren(); el.textContent = initials(avatarName); }
           });
@@ -3448,49 +3511,51 @@
           img.src = resolved;
         } catch (error) {
           // Keep the name initials visible but log a diagnostic instead of silently masking a failed request.
-          if (el._avatarToken === token) console.warn('Profile avatar could not be loaded:', error?.message || 'unavailable');
+          if (el._avatarToken === token) console.warn('Profil rasmini yuklab bo‘lmadi:', error?.message || 'unavailable');
         }
       };
       assign();
     }
-    function personName(profile, user, fallback = 'Customer') { return String(profile?.display_name || [profile?.first_name || user?.first_name, profile?.last_name || user?.last_name].filter(Boolean).join(' ') || profile?.username && `@${String(profile.username).replace(/^@/, '')}` || fallback); }
-    function myDisplayName() { return personName(state.myProfile, state.user, state.isOwner ? 'Owner' : 'You'); }
+    function personName(profile, user, fallback = 'Foydalanuvchi') { const firstName = String(profile?.first_name || profile?.display_name || user?.first_name || '').trim(); return firstName || ((profile?.username && `@${String(profile.username).replace(/^@/, '')}`) || fallback); }
+    function getSupportLabel(profile) { const label = String(profile?.support_label || '').trim(); return !label || label.toLowerCase() === 'support' ? 'Yordam' : label; }
+    function myDisplayName() { return personName(state.myProfile, state.user, 'Siz'); }
     function getChatProfile(chat) { let p = chat?.chat_profiles; if (Array.isArray(p)) p = p[0]; return p || null; }
-    function getOtherSenderName(msg) { if (msg.sender_type === 'owner') return state.isOwner ? 'You' : personName(state.supportProfile, null, 'Support'); if (!state.isOwner) return 'You'; const p = state.activeChatProfile; return personName(p, null, 'Customer'); }
+    function getOtherSenderName(msg) { if (msg.sender_type === 'owner') return state.isOwner ? 'Siz' : personName(state.supportProfile, null, 'Yordam'); if (!state.isOwner) return 'Siz'; const p = state.activeChatProfile; return personName(p, null, 'Mijoz'); }
     function messageText(msg) { return typeof msg.content === 'string' ? msg.content : ''; }
-    function messagePreview(msg) { if (!msg) return 'No messages yet'; if (msg.content) return msg.content; if (msg.file_name) return msg.file_name; return 'Attachment'; }
-    function fmtTime(value) { const d = new Date(value); if (Number.isNaN(d.getTime())) return ''; return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
-    function fmtDate(value) { const d = new Date(value), now = new Date(); if (Number.isNaN(d.getTime())) return ''; if (d.toDateString() === now.toDateString()) return 'Today'; const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1); if (d.toDateString() === yesterday.toDateString()) return 'Yesterday'; return d.toLocaleDateString([], { month: 'short', day: 'numeric', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric' }); }
+    function messagePreview(msg) { if (!msg) return 'Hozircha xabar yo‘q'; if (msg.content) return msg.content; if (msg.file_name) return msg.file_name; return 'Biriktirilgan fayl'; }
+    function fmtTime(value) { const d = new Date(value); if (Number.isNaN(d.getTime())) return ''; return d.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }); }
+    function fmtDate(value) { const d = new Date(value), now = new Date(); if (Number.isNaN(d.getTime())) return ''; if (d.toDateString() === now.toDateString()) return 'Bugun'; const yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1); if (d.toDateString() === yesterday.toDateString()) return 'Kecha'; return d.toLocaleDateString('uz-UZ', { month: 'short', day: 'numeric', year: d.getFullYear() === now.getFullYear() ? undefined : 'numeric' }); }
     function sameDate(a, b) { return new Date(a).toDateString() === new Date(b).toDateString(); }
     function scrollBottom(smooth = true) { const list = $('message-list'); list.scrollTo({ top: list.scrollHeight, behavior: smooth ? 'smooth' : 'auto' }); }
     function findMessageRow(id) { return [...document.querySelectorAll('.msg-row')].find(row => row.dataset.messageId === String(id)) || null; }
-    function scrollToMessage(id) { const row = findMessageRow(id); if (!row) { showToast('Original message is not available'); return; } row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('highlighted'); setTimeout(() => row.classList.remove('highlighted'), 1100); }
+    function scrollToMessage(id) { const row = findMessageRow(id); if (!row) { showToast('Asl xabar topilmadi.'); return; } row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('highlighted'); setTimeout(() => row.classList.remove('highlighted'), 1100); }
 
     function buildReplyReference(msg) {
       if (!msg.reply_to_message_id) return null;
       const orig = state.messages.find(m => m.id === msg.reply_to_message_id) || msg.reply_to || null;
       const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'reply-ref'; btn.dataset.replyId = msg.reply_to_message_id;
-      const who = document.createElement('div'); who.className = 'reply-ref-sender'; who.textContent = orig ? getOtherSenderName(orig) : (state.isOwner ? 'Customer' : 'Support');
-      const preview = document.createElement('div'); preview.className = 'reply-ref-text'; preview.textContent = orig ? messagePreview(orig) : 'Message unavailable'; btn.append(who, preview); btn.addEventListener('click', e => { e.stopPropagation(); scrollToMessage(btn.dataset.replyId); }); return btn;
+      const who = document.createElement('div'); who.className = 'reply-ref-sender'; who.textContent = orig ? getOtherSenderName(orig) : (state.isOwner ? 'Mijoz' : 'Yordam');
+      const preview = document.createElement('div'); preview.className = 'reply-ref-text'; preview.textContent = orig ? messagePreview(orig) : 'Xabar mavjud emas'; btn.append(who, preview); btn.addEventListener('click', e => { e.stopPropagation(); scrollToMessage(btn.dataset.replyId); }); return btn;
     }
+    function prettyFileType(type, name = '') { const t = String(type || '').toLowerCase(), n = String(name || '').toLowerCase(); if (t === 'application/pdf' || n.endsWith('.pdf')) return 'PDF hujjati'; if (t.includes('word') || /\.docx?$/.test(n)) return 'Word hujjati'; if (t.includes('spreadsheet') || /\.xlsx?$/.test(n)) return 'Excel jadvali'; if (t.includes('presentation') || /\.pptx?$/.test(n)) return 'Taqdimot'; if (t.startsWith('image/')) return 'Rasm'; if (t.startsWith('video/')) return 'Video'; if (t.startsWith('audio/')) return 'Audio fayl'; if (t === 'text/plain' || /\.txt$/.test(n)) return 'Matnli fayl'; if (t.includes('zip') || /\.(zip|rar|7z)$/.test(n)) return 'Arxiv fayli'; return 'Fayl'; }
     function makeFileCard(msg) {
       const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'file-attach'; btn.dataset.filePath = String(msg.file_url || '');
       const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); icon.setAttribute('width', '23'); icon.setAttribute('height', '23'); icon.setAttribute('viewBox', '0 0 24 24'); icon.setAttribute('fill', 'none'); icon.setAttribute('stroke', 'currentColor'); icon.setAttribute('stroke-width', '1.8'); icon.setAttribute('stroke-linecap', 'round'); icon.setAttribute('stroke-linejoin', 'round'); icon.innerHTML = '<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/>';
-      const info = document.createElement('div'); info.className = 'file-attach-info'; const name = document.createElement('div'); name.className = 'file-attach-name'; name.textContent = msg.file_name || 'Attachment'; const type = document.createElement('div'); type.className = 'file-attach-size'; type.textContent = msg.file_type || 'File'; info.append(name, type); btn.append(icon, info); btn.addEventListener('click', async () => { btn.disabled = true; try { const url = await signedFileUrl(btn.dataset.filePath); if (url) window.open(url, '_blank', 'noopener,noreferrer'); else showToast('File is unavailable'); } catch (e) { showToast(e.message || 'Unable to open file'); playError(); } finally { btn.disabled = false; } }); return btn;
+      const info = document.createElement('div'); info.className = 'file-attach-info'; const name = document.createElement('div'); name.className = 'file-attach-name'; name.textContent = msg.file_name || 'Biriktirilgan fayl'; const type = document.createElement('div'); type.className = 'file-attach-size'; type.textContent = prettyFileType(msg.file_type, msg.file_name); info.append(name, type); btn.append(icon, info); btn.addEventListener('click', async () => { btn.disabled = true; try { const url = await signedFileUrl(btn.dataset.filePath); if (url) window.open(url, '_blank', 'noopener,noreferrer'); else showToast('Fayl mavjud emas.'); } catch (e) { showToast(uiError(e.message) || 'Faylni ochib bo‘lmadi.'); playError(); } finally { btn.disabled = false; } }); return btn;
     }
     function makeImageMessage(msg) {
-      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'photo-message'; btn.setAttribute('aria-label', `View image: ${msg.file_name || 'Photo'}`); btn.title = 'View photo';
-      const img = document.createElement('img'); img.alt = msg.file_name || 'Photo'; img.loading = 'lazy'; img.decoding = 'async'; img.draggable = false;
-      const status = document.createElement('span'); status.className = 'photo-message-status'; status.textContent = 'Loading photo…'; btn.append(img, status);
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'photo-message'; btn.setAttribute('aria-label', `Rasmni ko‘rish: ${msg.file_name || 'Rasm'}`); btn.title = 'Rasmni ko‘rish';
+      const img = document.createElement('img'); img.alt = msg.file_name || 'Rasm'; img.loading = 'lazy'; img.decoding = 'async'; img.draggable = false;
+      const status = document.createElement('span'); status.className = 'photo-message-status'; status.textContent = 'Rasm yuklanmoqda…'; btn.append(img, status);
       const path = String(msg.file_url || '');
       signedFileUrl(path).then(url => {
         if (!btn.isConnected) return;
-        if (!url) throw new Error('Photo unavailable');
+        if (!url) throw new Error('Rasm mavjud emas');
         img.src = url;
-      }).catch(() => { if (!btn.isConnected) return; btn.classList.add('is-error'); status.textContent = 'Photo unavailable — tap to retry'; });
+      }).catch(() => { if (!btn.isConnected) return; btn.classList.add('is-error'); status.textContent = 'Rasm ochilmadi — qayta urinish uchun bosing'; });
       img.addEventListener('load', () => { btn.classList.remove('is-error'); btn.classList.add('is-loaded'); status.textContent = ''; }, { once: true });
-      img.addEventListener('error', () => { btn.classList.remove('is-loaded'); btn.classList.add('is-error'); status.textContent = 'Photo unavailable — tap to retry'; });
-      btn.addEventListener('click', () => { if (btn.classList.contains('is-error')) { btn.classList.remove('is-error'); status.textContent = 'Loading photo…'; signedFileUrl(path).then(url => { if (url) img.src = url; else throw new Error('Photo unavailable'); }).catch(() => { btn.classList.add('is-error'); status.textContent = 'Photo unavailable — tap to retry'; }); return; } openImageViewer(msg); });
+      img.addEventListener('error', () => { btn.classList.remove('is-loaded'); btn.classList.add('is-error'); status.textContent = 'Rasm ochilmadi — qayta urinish uchun bosing'; });
+      btn.addEventListener('click', () => { if (btn.classList.contains('is-error')) { btn.classList.remove('is-error'); status.textContent = 'Rasm yuklanmoqda…'; signedFileUrl(path).then(url => { if (url) img.src = url; else throw new Error('Rasm mavjud emas'); }).catch(() => { btn.classList.add('is-error'); status.textContent = 'Rasm ochilmadi — qayta urinish uchun bosing'; }); return; } openImageViewer(msg); });
       return btn;
     }
     function normalizeMessageLink(raw) {
@@ -3536,15 +3601,15 @@
       if (!opened) { try { window.location.href = href; } catch { } }
     }
     function makeMessageAnchor(href, label) {
-      const a = document.createElement('a'); a.className = 'message-link'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label; a.setAttribute('aria-label', `Open link: ${label}`);
+      const a = document.createElement('a'); a.className = 'message-link'; a.href = href; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label; a.setAttribute('aria-label', `Havolani ochish: ${label}`);
       a.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); openMessageLink(href); });
       return a;
     }
     function createSocialVideoEmbed(media) {
       const wrap = document.createElement('div'); wrap.className = `social-embed ${media.provider}${media.isShort ? ' is-short' : ''}`;
-      const preview = document.createElement('button'); preview.type = 'button'; preview.className = 'social-preview-button'; preview.setAttribute('aria-label', media.provider === 'youtube' ? 'Watch YouTube video in chat' : 'Watch Instagram video in chat');
+      const preview = document.createElement('button'); preview.type = 'button'; preview.className = 'social-preview-button'; preview.setAttribute('aria-label', media.provider === 'youtube' ? 'YouTube videosini chat ichida ko‘rish' : 'Instagram videosini chat ichida ko‘rish');
       if (media.provider === 'youtube') {
-        const img = document.createElement('img'); img.className = 'social-preview-thumb'; img.loading = 'lazy'; img.decoding = 'async'; img.alt = 'YouTube video preview'; img.referrerPolicy = 'no-referrer'; img.src = `https://i.ytimg.com/vi/${encodeURIComponent(media.id)}/hqdefault.jpg`; img.addEventListener('error', () => { img.style.display = 'none'; }, { once: true }); preview.appendChild(img);
+        const img = document.createElement('img'); img.className = 'social-preview-thumb'; img.loading = 'lazy'; img.decoding = 'async'; img.alt = 'YouTube videosi oldindan ko‘rinishi'; img.referrerPolicy = 'no-referrer'; img.src = `https://i.ytimg.com/vi/${encodeURIComponent(media.id)}/hqdefault.jpg`; img.addEventListener('error', () => { img.style.display = 'none'; }, { once: true }); preview.appendChild(img);
       } else {
         const poster = document.createElement('div'); poster.className = 'social-preview-thumb instagram-poster'; poster.setAttribute('aria-hidden', 'true'); poster.style.display = 'grid'; poster.style.placeItems = 'center'; poster.style.background = 'radial-gradient(circle at 25% 110%,#feda75 0 12%,#fa7e1e 25%,#d62976 52%,#962fbf 72%,#4f5bd5 100%)';
         const logo = document.createElement('span'); logo.textContent = '◎'; logo.style.cssText = 'font-size:76px;line-height:1;color:white;text-shadow:0 4px 22px rgba(0,0,0,.18)'; poster.appendChild(logo); preview.appendChild(poster);
@@ -3553,11 +3618,11 @@
       const caption = document.createElement('span'); caption.className = 'social-preview-caption';
       if (media.provider === 'instagram') { const icon = document.createElement('span'); icon.className = 'social-provider-icon'; icon.textContent = '◎'; caption.appendChild(icon); }
       else { const icon = document.createElement('span'); icon.className = 'social-provider-icon'; icon.style.background = '#ff0033'; icon.textContent = '▶'; caption.appendChild(icon); }
-      const info = document.createElement('span'); info.className = 'social-preview-meta'; const title = document.createElement('span'); title.className = 'social-preview-title'; title.textContent = media.provider === 'youtube' ? 'YouTube video' : (media.kind === 'reel' ? 'Instagram Reel' : 'Instagram video/post'); const sub = document.createElement('span'); sub.className = 'social-preview-subtitle'; sub.textContent = 'Tap to play inside the chat'; info.append(title, sub); caption.appendChild(info); preview.appendChild(caption);
+      const info = document.createElement('span'); info.className = 'social-preview-meta'; const title = document.createElement('span'); title.className = 'social-preview-title'; title.textContent = media.provider === 'youtube' ? 'YouTube videosi' : (media.kind === 'reel' ? 'Instagram Reels videosi' : 'Instagram videosi yoki posti'); const sub = document.createElement('span'); sub.className = 'social-preview-subtitle'; sub.textContent = 'Chat ichida ko‘rish uchun bosing'; info.append(title, sub); caption.appendChild(info); preview.appendChild(caption);
       preview.addEventListener('click', () => {
         if (wrap.dataset.loaded === 'true') return; wrap.dataset.loaded = 'true';
-        const frame = document.createElement('iframe'); frame.className = 'social-embed-frame'; frame.src = media.embed; frame.title = media.provider === 'youtube' ? 'YouTube video player' : 'Instagram media player'; frame.loading = 'lazy'; frame.referrerPolicy = 'strict-origin-when-cross-origin'; frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; frame.setAttribute('allowfullscreen', ''); frame.setAttribute('allowtransparency', 'true'); frame.setAttribute('frameborder', '0');
-        const footer = document.createElement('div'); footer.className = 'social-embed-footer'; const label = document.createElement('span'); label.textContent = media.provider === 'youtube' ? 'YouTube' : 'Instagram'; const link = makeMessageAnchor(media.href, media.provider === 'youtube' ? 'Open on YouTube' : 'Open on Instagram'); link.className = 'social-open-link'; link.setAttribute('aria-label', media.provider === 'youtube' ? 'Open video on YouTube' : 'Open post on Instagram'); footer.append(label, link); wrap.replaceChildren(frame, footer);
+        const frame = document.createElement('iframe'); frame.className = 'social-embed-frame'; frame.src = media.embed; frame.title = media.provider === 'youtube' ? 'YouTube video pleyeri' : 'Instagram media pleyeri'; frame.loading = 'lazy'; frame.referrerPolicy = 'strict-origin-when-cross-origin'; frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; frame.setAttribute('allowfullscreen', ''); frame.setAttribute('allowtransparency', 'true'); frame.setAttribute('frameborder', '0');
+        const footer = document.createElement('div'); footer.className = 'social-embed-footer'; const label = document.createElement('span'); label.textContent = media.provider === 'youtube' ? 'YouTube' : 'Instagram'; const link = makeMessageAnchor(media.href, media.provider === 'youtube' ? 'YouTube’da ochish' : 'Instagram’da ochish'); link.className = 'social-open-link'; link.setAttribute('aria-label', media.provider === 'youtube' ? 'Videoni YouTube’da ochish' : 'Postni Instagram’da ochish'); footer.append(label, link); wrap.replaceChildren(frame, footer);
       });
       wrap.appendChild(preview); return wrap;
     }
@@ -3593,21 +3658,21 @@
       if (messageText(msg)) { const text = document.createElement('div'); text.className = 'bubble-text'; renderRichMessageText(text, messageText(msg)); bubble.appendChild(text); }
       if (msg.file_url && !imageMessage) bubble.appendChild(makeFileCard(msg));
       const meta = document.createElement('div'); meta.className = 'bubble-meta'; const time = document.createElement('span'); time.textContent = fmtTime(msg.created_at); meta.appendChild(time);
-      if (msg.edited_at) { const edited = document.createElement('span'); edited.className = 'edited-mark'; edited.textContent = 'edited'; meta.appendChild(edited); }
-      if (msg._sending) { const sending = document.createElement('span'); sending.textContent = 'Sending'; meta.appendChild(sending); } else if (msg._failed) { const fail = document.createElement('span'); fail.style.color = 'var(--danger)'; fail.textContent = 'Failed'; meta.appendChild(fail); }
+      if (msg.edited_at) { const tahrirlangan = document.createElement('span'); tahrirlangan.className = 'edited-mark'; tahrirlangan.textContent = 'tahrirlangan'; meta.appendChild(tahrirlangan); }
+      if (msg._sending) { const sending = document.createElement('span'); sending.textContent = 'Yuborilmoqda'; meta.appendChild(sending); } else if (msg._failed) { const fail = document.createElement('span'); fail.style.color = 'var(--danger)'; fail.textContent = 'Yuborilmadi'; meta.appendChild(fail); }
       bubble.appendChild(meta); return bubble;
     }
     function openImageViewer(msg) {
-      state.viewerMessage = msg; $('image-viewer-title').textContent = msg.file_name || 'Photo'; $('image-viewer-caption').textContent = messageText(msg); $('image-viewer-status').textContent = 'Loading photo…'; $('image-viewer-status').classList.remove('hidden'); $('viewer-image').classList.add('hidden'); $('viewer-image').classList.remove('zoomed'); $('viewer-image').removeAttribute('src'); $('image-viewer').classList.remove('hidden');
-      signedFileUrl(msg.file_url).then(url => { if (state.viewerMessage?.id !== msg.id) return; if (!url) throw new Error('Photo unavailable'); state.viewerUrl = url; $('viewer-image').src = url; }).catch(e => { if (state.viewerMessage?.id === msg.id) { $('image-viewer-status').textContent = e.message || 'Unable to load photo'; playError(); } });
+      state.viewerMessage = msg; $('image-viewer-title').textContent = msg.file_name || 'Rasm'; $('image-viewer-caption').textContent = messageText(msg); $('image-viewer-status').textContent = 'Rasm yuklanmoqda…'; $('image-viewer-status').classList.remove('hidden'); $('viewer-image').classList.add('hidden'); $('viewer-image').classList.remove('zoomed'); $('viewer-image').removeAttribute('src'); $('image-viewer').classList.remove('hidden');
+      signedFileUrl(msg.file_url).then(url => { if (state.viewerMessage?.id !== msg.id) return; if (!url) throw new Error('Rasm mavjud emas'); state.viewerUrl = url; $('viewer-image').src = url; }).catch(e => { if (state.viewerMessage?.id === msg.id) { $('image-viewer-status').textContent = uiError(e.message) || 'Rasmni yuklab bo‘lmadi.'; playError(); } });
     }
     function closeImageViewer() { $('image-viewer').classList.add('hidden'); $('viewer-image').removeAttribute('src'); $('viewer-image').classList.remove('zoomed'); state.viewerMessage = null; state.viewerUrl = null; }
     $('image-viewer-close').addEventListener('click', closeImageViewer);
     $('image-viewer').addEventListener('click', e => { if (e.target === $('image-viewer') || e.target === $('image-viewer-stage')) closeImageViewer(); });
     $('viewer-image').addEventListener('load', () => { $('image-viewer-status').classList.add('hidden'); $('viewer-image').classList.remove('hidden'); });
-    $('viewer-image').addEventListener('error', () => { $('image-viewer-status').classList.remove('hidden'); $('image-viewer-status').textContent = 'Unable to load photo'; $('viewer-image').classList.add('hidden'); });
+    $('viewer-image').addEventListener('error', () => { $('image-viewer-status').classList.remove('hidden'); $('image-viewer-status').textContent = 'Rasmni yuklab bo‘lmadi.'; $('viewer-image').classList.add('hidden'); });
     $('viewer-image').addEventListener('dblclick', () => { $('viewer-image').classList.toggle('zoomed'); });
-    $('image-viewer-open-original').addEventListener('click', async () => { try { const msg = state.viewerMessage; if (!msg) return; const url = state.viewerUrl || await signedFileUrl(msg.file_url); if (url) window.open(url, '_blank', 'noopener,noreferrer'); else showToast('Original image is unavailable'); } catch (e) { showToast(e.message || 'Unable to open original image'); playError(); } });
+    $('image-viewer-open-original').addEventListener('click', async () => { try { const msg = state.viewerMessage; if (!msg) return; const url = state.viewerUrl || await signedFileUrl(msg.file_url); if (url) window.open(url, '_blank', 'noopener,noreferrer'); else showToast('Asl rasm mavjud emas.'); } catch (e) { showToast(uiError(e.message) || 'Asl rasmni ochib bo‘lmadi.'); playError(); } });
 
     function makeMessageRow(msg) {
       const outgoing = state.isOwner ? msg.sender_type === 'owner' : msg.sender_type === 'customer';
@@ -3625,7 +3690,7 @@
       for (const id of [...state.selectedMessageIds]) if (!persistedIds.has(id)) state.selectedMessageIds.delete(id);
       const oldBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90; const previousTop = list.scrollTop; const frag = document.createDocumentFragment(); let lastDate = null;
       for (const msg of messages) { if (!lastDate || !sameDate(lastDate, msg.created_at)) { const divider = document.createElement('div'); divider.className = 'date-divider'; const span = document.createElement('span'); span.textContent = fmtDate(msg.created_at); divider.appendChild(span); frag.appendChild(divider); lastDate = msg.created_at; } frag.appendChild(makeMessageRow(msg)); }
-      if (!messages.length) { const empty = document.createElement('div'); empty.className = 'message-empty-state'; const strong = document.createElement('strong'); strong.textContent = 'No messages yet'; const hint = document.createElement('span'); hint.textContent = 'Messages sent here will appear in this conversation.'; empty.append(strong, hint); frag.appendChild(empty); }
+      if (!messages.length) { const empty = document.createElement('div'); empty.className = 'message-empty-state'; const strong = document.createElement('strong'); strong.textContent = 'Hozircha xabar yo‘q'; const hint = document.createElement('span'); hint.textContent = 'Bu yerga yuborilgan xabarlar shu suhbatda ko‘rinadi.'; empty.append(strong, hint); frag.appendChild(empty); }
       list.replaceChildren(frag); list.classList.toggle('selection-mode', state.messageSelectMode); if (state.messageSelectMode) updateSelectionToolbar();
       if (oldBottom || messages.length < 2) scrollBottom(false); else if (keepPosition) list.scrollTop = previousTop;
     }
@@ -3657,7 +3722,7 @@
     }
     function closeContextMenu() { ctxMenu.classList.remove('open'); if (ctxMsg) { const row = findMessageRow(ctxMsg.id); if (row) row.querySelector('.bubble').style.filter = ''; } ctxMsg = null; }
     document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) closeContextMenu(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContextMenu(); if (!$('image-viewer').classList.contains('hidden')) { closeImageViewer(); return; } if (!$('attachment-preview-overlay').classList.contains('hidden')) { closeAttachmentPreview(); return; } if ($('profile-panel').classList.contains('open')) closeProfile(); if ($('settings-panel').classList.contains('open')) closeSettings(); } });
-    $('ctx-copy').addEventListener('click', async () => { const msg = ctxMsg; closeContextMenu(); if (!msg) return; const text = messageText(msg) || msg.file_name || ''; if (!text) { showToast('Nothing to copy'); return; } unlockAudio(); try { if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text); else throw new Error('Clipboard unavailable'); showToast('Copied'); } catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch { } ta.remove(); showToast(ok ? 'Copied' : 'Copy is unavailable in this browser'); } });
+    $('ctx-copy').addEventListener('click', async () => { const msg = ctxMsg; closeContextMenu(); if (!msg) return; const text = messageText(msg) || msg.file_name || ''; if (!text) { showToast('Nusxalash uchun matn yo‘q.'); return; } unlockAudio(); try { if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text); else throw new Error('Clipboard unavailable'); showToast('Nusxalandi'); } catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch { } ta.remove(); showToast(ok ? 'Nusxalandi' : 'Bu brauzerda nusxalash imkoni yo‘q.'); } });
     $('ctx-reply').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startReply(m); }); $('ctx-select').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); setMessageSelectMode(true, true); if (m) toggleSelectedMessage(String(m.id)); }); $('ctx-edit').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startEdit(m); }); $('ctx-delete').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) confirmDelete(m); });
 
 
@@ -3665,11 +3730,11 @@
     function updateSelectionToolbar() {
       const ids = state.messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id));
       const count = state.selectedMessageIds.size;
-      $('selection-count').textContent = `${count} selected`;
+      $('selection-count').textContent = `${count} ta tanlandi`;
       $('selection-delete-btn').disabled = count === 0 || state.isDeletingMessages;
       const allSelected = ids.length > 0 && ids.every(id => state.selectedMessageIds.has(id));
-      $('selection-select-all-btn').setAttribute('aria-label', allSelected ? 'Deselect all messages' : 'Select all messages');
-      $('selection-select-all-btn').title = allSelected ? 'Deselect all' : 'Select all';
+      $('selection-select-all-btn').setAttribute('aria-label', allSelected ? 'Barcha xabarlar tanlovini bekor qilish' : 'Barcha xabarlarni tanlash');
+      $('selection-select-all-btn').title = allSelected ? 'Tanlovni bekor qilish' : 'Barchasini tanlash';
     }
     function setMessageSelectMode(enabled, rerender = true) {
       state.messageSelectMode = Boolean(enabled);
@@ -3692,49 +3757,37 @@
     }
     function confirmDestructiveAction(title, description, confirmLabel, onConfirm) {
       const overlay = document.createElement('div'); overlay.className = 'overlay';
-      overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><div class="sheet-title"></div><p class="sheet-description"></p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="confirm"></button><button class="sheet-btn" type="button" data-action="cancel">Cancel</button></div></div>';
+      overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><div class="sheet-title"></div><p class="sheet-description"></p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="confirm"></button><button class="sheet-btn" type="button" data-action="cancel">Bekor qilish</button></div></div>';
       overlay.querySelector('.sheet-title').textContent = title; overlay.querySelector('.sheet-description').textContent = description; const confirmBtn = overlay.querySelector('[data-action="confirm"]'); confirmBtn.textContent = confirmLabel;
       let busy = false;
       const dismiss = () => { if (!busy) overlay.remove(); };
       overlay.addEventListener('click', e => { if (e.target === overlay || e.target.closest('[data-action="cancel"]')) dismiss(); });
-      confirmBtn.addEventListener('click', async () => { if (busy) return; busy = true; confirmBtn.disabled = true; confirmBtn.textContent = 'Working…'; try { await onConfirm(confirmBtn, overlay); } catch (e) { busy = false; confirmBtn.disabled = false; confirmBtn.textContent = confirmLabel; showToast(e?.message || 'Action failed'); playError(); } });
+      confirmBtn.addEventListener('click', async () => { if (busy) return; busy = true; confirmBtn.disabled = true; confirmBtn.textContent = 'Bajarilmoqda…'; try { await onConfirm(confirmBtn, overlay); } catch (e) { busy = false; confirmBtn.disabled = false; confirmBtn.textContent = confirmLabel; showToast(uiError(e?.message) || 'Amal bajarilmadi.'); playError(); } });
       document.body.appendChild(overlay); confirmBtn.focus(); return overlay;
     }
     function confirmDeleteSelectedMessages() {
       const ids = [...state.selectedMessageIds].filter(id => state.messages.some(m => String(m.id) === id));
-      if (!ids.length) { showToast('Select at least one message'); return; }
+      if (!ids.length) { showToast('Kamida bitta xabarni tanlang.'); return; }
       const chatId = state.activeChatId; if (!chatId) return;
-      confirmDestructiveAction(`Delete ${ids.length} selected message${ids.length === 1 ? '' : 's'}?`, 'Selected messages will be permanently removed from this chat for both participants. This cannot be undone.', 'Delete selected', async (btn, overlay) => {
+      confirmDestructiveAction(`${ids.length} ta tanlangan xabar o‘chirilsinmi?`, 'Tanlangan xabarlar siz va suhbatdoshingiz uchun suhbatdan butunlay o‘chiriladi. Bu amalni ortga qaytarib bo‘lmaydi.', 'Tanlanganlarni o‘chirish', async (btn, overlay) => {
         state.isDeletingMessages = true; updateSelectionToolbar(); let deletedCount = 0;
         try {
           for (let i = 0; i < ids.length; i += 500) {
-            if (state.activeChatId !== chatId) throw new Error('The active conversation changed. Reopen the chat to continue.');
-            const result = await callAPI({ action: 'delete_messages', chat_id: chatId, message_ids: ids.slice(i, i + 500) });
-            deletedCount += Number(result.deleted_count) || 0;
+            if (state.activeChatId !== chatId) throw new Error('Faol suhbat o‘zgardi. Davom etish uchun suhbatni qayta oching.');
+            const result = await callAPI({ action: 'delete_messages', chat_id: chatId, message_ids: ids.slice(i, i + 500) }); deletedCount += Number(result.deleted_count) || 0;
           }
           const removedSet = new Set(ids); for (const m of state.messages) if (removedSet.has(String(m.id)) && m.file_url) state.signedUrlCache.delete(m.file_url);
-          state.messages = state.messages.filter(m => !removedSet.has(String(m.id))); state.renderedMessageSignature = messageSignature(state.messages);
-          state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages(state.messages, false); overlay.remove();
-          showToast(`${deletedCount} message${deletedCount === 1 ? '' : 's'} deleted for both participants`); if (state.isOwner) void refreshOwnerList(false);
-        } catch (error) {
-          state.isDeletingMessages = false; setMessageSelectMode(false, false); overlay.remove();
-          try { if (state.activeChatId === chatId) await loadMessages(chatId); } catch { }
-          if (deletedCount) showToast(`${deletedCount} deleted; some messages could not be removed`); else throw error;
-        }
+          state.messages = state.messages.filter(m => !removedSet.has(String(m.id))); state.renderedMessageSignature = messageSignature(state.messages); state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages(state.messages, false); overlay.remove();
+          showToast(`${deletedCount} ta xabar siz va suhbatdoshingiz uchun o‘chirildi.`); if (state.isOwner) void refreshOwnerList(false);
+        } catch (error) { state.isDeletingMessages = false; setMessageSelectMode(false, false); overlay.remove(); try { if (state.activeChatId === chatId) await loadMessages(chatId); } catch { } if (deletedCount) showToast(`${deletedCount} ta xabar o‘chirildi, lekin ayrimlarini o‘chirib bo‘lmadi.`); else throw error; }
       });
     }
     function confirmClearChatHistory() {
-      const chatId = state.activeChatId; if (!chatId) return;
-      $('chat-actions-menu').classList.add('hidden');
-      confirmDestructiveAction('Clear chat history?', 'Every message in this conversation will be permanently removed for both you and the other participant. Profiles and the conversation itself will remain. This cannot be undone.', 'Clear history', async (btn, overlay) => {
-        state.isDeletingMessages = true; btn.textContent = 'Clearing…';
-        try {
-          const result = await callAPI({ action: 'clear_chat_history', chat_id: chatId });
-          if (state.activeChatId !== chatId) { overlay.remove(); return; }
-          for (const m of state.messages) if (m.file_url) state.signedUrlCache.delete(m.file_url);
-          state.messages = []; state.renderedMessageSignature = ''; state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages([], false); overlay.remove();
-          showToast(`Chat history cleared (${Number(result.deleted_count) || 0} messages)`); if (state.isOwner) void refreshOwnerList(false);
-        } catch (error) { state.isDeletingMessages = false; overlay.remove(); showToast(error?.message || 'Could not clear chat history'); playError(); }
+      const chatId = state.activeChatId; if (!chatId) return; $('chat-actions-menu').classList.add('hidden');
+      confirmDestructiveAction('Suhbat tarixi tozalansinmi?', 'Bu suhbatdagi barcha xabarlar siz va suhbatdoshingiz uchun butunlay o‘chiriladi. Profil va suhbatning o‘zi saqlanib qoladi. Bu amalni ortga qaytarib bo‘lmaydi.', 'Tarixni tozalash', async (btn, overlay) => {
+        state.isDeletingMessages = true; btn.textContent = 'Tozalanmoqda…';
+        try { const result = await callAPI({ action: 'clear_chat_history', chat_id: chatId }); if (state.activeChatId !== chatId) { overlay.remove(); return; } for (const m of state.messages) if (m.file_url) state.signedUrlCache.delete(m.file_url); state.messages = []; state.renderedMessageSignature = ''; state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages([], false); overlay.remove(); showToast(`Suhbat tarixi tozalandi (${Number(result.deleted_count) || 0} ta xabar).`); if (state.isOwner) void refreshOwnerList(false); }
+        catch (error) { state.isDeletingMessages = false; overlay.remove(); showToast(uiError(error?.message) || 'Suhbat tarixini tozalab bo‘lmadi.'); playError(); }
       });
     }
     $('chat-more-btn').addEventListener('click', e => { e.stopPropagation(); $('chat-actions-menu').classList.toggle('hidden'); });
@@ -3742,13 +3795,7 @@
     $('chat-select-messages-btn').addEventListener('click', () => setMessageSelectMode(true, true));
     $('chat-clear-history-btn').addEventListener('click', confirmClearChatHistory);
     $('selection-cancel-btn').addEventListener('click', () => setMessageSelectMode(false, true));
-    $('selection-select-all-btn').addEventListener('click', () => {
-      if (!state.messageSelectMode) return;
-      const ids = state.messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id));
-      const allSelected = ids.length > 0 && ids.every(id => state.selectedMessageIds.has(id));
-      state.selectedMessageIds.clear(); if (!allSelected) for (const id of ids) state.selectedMessageIds.add(id);
-      renderMessages(state.messages, true);
-    });
+    $('selection-select-all-btn').addEventListener('click', () => { if (!state.messageSelectMode) return; const ids = state.messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id)); const allSelected = ids.length > 0 && ids.every(id => state.selectedMessageIds.has(id)); state.selectedMessageIds.clear(); if (!allSelected) for (const id of ids) state.selectedMessageIds.add(id); renderMessages(state.messages, true); });
     $('selection-delete-btn').addEventListener('click', confirmDeleteSelectedMessages);
 
     function startReply(msg) { if (!state.activeChatId) return; state.replyTo = msg; state.editMsg = null; $('edit-bar').classList.remove('visible'); $('reply-bar').classList.add('visible'); $('reply-sender-label').textContent = getOtherSenderName(msg); $('reply-preview-text').textContent = messagePreview(msg).slice(0, 100); $('composer-input').focus({ preventScroll: true }); }
@@ -3758,10 +3805,7 @@
     function cancelEdit() { state.editMsg = null; $('edit-bar').classList.remove('visible'); $('composer-input').textContent = ''; updateSendButton(); }
     $('cancel-edit-btn').addEventListener('click', cancelEdit);
 
-    function confirmDelete(msg) {
-      const overlay = document.createElement('div'); overlay.className = 'overlay'; overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div class="sheet-title" id="delete-title">Delete message?</div><p class="sheet-description">This message will be permanently removed from this conversation.</p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="delete">Delete message</button><button class="sheet-btn" type="button" data-action="cancel">Cancel</button></div></div>';
-      overlay.addEventListener('click', e => { if (e.target === overlay || e.target.closest('[data-action="cancel"]')) overlay.remove(); }); overlay.querySelector('[data-action="delete"]').addEventListener('click', async () => { const btn = overlay.querySelector('[data-action="delete"]'); btn.disabled = true; btn.textContent = 'Deleting…'; try { await callAPI({ action: 'delete_message', message_id: msg.id }); state.messages = state.messages.filter(m => m.id !== msg.id); renderMessages(state.messages, true); overlay.remove(); showToast('Message deleted'); } catch (e) { btn.disabled = false; btn.textContent = 'Delete message'; showToast(e.message || 'Delete failed'); playError(); } }); document.body.appendChild(overlay); overlay.querySelector('[data-action="delete"]').focus();
-    }
+    function confirmDelete(msg) { const overlay = document.createElement('div'); overlay.className = 'overlay'; overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div class="sheet-title" id="delete-title">Xabar o‘chirilsinmi?</div><p class="sheet-description">Bu xabar suhbatdan butunlay o‘chiriladi.</p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="delete">Xabarni o‘chirish</button><button class="sheet-btn" type="button" data-action="cancel">Bekor qilish</button></div></div>'; overlay.addEventListener('click', e => { if (e.target === overlay || e.target.closest('[data-action="cancel"]')) overlay.remove(); }); overlay.querySelector('[data-action="delete"]').addEventListener('click', async () => { const btn = overlay.querySelector('[data-action="delete"]'); btn.disabled = true; btn.textContent = 'O‘chirilmoqda…'; try { await callAPI({ action: 'delete_message', message_id: msg.id }); state.messages = state.messages.filter(m => m.id !== msg.id); renderMessages(state.messages, true); overlay.remove(); showToast('Xabar o‘chirildi.'); } catch (e) { btn.disabled = false; btn.textContent = 'Xabarni o‘chirish'; showToast(uiError(e.message) || 'Xabarni o‘chirib bo‘lmadi.'); playError(); } }); document.body.appendChild(overlay); overlay.querySelector('[data-action="delete"]').focus(); }
 
     const composer = $('composer-input'); function composerText() { return (composer.innerText || composer.textContent || '').replace(/\r/g, '').replace(/\u00a0/g, ' ').trim(); }
     function updateSendButton() { const hasText = !!composerText(); $('send-btn').disabled = !state.activeChatId || (!hasText && !state.editMsg) || state.isSending || state.isUploading; }
@@ -3769,12 +3813,12 @@
     composer.addEventListener('paste', e => { e.preventDefault(); const text = (e.clipboardData || window.clipboardData).getData('text/plain'); document.execCommand('insertText', false, text); });
     $('send-btn').addEventListener('click', doSend);
     async function doSend() {
-      if (state.isSending || state.isUploading || !state.activeChatId) return; unlockAudio(); const content = composerText(); const editId = state.editMsg?.id || null; const replyId = state.replyTo?.id || null; if (editId && !content) { showToast('Message cannot be empty'); return; } if (!editId && !content) return; if (content.length > 4000) { showToast('Messages can contain up to 4,000 characters'); return; }
+      if (state.isSending || state.isUploading || !state.activeChatId) return; unlockAudio(); const content = composerText(); const editId = state.editMsg?.id || null; const replyId = state.replyTo?.id || null; if (editId && !content) { showToast('Xabar matni bo‘sh bo‘lmasligi kerak.'); return; } if (!editId && !content) return; if (content.length > 4000) { showToast('Xabar 4 000 belgidan oshmasligi kerak.'); return; }
       state.isSending = true; updateSendButton(); const previousEdit = state.editMsg;
       try {
-        if (editId) { const result = await callAPI({ action: 'edit_message', message_id: editId, content }); const idx = state.messages.findIndex(m => m.id === editId); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.editMsg = null; $('edit-bar').classList.remove('visible'); composer.textContent = ''; renderMessages(state.messages, true); showToast('Message updated'); }
+        if (editId) { const result = await callAPI({ action: 'edit_message', message_id: editId, content }); const idx = state.messages.findIndex(m => m.id === editId); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.editMsg = null; $('edit-bar').classList.remove('visible'); composer.textContent = ''; renderMessages(state.messages, true); showToast('Xabar yangilandi.'); }
         else { const result = await callAPI({ action: 'send_message', chat_id: state.activeChatId, content, reply_to_message_id: replyId || undefined }); state.messages.push(result.message); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); state.replyTo = null; $('reply-bar').classList.remove('visible'); composer.textContent = ''; renderMessages(state.messages, false); scrollBottom(true); playSend(); if (state.isOwner) refreshOwnerList(false); }
-      } catch (e) { showToast(e.message || (editId ? 'Edit failed' : 'Message could not be sent')); playError(); if (editId) { state.editMsg = previousEdit; $('edit-bar').classList.add('visible'); $('edit-preview-text').textContent = previousEdit?.content || ''; } }
+      } catch (e) { showToast(uiError(e.message) || (editId ? 'Xabarni tahrirlab bo‘lmadi.' : 'Xabarni yuborib bo‘lmadi.')); playError(); if (editId) { state.editMsg = previousEdit; $('edit-bar').classList.add('visible'); $('edit-preview-text').textContent = previousEdit?.content || ''; } }
       finally { state.isSending = false; updateSendButton(); }
     }
 
@@ -3784,11 +3828,11 @@
       if (state.pendingAttachmentObjectUrl) URL.revokeObjectURL(state.pendingAttachmentObjectUrl);
       state.pendingAttachmentObjectUrl = URL.createObjectURL(file);
       $('attachment-preview-img').src = state.pendingAttachmentObjectUrl;
-      $('attachment-preview-img').alt = file.name || 'Selected photo';
+      $('attachment-preview-img').alt = file.name || 'Tanlangan rasm';
       $('attachment-preview-file').textContent = `${file.name} · ${formatBytes(file.size)}`;
       $('attachment-caption').value = ''; $('attachment-caption').style.height = 'auto'; $('attachment-caption').style.height = Math.min($('attachment-caption').scrollHeight, 112) + 'px';
-      $('attachment-preview-hint').textContent = 'Photo will be sent in this chat';
-      $('attachment-preview-send').disabled = false; $('attachment-preview-send-top').disabled = false; $('attachment-preview-send').querySelector('span').textContent = 'Send photo';
+      $('attachment-preview-hint').textContent = 'Rasm shu chatga yuboriladi';
+      $('attachment-preview-send').disabled = false; $('attachment-preview-send-top').disabled = false; $('attachment-preview-send').querySelector('span').textContent = 'Rasmni yuborish';
       $('attachment-preview-overlay').classList.remove('hidden');
     }
     function closeAttachmentPreview(force = false) { if (state.isUploading && !force) return; $('attachment-preview-overlay').classList.add('hidden'); $('attachment-preview-img').removeAttribute('src'); if (state.pendingAttachmentObjectUrl) { URL.revokeObjectURL(state.pendingAttachmentObjectUrl); state.pendingAttachmentObjectUrl = null; } state.pendingAttachment = null; $('attachment-caption').value = ''; }
@@ -3799,36 +3843,36 @@
     $('attachment-preview-send-top').addEventListener('click', sendPendingPhoto);
     async function sendPendingPhoto() { const file = state.pendingAttachment; if (!file || state.isUploading) return; await uploadAndSendFile(file, $('attachment-caption').value, true); }
     $('attach-btn').addEventListener('click', () => { if (!state.activeChatId || state.isUploading) return; $('file-input').click(); });
-    $('file-input').addEventListener('change', async e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; if (!state.activeChatId) return; if (file.size > MAX_FILE_BYTES) { showToast('File must be 10 MB or smaller'); return; } const type = (file.type || '').toLowerCase(); if (!ALLOWED_TYPES.has(type)) { showToast('This file type is not supported'); return; } unlockAudio(); if (isImageFile(file)) { openAttachmentPreview(file); return; } await uploadAndSendFile(file, '', false); });
+    $('file-input').addEventListener('change', async e => { const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; if (!state.activeChatId) return; if (file.size > MAX_FILE_BYTES) { showToast('Fayl hajmi 10 MB dan oshmasligi kerak.'); return; } const type = (file.type || '').toLowerCase(); if (!ALLOWED_TYPES.has(type)) { showToast('Bu fayl turi qo‘llab-quvvatlanmaydi.'); return; } unlockAudio(); if (isImageFile(file)) { openAttachmentPreview(file); return; } await uploadAndSendFile(file, '', false); });
 
     async function uploadAndSendFile(file, caption = '', fromPreview = false) {
       if (!state.activeChatId || state.isUploading) return;
       const chatId = state.activeChatId; const type = (file.type || 'application/octet-stream').toLowerCase(); const replyId = state.replyTo?.id || null;
-      if (file.size > MAX_FILE_BYTES) { showToast('File must be 10 MB or smaller'); return; }
-      if (!ALLOWED_TYPES.has(type)) { showToast('This file type is not supported'); return; }
-      const cleanCaption = String(caption || '').trim(); if (cleanCaption.length > 4000) { showToast('Caption is too long'); return; }
+      if (file.size > MAX_FILE_BYTES) { showToast('Fayl hajmi 10 MB dan oshmasligi kerak.'); return; }
+      if (!ALLOWED_TYPES.has(type)) { showToast('Bu fayl turi qo‘llab-quvvatlanmaydi.'); return; }
+      const cleanCaption = String(caption || '').trim(); if (cleanCaption.length > 4000) { showToast('Izoh juda uzun.'); return; }
       state.isUploading = true; setComposerEnabled(false); $('attach-btn').disabled = true;
-      const progress = $('upload-progress'); progress.style.display = 'block'; progress.textContent = `Uploading ${file.name}…`;
-      if (fromPreview) { $('attachment-preview-send').disabled = true; $('attachment-preview-send-top').disabled = true; $('attachment-preview-send').querySelector('span').textContent = 'Sending…'; $('attachment-preview-hint').textContent = 'Uploading securely…'; }
+      const progress = $('upload-progress'); progress.style.display = 'block'; progress.textContent = `${file.name} yuklanmoqda…`;
+      if (fromPreview) { $('attachment-preview-send').disabled = true; $('attachment-preview-send-top').disabled = true; $('attachment-preview-send').querySelector('span').textContent = 'Yuborilmoqda…'; $('attachment-preview-hint').textContent = 'Fayl xavfsiz yuklanmoqda…'; }
       try {
         const signed = await callAPI({ action: 'get_upload_url', chat_id: chatId, file_name: file.name, file_type: type, file_size: file.size });
-        if (!signed?.upload_url || !signed?.path) throw new Error('The server did not return a valid upload URL.');
+        if (!signed?.upload_url || !signed?.path) throw new Error('Server yuklash uchun yaroqli havola qaytarmadi.');
         const put = await fetch(signed.upload_url, { method: 'PUT', headers: { 'Content-Type': type, 'x-upsert': 'false' }, body: file });
         if (!put.ok) { const detail = await put.text().catch(() => ''); throw new Error(`Upload failed (${put.status})${detail ? ': ' + detail.slice(0, 120) : ''}`); }
-        progress.textContent = 'Saving message…';
+        progress.textContent = 'Xabar saqlanmoqda…';
         const result = await callAPI({ action: 'send_message', chat_id: chatId, content: cleanCaption, file_url: signed.path, file_name: file.name, file_type: type, reply_to_message_id: replyId || undefined });
         if (state.activeChatId === chatId) { const idx = state.messages.findIndex(m => m.id === result.message.id); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); scrollBottom(true); }
         if (replyId) { state.replyTo = null; $('reply-bar').classList.remove('visible'); }
         playSend(); if (state.isOwner) refreshOwnerList(false);
         if (fromPreview) closeAttachmentPreview(true);
-      } catch (err) { showToast(err.message || 'Upload failed'); playError(); if (fromPreview) { $('attachment-preview-hint').textContent = 'Could not send. Your photo and caption are still here.'; $('attachment-preview-send').disabled = false; $('attachment-preview-send-top').disabled = false; $('attachment-preview-send').querySelector('span').textContent = 'Try again'; } }
+      } catch (err) { showToast(uiError(err.message) || 'Faylni yuklab bo‘lmadi.'); playError(); if (fromPreview) { $('attachment-preview-hint').textContent = 'Yuborilmadi. Rasm va izoh saqlanib turibdi.'; $('attachment-preview-send').disabled = false; $('attachment-preview-send-top').disabled = false; $('attachment-preview-send').querySelector('span').textContent = 'Qayta urinish'; } }
       finally { state.isUploading = false; progress.style.display = 'none'; progress.textContent = ''; setComposerEnabled(true); $('attach-btn').disabled = false; updateSendButton(); }
     }
 
     // Messages are synchronized through the authenticated Edge Function because direct anonymous table access is revoked.
     async function loadMessages(chatId) {
-      const token = ++state.lastLoadToken; const list = $('message-list'); list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Loading messages"></div></div>'; try { const data = await callAPI({ action: 'list_messages', chat_id: chatId }); if (token !== state.lastLoadToken || state.activeChatId !== chatId) return; state.messages = Array.isArray(data.messages) ? data.messages : []; state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); }
-        catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Messages could not be loaded. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Try again'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(e.message || 'Failed to load messages'); }
+      const token = ++state.lastLoadToken; const list = $('message-list'); list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Xabarlar yuklanmoqda"></div></div>'; try { const data = await callAPI({ action: 'list_messages', chat_id: chatId }); if (token !== state.lastLoadToken || state.activeChatId !== chatId) return; state.messages = Array.isArray(data.messages) ? data.messages : []; state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); }
+        catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.'); }
     }
     function stopChatPolling() { if (state.pollingTimer) clearInterval(state.pollingTimer); state.pollingTimer = null; }
     function startChatPolling(chatId) {
@@ -3840,34 +3884,34 @@
     }
 
     function chatLatestMessage(chat) { const messages = Array.isArray(chat.messages) ? chat.messages : []; return messages.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] || null; }
-    function chatListSignature(chats) { return chats.map(c => { const p = getChatProfile(c), m = chatLatestMessage(c); return `${c.id}|${p?.display_name || ''}|${p?.avatar_url || ''}|${m?.id || ''}|${m?.content || ''}|${m?.created_at || ''}`; }).join('\n'); }
+    function chatListSignature(chats) { return chats.map(c => { const p = getChatProfile(c), m = chatLatestMessage(c); return `${c.id}|${p?.first_name || p?.display_name || ''}|${p?.avatar_url || ''}|${m?.id || ''}|${m?.content || ''}|${m?.created_at || ''}`; }).join('\n'); }
     function renderChatList(chats) {
-      const list = $('chat-list'); const active = state.activeChatId; list.replaceChildren(); if (!chats.length) { const empty = document.createElement('div'); empty.className = 'empty-list'; empty.textContent = 'No conversations yet'; list.appendChild(empty); return; }
-      const sorted = [...chats].sort((a, b) => new Date(chatLatestMessage(b)?.created_at || b.created_at) - new Date(chatLatestMessage(a)?.created_at || a.created_at)); for (const chat of sorted) { const profile = getChatProfile(chat); const name = personName(profile, null, `Customer ${String(chat.id).slice(0, 6)}`); const latest = chatLatestMessage(chat); const item = document.createElement('div'); item.className = 'chat-item' + (chat.id === active ? ' active' : ''); item.dataset.chatId = chat.id; item.tabIndex = 0; item.setAttribute('role', 'button'); item.setAttribute('aria-label', `Open conversation with ${name}`); const avatar = document.createElement('div'); avatar.className = 'avatar'; renderAvatar(avatar, name, profile?.avatar_url); const body = document.createElement('div'); body.className = 'chat-item-body'; const top = document.createElement('div'); top.className = 'chat-item-top'; const nm = document.createElement('div'); nm.className = 'chat-item-name'; nm.textContent = name; const time = document.createElement('div'); time.className = 'chat-time'; time.textContent = latest ? fmtTime(latest.created_at) : ''; top.append(nm, time); const preview = document.createElement('div'); preview.className = 'chat-preview'; preview.textContent = latest ? messagePreview(latest) : 'No messages yet'; body.append(top, preview); item.append(avatar, body); const open = () => openChat(chat.id, name, profile?.avatar_url, profile); item.addEventListener('click', open); item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }); list.appendChild(item); }
+      const list = $('chat-list'); const active = state.activeChatId; list.replaceChildren(); if (!chats.length) { const empty = document.createElement('div'); empty.className = 'empty-list'; empty.textContent = 'Hozircha suhbatlar yo‘q'; list.appendChild(empty); return; }
+      const sorted = [...chats].sort((a, b) => new Date(chatLatestMessage(b)?.created_at || b.created_at) - new Date(chatLatestMessage(a)?.created_at || a.created_at)); for (const chat of sorted) { const profile = getChatProfile(chat); const name = personName(profile, null, `Mijoz ${String(chat.id).slice(0, 6)}`); const latest = chatLatestMessage(chat); const item = document.createElement('div'); item.className = 'chat-item' + (chat.id === active ? ' active' : ''); item.dataset.chatId = chat.id; item.tabIndex = 0; item.setAttribute('role', 'button'); item.setAttribute('aria-label', `${name} bilan suhbatni ochish`); const avatar = document.createElement('div'); avatar.className = 'avatar'; renderAvatar(avatar, name, profile?.avatar_url); const body = document.createElement('div'); body.className = 'chat-item-body'; const top = document.createElement('div'); top.className = 'chat-item-top'; const nm = document.createElement('div'); nm.className = 'chat-item-name'; nm.textContent = name; const time = document.createElement('div'); time.className = 'chat-time'; time.textContent = latest ? fmtTime(latest.created_at) : ''; top.append(nm, time); const preview = document.createElement('div'); preview.className = 'chat-preview'; preview.textContent = latest ? messagePreview(latest) : 'Hozircha xabar yo‘q'; body.append(top, preview); item.append(avatar, body); const open = () => openChat(chat.id, name, profile?.avatar_url, profile); item.addEventListener('click', open); item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }); list.appendChild(item); }
     }
-    async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Conversations could not be loaded. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Retry'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
+    async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Suhbatlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta yuklash'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
     function applySearch() { const q = $('search-input').value.trim().toLowerCase(); document.querySelectorAll('.chat-item').forEach(item => { const n = item.querySelector('.chat-item-name')?.textContent.toLowerCase() || ''; const p = item.querySelector('.chat-preview')?.textContent.toLowerCase() || ''; item.style.display = (!q || n.includes(q) || p.includes(q)) ? '' : 'none'; }); }
     $('search-input').addEventListener('input', applySearch);
-    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId) return; if (state.activeChatId === chatId) { hideSidebar(); return; } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); $('active-chat').classList.remove('hidden'); $('active-chat').style.display = 'flex'; $('header-name').textContent = name || 'Conversation'; $('header-status').textContent = profile?.username ? `@${String(profile.username).replace(/^@/, '')}` : 'Private conversation'; renderAvatar($('header-avatar'), name, avatarUrl); if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
+    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId) return; if (state.activeChatId === chatId) { hideSidebar(); return; } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); $('active-chat').classList.remove('hidden'); $('active-chat').style.display = 'flex'; $('header-name').textContent = name || 'Suhbat'; $('header-status').textContent = profile?.username ? `@${String(profile.username).replace(/^@/, '')}` : 'Shaxsiy suhbat'; renderAvatar($('header-avatar'), name, avatarUrl); if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
     function hideSidebar() { if (window.innerWidth < 768) $('sidebar').classList.remove('mobile-open'); }
-    function backToConversations() { if (!state.isOwner) return; setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.lastLoadToken++; state.activeChatId = null; state.activeChatProfile = null; state.messages = []; state.replyTo = null; state.editMsg = null; $('active-chat').classList.add('hidden'); $('no-chat-placeholder').classList.remove('hidden'); document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active')); $('sidebar').classList.add('mobile-open'); }
-    $('back-btn').addEventListener('click', backToConversations);
+    function backToSuhbats() { if (!state.isOwner) return; setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.lastLoadToken++; state.activeChatId = null; state.activeChatProfile = null; state.messages = []; state.replyTo = null; state.editMsg = null; $('active-chat').classList.add('hidden'); $('no-chat-placeholder').classList.remove('hidden'); document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active')); $('sidebar').classList.add('mobile-open'); }
+    $('back-btn').addEventListener('click', backToSuhbats);
 
-    // Profile panel: customers edit their own application profile; owner can inspect a customer's profile read-only or edit the owner's own profile from the sidebar.
+    // Profil oynasi: Ism maydoni ko‘rinadigan profil nomi vazifasini bajaradi.
     const profilePanel = $('profile-panel');
-    function setProfileReadonly(readonly) { ['profile-display-name', 'profile-first-name', 'profile-last-name', 'profile-username', 'profile-support-label'].forEach(id => { const el = $(id); if (el) el.disabled = readonly; }); $('avatar-edit-btn').classList.toggle('hidden', readonly); $('profile-save-btn').classList.toggle('hidden', readonly); $('profile-note').textContent = readonly ? 'Profile information' : 'Your uploaded profile photo is saved and visible to other Mini App participants.'; }
-    function openProfilePanel(own = true) { closeSettings(); state.profileMode = own ? 'own' : 'readonly'; state.profileTarget = own ? state.myProfile : state.activeChatProfile; const p = state.profileTarget || {}; const user = own ? state.user : null; const name = personName(p, user, own ? 'Profile' : 'Customer'); $('profile-display-name').value = p.display_name || personName(null, user, name); $('profile-first-name').value = p.first_name || user?.first_name || ''; $('profile-last-name').value = p.last_name || user?.last_name || ''; $('profile-username').value = (p.username || user?.username || '').replace(/^@/, ''); $('profile-support-label').value = p.support_label || 'Support'; $('profile-support-label-wrap').classList.toggle('hidden', !(own && state.isOwner)); $('profile-error').classList.add('hidden'); state.pendingAvatarPath = null; if (state.previewObjectUrl) { URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = null; } renderAvatar($('profile-avatar-big'), name, p.avatar_url || user?.photo_url || null); setProfileReadonly(!own); $('profile-panel-title').textContent = own ? (state.isOwner ? 'Edit support profile' : 'Edit profile') : 'Profile'; profilePanel.classList.add('open'); }
+    function setProfileReadonly(readonly) { ['profile-first-name', 'profile-username', 'profile-support-label'].forEach(id => { const el = $(id); if (el) el.disabled = readonly; }); $('avatar-edit-btn').classList.toggle('hidden', readonly); $('profile-save-btn').classList.toggle('hidden', readonly); $('profile-note').textContent = readonly ? 'Profil ma’lumotlari' : 'Profil rasmingiz Mini App’da saqlanadi va suhbatdoshingizga ko‘rinadi.'; }
+    function openProfilePanel(own = true) { closeSettings(); state.profileMode = own ? 'own' : 'readonly'; state.profileTarget = own ? state.myProfile : state.activeChatProfile; const p = state.profileTarget || {}; const user = own ? state.user : null; const name = personName(p, user, own ? 'Profil' : 'Mijoz'); $('profile-first-name').value = p.first_name || user?.first_name || p.display_name || ''; $('profile-username').value = (p.username || user?.username || '').replace(/^@/, ''); const savedSupportLabel = String(p.support_label || 'Yordam').trim(); $('profile-support-label').value = savedSupportLabel.toLowerCase() === 'support' ? 'Yordam' : savedSupportLabel; $('profile-support-label-wrap').classList.toggle('hidden', !(own && state.isOwner)); $('profile-error').classList.add('hidden'); state.pendingAvatarPath = null; if (state.previewObjectUrl) { URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = null; } renderAvatar($('profile-avatar-big'), name, p.avatar_url || user?.photo_url || null); setProfileReadonly(!own); $('profile-panel-title').textContent = own ? 'Profilni tahrirlash' : 'Profil'; profilePanel.classList.add('open'); }
     function closeProfile() { profilePanel.classList.remove('open'); if (state.previewObjectUrl) { URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = null; } }
     $('profile-close-btn').addEventListener('click', closeProfile); $('profile-btn').addEventListener('click', () => openProfilePanel(!state.isOwner)); $('header-identity').addEventListener('click', () => openProfilePanel(false)); $('header-identity').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProfilePanel(false); } }); $('my-profile-btn').addEventListener('click', () => openProfilePanel(true));
     $('avatar-edit-btn').addEventListener('click', () => $('avatar-file-input').click()); $('profile-avatar-big').addEventListener('click', () => { if (state.profileMode === 'own') $('avatar-file-input').click(); });
     $('avatar-file-input').addEventListener('change', async e => {
-      const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; if (!file.type.startsWith('image/') || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) { showToast('Choose a JPEG, PNG, WebP, or GIF image'); return; } if (file.size > 5 * 1024 * 1024) { showToast('Avatar must be 5 MB or smaller'); return; } if (state.previewObjectUrl) URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = URL.createObjectURL(file); renderAvatar($('profile-avatar-big'), $('profile-display-name').value || 'Profile', state.previewObjectUrl);
-      const saveBtn = $('profile-save-btn'); saveBtn.disabled = true; try { const signed = await callAPI({ action: 'get_upload_url', file_name: `avatar_${Date.now()}.${file.name.split('.').pop() || 'jpg'}`, file_type: file.type, file_size: file.size }); const put = await fetch(signed.upload_url, { method: 'PUT', headers: { 'Content-Type': file.type, 'x-upsert': 'false' }, body: file }); if (!put.ok) throw new Error(`Avatar upload failed (${put.status})`); state.pendingAvatarPath = signed.path; showToast('Avatar uploaded. Save changes to apply it.'); } catch (err) { showToast(err.message || 'Avatar upload failed'); playError(); } finally { saveBtn.disabled = false; }
+      const file = e.target.files?.[0]; e.target.value = ''; if (!file) return; if (!file.type.startsWith('image/') || !['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) { showToast('JPEG, PNG, WebP yoki GIF formatidagi rasmni tanlang.'); return; } if (file.size > 5 * 1024 * 1024) { showToast('Profil rasmi 5 MB dan katta bo‘lmasligi kerak.'); return; } if (state.previewObjectUrl) URL.revokeObjectURL(state.previewObjectUrl); state.previewObjectUrl = URL.createObjectURL(file); renderAvatar($('profile-avatar-big'), $('profile-first-name').value.trim() || 'Profil', state.previewObjectUrl);
+      const saveBtn = $('profile-save-btn'); saveBtn.disabled = true; try { const signed = await callAPI({ action: 'get_upload_url', file_name: `avatar_${Date.now()}.${file.name.split('.').pop() || 'jpg'}`, file_type: file.type, file_size: file.size }); const put = await fetch(signed.upload_url, { method: 'PUT', headers: { 'Content-Type': file.type, 'x-upsert': 'false' }, body: file }); if (!put.ok) throw new Error(`Rasm yuklanmadi (${put.status})`); state.pendingAvatarPath = signed.path; showToast('Rasm yuklandi. Uni qo‘llash uchun “O‘zgarishlarni saqlash” tugmasini bosing.'); } catch (err) { showToast(uiError(err.message) || 'Profil rasmini yuklab bo‘lmadi.'); playError(); } finally { saveBtn.disabled = false; }
     });
     $('profile-save-btn').addEventListener('click', async () => {
-      if (state.profileMode !== 'own') return; const btn = $('profile-save-btn'), errorEl = $('profile-error'); const displayName = $('profile-display-name').value.trim(); if (!displayName) { errorEl.textContent = 'Display name cannot be empty.'; errorEl.classList.remove('hidden'); return; } const firstName = $('profile-first-name').value.trim(), lastName = $('profile-last-name').value.trim(), username = $('profile-username').value.trim().replace(/^@/, ''); if (username && !/^[A-Za-z0-9_]{5,32}$/.test(username)) { errorEl.textContent = 'Username must be 5–32 letters, numbers, or underscores.'; errorEl.classList.remove('hidden'); return; } btn.disabled = true; btn.textContent = 'Saving…'; errorEl.classList.add('hidden');
-      const updates = { display_name: displayName, first_name: firstName, last_name: lastName, username }; if (state.pendingAvatarPath) updates.avatar_url = state.pendingAvatarPath; if (state.isOwner) updates.support_label = $('profile-support-label').value.trim() || 'Support';
-      try { const result = await callAPI({ action: 'update_profile', ...updates }); state.myProfile = result.profile; state.pendingAvatarPath = null; const name = personName(state.myProfile, state.user, 'Profile'); renderAvatar($('profile-avatar-big'), name, state.myProfile.avatar_url); closeProfile(); showToast('Profile saved'); if (state.isOwner) refreshOwnerList(false); } catch (err) { errorEl.textContent = err.message || 'Profile could not be saved'; errorEl.classList.remove('hidden'); playError(); } finally { btn.disabled = false; btn.textContent = 'Save changes'; }
+      if (state.profileMode !== 'own') return; const btn = $('profile-save-btn'), errorEl = $('profile-error'); const firstName = $('profile-first-name').value.trim(), username = $('profile-username').value.trim().replace(/^@/, ''); if (!firstName) { errorEl.textContent = 'Ism maydoni bo‘sh bo‘lmasligi kerak.'; errorEl.classList.remove('hidden'); return; } if (username && !/^[A-Za-z0-9_]{5,32}$/.test(username)) { errorEl.textContent = 'Foydalanuvchi nomi 5–32 ta lotin harfi, raqam yoki pastki chiziqdan iborat bo‘lishi kerak.'; errorEl.classList.remove('hidden'); return; } btn.disabled = true; btn.textContent = 'Saqlanmoqda…'; errorEl.classList.add('hidden');
+      const updates = { first_name: firstName, display_name: firstName, username }; if (state.pendingAvatarPath) updates.avatar_url = state.pendingAvatarPath; if (state.isOwner) updates.support_label = $('profile-support-label').value.trim() || 'Yordam';
+      try { const result = await callAPI({ action: 'update_profile', ...updates }); state.myProfile = result.profile; state.pendingAvatarPath = null; const name = personName(state.myProfile, state.user, 'Profil'); renderAvatar($('profile-avatar-big'), name, state.myProfile.avatar_url); closeProfile(); showToast('Profil saqlandi.'); if (state.isOwner) refreshOwnerList(false); } catch (err) { errorEl.textContent = uiError(err.message) || 'Profilni saqlab bo‘lmadi.'; errorEl.classList.remove('hidden'); playError(); } finally { btn.disabled = false; btn.textContent = 'O‘zgarishlarni saqlash'; }
     });
 
     // Rotating Telegram message link: one active link per Telegram user.
@@ -3881,37 +3925,37 @@
         $('telegram-link-value').textContent = saved.url;
         if (typeof saved.text === 'string' && !$('telegram-link-text').value) $('telegram-link-text').value = saved.text;
         $('telegram-link-output').classList.remove('hidden');
-        $('telegram-link-status').textContent = 'Your last generated link is shown here. It may have expired if you generated a newer one.';
+        $('telegram-link-status').textContent = 'Oxirgi yaratilgan havola shu yerda ko‘rsatiladi. Yangisini yaratgan bo‘lsangiz, oldingisi faol bo‘lmasligi mumkin.';
       } catch { /* Storage may be disabled in a restricted webview. */ }
     }
     $('telegram-link-generate').addEventListener('click', async () => {
       const text = $('telegram-link-text').value;
       const status = $('telegram-link-status');
       const button = $('telegram-link-generate');
-      if (!text.trim()) { status.textContent = 'Please enter a message first.'; $('telegram-link-text').focus(); return; }
-      button.disabled = true; button.textContent = 'Generating…'; status.textContent = 'Generating your active link…';
+      if (!text.trim()) { status.textContent = 'Avval xabar matnini kiriting.'; $('telegram-link-text').focus(); return; }
+      button.disabled = true; button.textContent = 'Yaratilmoqda…'; status.textContent = 'Faol havola yaratilmoqda…';
       try {
         const result = await callAPI({ action: 'generate_telegram_text_link', text });
-        if (typeof result.url !== 'string' || !result.url.startsWith('https://')) throw new Error('The server did not return a valid link.');
+        if (typeof result.url !== 'string' || !result.url.startsWith('https://')) throw new Error('Server yaroqli havola qaytarmadi.');
         $('telegram-link-value').href = result.url;
         $('telegram-link-value').textContent = result.url;
         $('telegram-link-output').classList.remove('hidden');
         try { localStorage.setItem(savedGeneratedLinkKey, JSON.stringify({ url: result.url, text, generatedAt: Date.now() })); } catch { }
-        status.textContent = 'Link generated. Your previous link is now inactive.';
-        showToast('Telegram link generated');
+        status.textContent = 'Havola yaratildi. Oldingi havola endi faol emas.';
+        showToast('Telegram havolasi yaratildi.');
       } catch (error) {
-        status.textContent = error.message || 'Could not generate the link.';
+        status.textContent = uiError(error.message) || 'Havola yaratib bo‘lmadi.';
         playError();
-      } finally { button.disabled = false; button.textContent = 'Generate'; }
+      } finally { button.disabled = false; button.textContent = 'Havola yaratish'; }
     });
     $('telegram-link-copy').addEventListener('click', async () => {
       const url = $('telegram-link-value').href;
       if (!url || url === location.href || url.endsWith('#')) return;
       try {
         if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
-        else { const field = document.createElement('textarea'); field.value = url; field.style.position = 'fixed'; field.style.opacity = '0'; document.body.appendChild(field); field.select(); const ok = document.execCommand('copy'); field.remove(); if (!ok) throw new Error('Copy failed'); }
-        showToast('Link copied');
-      } catch { showToast('Could not copy the link. Tap and hold the link to copy it.'); }
+        else { const field = document.createElement('textarea'); field.value = url; field.style.position = 'fixed'; field.style.opacity = '0'; document.body.appendChild(field); field.select(); const ok = document.execCommand('copy'); field.remove(); if (!ok) throw new Error('Nusxalash amalga oshmadi.'); }
+        showToast('Havola nusxalandi.');
+      } catch { showToast('Havolani nusxalab bo‘lmadi. Nusxalash uchun havolani bosib ushlab turing.'); }
     });
     restoreGeneratedTelegramLink();
 
@@ -3920,7 +3964,7 @@
     async function loadNotificationSettings() {
       if (!state.isOwner) return;
       const status = $('notification-settings-status');
-      status.textContent = 'Loading…';
+      status.textContent = 'Yuklanmoqda…';
       try {
         const result = await callAPI({ action: 'get_notification_settings' });
         const settings = result.settings || {};
@@ -3929,7 +3973,7 @@
         $('notify-customer-reply-title').value = settings.customer_reply_title || 'Umarov sizga javob berdi';
         status.textContent = '';
       } catch (error) {
-        status.textContent = error.message || 'Could not load notification settings.';
+        status.textContent = uiError(error.message) || 'Bildirishnoma sozlamalarini yuklab bo‘lmadi.';
       }
     }
 
@@ -3938,7 +3982,7 @@
       const button = $('notification-settings-save');
       const status = $('notification-settings-status');
       button.disabled = true;
-      status.textContent = 'Saving…';
+      status.textContent = 'Saqlanmoqda…';
       try {
         const result = await callAPI({
           action: 'save_notification_settings',
@@ -3950,10 +3994,10 @@
         $('notify-owner-message-title').value = settings.owner_message_title || 'Yangi xabar';
         $('notify-new-user-title').value = settings.new_user_title || 'Yangi foydalanuvchi';
         $('notify-customer-reply-title').value = settings.customer_reply_title || 'Umarov sizga javob berdi';
-        status.textContent = 'Notification texts saved.';
-        showToast('Notification texts saved');
+        status.textContent = 'Bildirishnoma matnlari saqlandi.';
+        showToast('Bildirishnoma matnlari saqlandi.');
       } catch (error) {
-        status.textContent = error.message || 'Could not save notification texts.';
+        status.textContent = uiError(error.message) || 'Bildirishnoma matnlarini saqlab bo‘lmadi.';
         playError();
       } finally {
         button.disabled = false;
@@ -3987,27 +4031,27 @@
       $('app').classList.add('hidden');
       $('loading-screen').classList.remove('hidden');
       $('auth-error-screen').classList.add('hidden');
-      setLoadingText('Opening Telegram message…');
+      setLoadingText('Telegram xabar oynasi ochilmoqda…');
       try {
-        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) throw new Error('This link is invalid or has expired.');
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)) throw new Error('Bu havola noto‘g‘ri yoki muddati tugagan.');
         const response = await fetch(API, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_PUBLISHABLE_KEY },
           body: JSON.stringify({ action: 'resolve_telegram_text_link', token })
         });
         const result = await readResponse(response);
-        if (typeof result.text !== 'string' || !result.text.trim()) throw new Error('This link is no longer active.');
+        if (typeof result.text !== 'string' || !result.text.trim()) throw new Error('Bu havola endi faol emas.');
         const draftText = result.text.startsWith('@') ? ' ' + result.text : result.text;
         location.replace('https://t.me/umarov_py?text=' + encodeURIComponent(draftText));
       } catch (error) {
-        showAuthError(error.message || 'This link is no longer active. Generate a new link in the Mini App.', false);
+        showAuthError(error.message || 'Bu havola endi faol emas. Mini App’da yangi havola yarating.', false);
       }
     }
 
     async function init() {
       const generatedToken = new URLSearchParams(window.location.search).get('message-link');
       if (generatedToken) { await handleTelegramMessageLink(generatedToken); return; }
-      loadSoundPrefs(); syncSoundToggles(); const tg = window.Telegram?.WebApp; if (!tg) { showAuthError('This application must be opened using its Telegram bot button.', false); return; } try {
+      loadSoundPrefs(); syncSoundToggles(); const tg = window.Telegram?.WebApp; if (!tg) { showAuthError('Bu ilovani Telegram botidagi tugma orqali ochish kerak.', false); return; } try {
         tg.ready();
         const appColor = tg.colorScheme === 'dark' ? '#17212b' : '#ffffff';
         if (typeof tg.setHeaderColor === 'function') tg.setHeaderColor(appColor);
@@ -4132,13 +4176,13 @@
         // Match Telegram's own bottom chrome to the app, where this API exists.
         try { if (typeof tg.setBottomBarColor === 'function') tg.setBottomBarColor(appColor); } catch (_) { }
       } catch (error) { console.warn('Telegram viewport setup failed:', error); }
-      const initData = typeof tg.initData === 'string' ? tg.initData : ''; if (!initData) { showAuthError('Telegram session data is missing. Close this window and reopen the app from Telegram.', true); return; } state.initData = initData; state.user = tg.initDataUnsafe?.user || null;
-      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') { showAuthError('Set your Supabase Publishable key in index.html, then deploy the page again.', false); return; }
+      const initData = typeof tg.initData === 'string' ? tg.initData : ''; if (!initData) { showAuthError('Telegram seans ma’lumoti topilmadi. Oynani yoping va ilovani Telegram ichidan qayta oching.', true); return; } state.initData = initData; state.user = tg.initDataUnsafe?.user || null;
+      if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') { showAuthError('index.html fayliga Supabase Publishable kalitini kiriting va saytni qayta joylashtiring.', false); return; }
       try {
-        setLoadingText('Verifying your Telegram account…'); const auth = await callAuth(initData); state.isOwner = Boolean(auth.is_owner ?? auth.isOwner); if (auth.user) state.user = auth.user; if (auth.profile) state.myProfile = auth.profile; try { const ownProfile = await callAPI({ action: 'get_my_profile' }); if (ownProfile.profile) state.myProfile = ownProfile.profile; } catch (profileError) { console.warn('Could not refresh own profile fields:', profileError?.message || 'unavailable'); } startMiniAppPresenceTracking(tg); $('owner-notification-settings').classList.toggle('hidden', !state.isOwner); const app = $('app'); app.classList.remove('hidden'); app.classList.add(state.isOwner ? 'owner-mode' : 'customer-mode'); $('loading-screen').classList.add('hidden');
+        setLoadingText('Telegram akkauntingiz tekshirilmoqda…'); const auth = await callAuth(initData); state.isOwner = Boolean(auth.is_owner ?? auth.isOwner); if (auth.user) state.user = auth.user; if (auth.profile) state.myProfile = auth.profile; try { const ownProfile = await callAPI({ action: 'get_my_profile' }); if (ownProfile.profile) state.myProfile = ownProfile.profile; } catch (profileError) { console.warn('Could not refresh own profile fields:', profileError?.message || 'unavailable'); } startMiniAppPresenceTracking(tg); $('owner-notification-settings').classList.toggle('hidden', !state.isOwner); const app = $('app'); app.classList.remove('hidden'); app.classList.add(state.isOwner ? 'owner-mode' : 'customer-mode'); $('loading-screen').classList.add('hidden');
         if (state.isOwner) { $('sidebar').classList.add('mobile-open'); $('my-profile-btn').classList.remove('hidden'); await refreshOwnerList(true); state.ownerListTimer = setInterval(() => { if (document.visibilityState === 'visible') refreshOwnerList(false); }, 8000); }
-        else { $('my-profile-btn').classList.add('hidden'); try { const data = await callAPI({ action: 'get_my_chat' }); state.myProfile = data.profile || state.myProfile; state.supportProfile = data.support_profile || null; const chat = data.chat; if (!chat?.id) throw new Error('The private conversation was not returned by the server.'); const supportName = personName(state.supportProfile, null, 'Support'); await openChat(chat.id, supportName, state.supportProfile?.avatar_url || null, state.supportProfile); $('header-name').textContent = supportName; $('header-status').textContent = state.supportProfile?.support_label || 'Support'; state.supportProfileTimer = setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const fresh = await callAPI({ action: 'get_my_chat' }); if (!fresh.support_profile) return; state.supportProfile = fresh.support_profile; state.activeChatProfile = fresh.support_profile; const freshName = personName(state.supportProfile, null, 'Support'); $('header-name').textContent = freshName; $('header-status').textContent = state.supportProfile.support_label || 'Support'; renderAvatar($('header-avatar'), freshName, state.supportProfile.avatar_url || null); if (profilePanel.classList.contains('open') && state.profileMode === 'readonly') { const avatarName = personName(state.supportProfile, null, 'Support'); renderAvatar($('profile-avatar-big'), avatarName, state.supportProfile.avatar_url || null); } } catch (error) { console.warn('Support profile refresh failed:', error?.message || 'unavailable'); } }, 30000); } catch (e) { showAuthError(`Your private conversation could not be opened. ${e.message || ''}`.trim(), true); } }
-      } catch (e) { showAuthError(`Authentication failed. ${e.message || 'Please reopen the app from Telegram.'}`, true); }
+        else { $('my-profile-btn').classList.add('hidden'); try { const data = await callAPI({ action: 'get_my_chat' }); state.myProfile = data.profile || state.myProfile; state.supportProfile = data.support_profile || null; const chat = data.chat; if (!chat?.id) throw new Error('Server shaxsiy suhbatni qaytarmadi.'); const supportName = personName(state.supportProfile, null, 'Yordam'); await openChat(chat.id, supportName, state.supportProfile?.avatar_url || null, state.supportProfile); $('header-name').textContent = supportName; $('header-status').textContent = getSupportLabel(state.supportProfile); state.supportProfileTimer = setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const fresh = await callAPI({ action: 'get_my_chat' }); if (!fresh.support_profile) return; state.supportProfile = fresh.support_profile; state.activeChatProfile = fresh.support_profile; const freshName = personName(state.supportProfile, null, 'Yordam'); $('header-name').textContent = freshName; $('header-status').textContent = getSupportLabel(state.supportProfile); renderAvatar($('header-avatar'), freshName, state.supportProfile.avatar_url || null); if (profilePanel.classList.contains('open') && state.profileMode === 'readonly') { const avatarName = personName(state.supportProfile, null, 'Yordam'); renderAvatar($('profile-avatar-big'), avatarName, state.supportProfile.avatar_url || null); } } catch (error) { console.warn('Support profile refresh failed:', error?.message || 'unavailable'); } }, 30000); } catch (e) { showAuthError(`Shaxsiy suhbatingizni ochib bo‘lmadi. ${e.message || ''}`.trim(), true); } }
+      } catch (e) { showAuthError(`Tasdiqlashda xatolik yuz berdi. ${e.message || 'Ilovani Telegram ichidan qayta oching.'}`, true); }
     }
     $('auth-retry-btn').addEventListener('click', () => location.reload());
     init();
