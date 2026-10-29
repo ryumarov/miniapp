@@ -3607,7 +3607,7 @@
     }
     function createSocialVideoEmbed(media) {
       const wrap = document.createElement('div'); wrap.className = `social-embed ${media.provider}${media.isShort ? ' is-short' : ''}`;
-      const preview = document.createElement('button'); preview.type = 'button'; preview.className = 'social-preview-button'; preview.setAttribute('aria-label', media.provider === 'youtube' ? 'YouTube videosini chat ichida ko‘rish' : 'Instagram videosini chat ichida ko‘rish');
+      const preview = document.createElement('button'); preview.type = 'button'; preview.className = 'social-preview-button'; preview.setAttribute('aria-label', media.provider === 'youtube' ? 'YouTube videosini chat ichida ko‘rish' : '  Instagram videosini chat ichida ko‘rish');
       if (media.provider === 'youtube') {
         const img = document.createElement('img'); img.className = 'social-preview-thumb'; img.loading = 'lazy'; img.decoding = 'async'; img.alt = 'YouTube videosi oldindan ko‘rinishi'; img.referrerPolicy = 'no-referrer'; img.src = `https://i.ytimg.com/vi/${encodeURIComponent(media.id)}/hqdefault.jpg`; img.addEventListener('error', () => { img.style.display = 'none'; }, { once: true }); preview.appendChild(img);
       } else {
