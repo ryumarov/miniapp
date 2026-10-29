@@ -3618,7 +3618,7 @@
       const caption = document.createElement('span'); caption.className = 'social-preview-caption';
       if (media.provider === 'instagram') { const icon = document.createElement('span'); icon.className = 'social-provider-icon'; icon.textContent = '◎'; caption.appendChild(icon); }
       else { const icon = document.createElement('span'); icon.className = 'social-provider-icon'; icon.style.background = '#ff0033'; icon.textContent = '▶'; caption.appendChild(icon); }
-      const info = document.createElement('span'); info.className = 'social-preview-meta'; const title = document.createElement('span'); title.className = 'social-preview-title'; title.textContent = media.provider === 'youtube' ? 'YouTube videosi' : (media.kind === 'reel' ? 'Instagram Reels videosi' : 'Instagram videosi yoki posti'); const sub = document.createElement('span'); sub.className = 'social-preview-subtitle'; sub.textContent = 'Chat ichida ko‘rish uchun bosing'; info.append(title, sub); caption.appendChild(info); preview.appendChild(caption);
+      const info = document.createElement('span'); info.className = 'social-preview-meta'; const title = document.createElement('span'); title.className = 'social-preview-title'; title.textContent = media.provider === 'youtube' ? 'YouTube videosi' : (media.kind === 'reel' ? 'Instagram Reels videosi' : 'Instagram videosi yoki posti'); const sub = document.createElement('span'); sub.className = 'social-preview-subtitle'; sub.textContent = `&#8195;Chat ichida ko‘rish uchun bosing`; info.append(title, sub); caption.appendChild(info); preview.appendChild(caption);
       preview.addEventListener('click', () => {
         if (wrap.dataset.loaded === 'true') return; wrap.dataset.loaded = 'true';
         const frame = document.createElement('iframe'); frame.className = 'social-embed-frame'; frame.src = media.embed; frame.title = media.provider === 'youtube' ? 'YouTube video pleyeri' : 'Instagram media pleyeri'; frame.loading = 'lazy'; frame.referrerPolicy = 'strict-origin-when-cross-origin'; frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'; frame.setAttribute('allowfullscreen', ''); frame.setAttribute('allowtransparency', 'true'); frame.setAttribute('frameborder', '0');
@@ -3872,7 +3872,7 @@
     // Messages are synchronized through the authenticated Edge Function because direct anonymous table access is revoked.
     async function loadMessages(chatId) {
       const token = ++state.lastLoadToken; const list = $('message-list'); list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Xabarlar yuklanmoqda"></div></div>'; try { const data = await callAPI({ action: 'list_messages', chat_id: chatId }); if (token !== state.lastLoadToken || state.activeChatId !== chatId) return; state.messages = Array.isArray(data.messages) ? data.messages : []; state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); }
-        catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.'); }
+      catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.'); }
     }
     function stopChatPolling() { if (state.pollingTimer) clearInterval(state.pollingTimer); state.pollingTimer = null; }
     function startChatPolling(chatId) {
@@ -4188,5 +4188,4 @@
     init();
   </script>
 </body>
-
 </html>
