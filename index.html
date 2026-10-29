@@ -2701,6 +2701,152 @@
         height: 50px
       }
     }
+
+
+
+    /* Telegram-like message selection and chat-history actions. */
+    #active-chat {
+      position: relative
+    }
+
+    .chat-actions-menu {
+      position: absolute;
+      top: calc(var(--header-height) + 6px);
+      right: 8px;
+      z-index: 85;
+      min-width: 224px;
+      max-width: calc(100vw - 20px);
+      padding: 5px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      background: var(--bg);
+      box-shadow: var(--menu-shadow);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow: hidden
+    }
+
+    .chat-actions-menu .ctx-item {
+      height: 45px
+    }
+
+    .selection-toolbar {
+      display: none;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      gap: 4px
+    }
+
+    .selection-toolbar:not(.hidden) {
+      display: flex
+    }
+
+    #chat-header.select-mode #header-identity,
+    #chat-header.select-mode .header-actions {
+      display: none !important
+    }
+
+    .selection-count {
+      font-size: 14px;
+      font-weight: 700;
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .selection-toolbar .icon-btn {
+      width: 38px;
+      height: 38px
+    }
+
+    #selection-delete-btn {
+      color: var(--danger)
+    }
+
+    #active-chat.selection-mode #composer-wrap {
+      display: none
+    }
+
+    #message-list.selection-mode .msg-row {
+      padding-left: 32px;
+      cursor: pointer
+    }
+
+    .message-select-indicator {
+      position: absolute;
+      left: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 21px;
+      height: 21px;
+      border: 2px solid var(--subtle);
+      border-radius: 50%;
+      background: var(--bg);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 800;
+      z-index: 2;
+      pointer-events: none
+    }
+
+    #message-list.selection-mode .message-select-indicator {
+      display: flex
+    }
+
+    #message-list.selection-mode .msg-row.selected .message-select-indicator {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .13)
+    }
+
+    #message-list.selection-mode .msg-row.selected .bubble {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 72%, transparent)
+    }
+
+    #message-list.selection-mode .msg-row:active .bubble {
+      filter: brightness(.97)
+    }
+
+    .message-empty-state {
+      margin: auto;
+      max-width: 300px;
+      padding: 16px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+      user-select: none
+    }
+
+    .message-empty-state strong {
+      display: block;
+      color: var(--text);
+      font-size: 15px;
+      margin-bottom: 4px
+    }
+
+    @media(max-width:767px) {
+      .chat-actions-menu {
+        top: calc(var(--header-height) + 5px);
+        right: 6px
+      }
+
+      .selection-count {
+        font-size: 13px
+      }
+
+      .selection-toolbar .icon-btn {
+        width: 36px
+      }
+    }
   </style>
 </head>
 
@@ -2792,8 +2938,44 @@
                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
+              </svg></button><button class="icon-btn" id="chat-more-btn" type="button" aria-label="Chat actions"
+              title="Chat actions"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                aria-hidden="true">
+                <circle cx="5" cy="12" r="1.8" />
+                <circle cx="12" cy="12" r="1.8" />
+                <circle cx="19" cy="12" r="1.8" />
+              </svg></button></div>
+          <div id="selection-toolbar" class="selection-toolbar hidden" aria-label="Message selection"><button
+              class="icon-btn" id="selection-cancel-btn" type="button" aria-label="Cancel selection" title="Cancel"><svg
+                width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg></button><span id="selection-count" class="selection-count">0 selected</span><button
+              class="icon-btn" id="selection-select-all-btn" type="button" aria-label="Select all messages"
+              title="Select all"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="4" />
+                <path d="m7 12 3.2 3.2L17 8.5" />
+              </svg></button><button class="icon-btn" id="selection-delete-btn" type="button"
+              aria-label="Delete selected messages" title="Delete selected" disabled><svg width="20" height="20"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
               </svg></button></div>
         </header>
+        <div id="chat-actions-menu" class="chat-actions-menu hidden" role="menu" aria-label="Chat actions"><button
+            class="ctx-item" id="chat-select-messages-btn" type="button" role="menuitem"><svg width="17" height="17"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="4" />
+              <path d="m7 12 3.2 3.2L17 8.5" />
+            </svg>Select messages</button>
+          <div class="ctx-divider"></div><button class="ctx-item destructive" id="chat-clear-history-btn" type="button"
+            role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6" />
+            </svg>Clear chat history</button>
+        </div>
         <div id="message-list" role="log" aria-live="polite" aria-label="Messages"></div>
         <footer id="composer-wrap">
           <div id="reply-bar">
@@ -2927,6 +3109,12 @@
         <polyline points="9 14 4 9 9 4" />
         <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
       </svg>Reply</button>
+    <button class="ctx-item" id="ctx-select" type="button" role="menuitem"><svg width="17" height="17"
+        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+        stroke-linejoin="round">
+        <rect x="3" y="3" width="18" height="18" rx="4" />
+        <path d="m7 12 3.2 3.2L17 8.5" />
+      </svg>Select</button>
     <button class="ctx-item" id="ctx-edit" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24"
         fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 20h9" />
@@ -3092,7 +3280,7 @@
     const state = {
       initData: '', user: null, isOwner: false, myProfile: null, supportProfile: null, activeChatId: null, activeChatProfile: null,
       presenceSessionId: createPresenceSessionId(), presenceStatus: null, presenceTimer: null,
-      chats: [], messages: [], replyTo: null, editMsg: null, contextTarget: null,
+      chats: [], messages: [], replyTo: null, editMsg: null, contextTarget: null, messageSelectMode: false, selectedMessageIds: new Set(), isDeletingMessages: false,
       pollingTimer: null, ownerListTimer: null, isSending: false, isUploading: false,
       audioEnabled: true, soundSettings: { send: true, receive: true, error: true }, audioCtx: null, audioUnlocked: false,
       signedUrlCache: new Map(), pendingAvatarPath: null, profileMode: 'own', profileTarget: null,
@@ -3424,13 +3612,22 @@
     function makeMessageRow(msg) {
       const outgoing = state.isOwner ? msg.sender_type === 'owner' : msg.sender_type === 'customer';
       const row = document.createElement('div'); row.className = `msg-row ${outgoing ? 'outgoing' : 'incoming'}`; row.dataset.messageId = String(msg.id); row.dataset.senderType = msg.sender_type;
+      const selectIndicator = document.createElement('span'); selectIndicator.className = 'message-select-indicator'; selectIndicator.setAttribute('aria-hidden', 'true'); selectIndicator.textContent = state.selectedMessageIds.has(String(msg.id)) ? '✓' : '';
       const indicator = document.createElement('div'); indicator.className = 'reply-indicator'; indicator.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>';
-      const wrap = document.createElement('div'); wrap.className = 'bubble-wrap'; wrap.appendChild(buildBubble(msg, outgoing)); row.append(indicator, wrap); attachSwipeReply(row, msg); attachContextMenu(row, msg); return row;
+      const wrap = document.createElement('div'); wrap.className = 'bubble-wrap'; wrap.appendChild(buildBubble(msg, outgoing)); row.append(selectIndicator, indicator, wrap);
+      row.classList.toggle('selected', state.selectedMessageIds.has(String(msg.id)));
+      row.addEventListener('click', e => { if (!state.messageSelectMode) return; e.preventDefault(); e.stopPropagation(); toggleSelectedMessage(String(msg.id)); }, true);
+      attachSwipeReply(row, msg); attachContextMenu(row, msg); return row;
     }
     function renderMessages(messages, keepPosition = true) {
-      const list = $('message-list'); const oldBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90; const previousTop = list.scrollTop; const frag = document.createDocumentFragment(); let lastDate = null;
+      const list = $('message-list');
+      const persistedIds = new Set(messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id)));
+      for (const id of [...state.selectedMessageIds]) if (!persistedIds.has(id)) state.selectedMessageIds.delete(id);
+      const oldBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 90; const previousTop = list.scrollTop; const frag = document.createDocumentFragment(); let lastDate = null;
       for (const msg of messages) { if (!lastDate || !sameDate(lastDate, msg.created_at)) { const divider = document.createElement('div'); divider.className = 'date-divider'; const span = document.createElement('span'); span.textContent = fmtDate(msg.created_at); divider.appendChild(span); frag.appendChild(divider); lastDate = msg.created_at; } frag.appendChild(makeMessageRow(msg)); }
-      list.replaceChildren(frag); if (oldBottom || messages.length < 2) scrollBottom(false); else if (keepPosition) list.scrollTop = previousTop;
+      if (!messages.length) { const empty = document.createElement('div'); empty.className = 'message-empty-state'; const strong = document.createElement('strong'); strong.textContent = 'No messages yet'; const hint = document.createElement('span'); hint.textContent = 'Messages sent here will appear in this conversation.'; empty.append(strong, hint); frag.appendChild(empty); }
+      list.replaceChildren(frag); list.classList.toggle('selection-mode', state.messageSelectMode); if (state.messageSelectMode) updateSelectionToolbar();
+      if (oldBottom || messages.length < 2) scrollBottom(false); else if (keepPosition) list.scrollTop = previousTop;
     }
     function messageSignature(messages) { return messages.map(m => `${m.id}|${m.content || ''}|${m.edited_at || ''}|${m.file_url || ''}|${m.reply_to_message_id || ''}|${m.created_at}`).join('\n'); }
     function addOrReplaceMessage(msg) { const idx = state.messages.findIndex(m => m.id === msg.id); if (idx >= 0) state.messages[idx] = msg; else state.messages.push(msg); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); renderMessages(state.messages, true); }
@@ -3439,7 +3636,7 @@
     // Swipe left on an individual message to start a reply. Vertical scrolling remains native.
     function attachSwipeReply(row, msg) {
       let sx = 0, sy = 0, dx = 0, tracking = false, vertical = false, triggered = false; const THRESHOLD = 62, MAX = 86;
-      row.addEventListener('touchstart', e => { if (e.touches.length !== 1) return; sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0; tracking = true; vertical = false; triggered = false; }, { passive: true });
+      row.addEventListener('touchstart', e => { if (state.messageSelectMode || e.touches.length !== 1) return; sx = e.touches[0].clientX; sy = e.touches[0].clientY; dx = 0; tracking = true; vertical = false; triggered = false; }, { passive: true });
       row.addEventListener('touchmove', e => { if (!tracking || e.touches.length !== 1) return; const x = e.touches[0].clientX, y = e.touches[0].clientY; dx = x - sx; const dy = y - sy; if (Math.abs(dy) > Math.abs(dx) * 1.25 && Math.abs(dy) > 7) { vertical = true; tracking = false; row.style.transform = ''; const indicator = row.querySelector('.reply-indicator'); indicator.style.opacity = '0'; return; } if (dx > 0) { row.style.transform = ''; return; } if (Math.abs(dx) > 9) { row.style.transition = 'none'; row.style.transform = `translateX(${Math.max(dx, -MAX)}px)`; const p = Math.min(Math.abs(dx) / THRESHOLD, 1); const indicator = row.querySelector('.reply-indicator'); indicator.style.opacity = String(p); indicator.style.transform = `translateY(-50%) scale(${.55 + .45 * p})`; if (Math.abs(dx) >= THRESHOLD && !triggered) { triggered = true; try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('light'); } catch { } } } }, { passive: true });
       const finish = () => { if (!tracking && !triggered) { row.style.transition = ''; return; } if (tracking && triggered && Math.abs(dx) >= THRESHOLD) startReply(msg); tracking = false; row.style.transition = 'transform .19s ease'; row.style.transform = ''; const ind = row.querySelector('.reply-indicator'); ind.style.opacity = '0'; ind.style.transform = 'translateY(-50%) scale(.55)'; setTimeout(() => { row.style.transition = ''; }, 210); };
       row.addEventListener('touchend', finish, { passive: true }); row.addEventListener('touchcancel', finish, { passive: true });
@@ -3448,9 +3645,9 @@
     const ctxMenu = $('ctx-menu'); let ctxMsg = null; let activePressTimer = null; let longPressTriggered = false;
     function isOwnMessage(msg) { return state.isOwner ? msg.sender_type === 'owner' : msg.sender_type === 'customer'; }
     function attachContextMenu(row, msg) {
-      row.addEventListener('touchstart', e => { if (e.touches.length !== 1 || e.target.closest('button,a,input,textarea,[contenteditable="true"]')) return; const x = e.touches[0].clientX, y = e.touches[0].clientY; longPressTriggered = false; clearTimeout(activePressTimer); activePressTimer = setTimeout(() => { longPressTriggered = true; openContextMenu(x, y, msg); try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch { } }, 480); }, { passive: true });
+      row.addEventListener('touchstart', e => { if (state.messageSelectMode || e.touches.length !== 1 || e.target.closest('button,a,input,textarea,[contenteditable="true"]')) return; const x = e.touches[0].clientX, y = e.touches[0].clientY; longPressTriggered = false; clearTimeout(activePressTimer); activePressTimer = setTimeout(() => { longPressTriggered = true; openContextMenu(x, y, msg); try { window.Telegram?.WebApp?.HapticFeedback?.impactOccurred('medium'); } catch { } }, 480); }, { passive: true });
       row.addEventListener('touchmove', () => clearTimeout(activePressTimer), { passive: true }); row.addEventListener('touchend', () => clearTimeout(activePressTimer), { passive: true }); row.addEventListener('touchcancel', () => clearTimeout(activePressTimer), { passive: true });
-      row.addEventListener('contextmenu', e => { e.preventDefault(); openContextMenu(e.clientX, e.clientY, msg); });
+      row.addEventListener('contextmenu', e => { e.preventDefault(); if (!state.messageSelectMode) openContextMenu(e.clientX, e.clientY, msg); });
       row.addEventListener('click', e => { if (longPressTriggered) { e.preventDefault(); e.stopPropagation(); longPressTriggered = false; } }, { capture: true });
     }
     function openContextMenu(x, y, msg) {
@@ -3461,7 +3658,98 @@
     function closeContextMenu() { ctxMenu.classList.remove('open'); if (ctxMsg) { const row = findMessageRow(ctxMsg.id); if (row) row.querySelector('.bubble').style.filter = ''; } ctxMsg = null; }
     document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) closeContextMenu(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContextMenu(); if (!$('image-viewer').classList.contains('hidden')) { closeImageViewer(); return; } if (!$('attachment-preview-overlay').classList.contains('hidden')) { closeAttachmentPreview(); return; } if ($('profile-panel').classList.contains('open')) closeProfile(); if ($('settings-panel').classList.contains('open')) closeSettings(); } });
     $('ctx-copy').addEventListener('click', async () => { const msg = ctxMsg; closeContextMenu(); if (!msg) return; const text = messageText(msg) || msg.file_name || ''; if (!text) { showToast('Nothing to copy'); return; } unlockAudio(); try { if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text); else throw new Error('Clipboard unavailable'); showToast('Copied'); } catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch { } ta.remove(); showToast(ok ? 'Copied' : 'Copy is unavailable in this browser'); } });
-    $('ctx-reply').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startReply(m); }); $('ctx-edit').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startEdit(m); }); $('ctx-delete').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) confirmDelete(m); });
+    $('ctx-reply').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startReply(m); }); $('ctx-select').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); setMessageSelectMode(true, true); if (m) toggleSelectedMessage(String(m.id)); }); $('ctx-edit').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startEdit(m); }); $('ctx-delete').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) confirmDelete(m); });
+
+
+    // Chat-level selection and history actions (shared history, like a private Telegram chat).
+    function updateSelectionToolbar() {
+      const ids = state.messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id));
+      const count = state.selectedMessageIds.size;
+      $('selection-count').textContent = `${count} selected`;
+      $('selection-delete-btn').disabled = count === 0 || state.isDeletingMessages;
+      const allSelected = ids.length > 0 && ids.every(id => state.selectedMessageIds.has(id));
+      $('selection-select-all-btn').setAttribute('aria-label', allSelected ? 'Deselect all messages' : 'Select all messages');
+      $('selection-select-all-btn').title = allSelected ? 'Deselect all' : 'Select all';
+    }
+    function setMessageSelectMode(enabled, rerender = true) {
+      state.messageSelectMode = Boolean(enabled);
+      if (!state.messageSelectMode) state.selectedMessageIds.clear();
+      $('chat-header').classList.toggle('select-mode', state.messageSelectMode);
+      $('active-chat').classList.toggle('selection-mode', state.messageSelectMode);
+      $('message-list').classList.toggle('selection-mode', state.messageSelectMode);
+      $('selection-toolbar').classList.toggle('hidden', !state.messageSelectMode);
+      $('chat-actions-menu').classList.add('hidden');
+      if (state.messageSelectMode) closeContextMenu();
+      updateSelectionToolbar();
+      if (rerender) renderMessages(state.messages, true);
+    }
+    function toggleSelectedMessage(id) {
+      if (!state.messageSelectMode || !id || id.startsWith('tmp_')) return;
+      if (state.selectedMessageIds.has(id)) state.selectedMessageIds.delete(id); else state.selectedMessageIds.add(id);
+      const row = findMessageRow(id); if (row) { const selected = state.selectedMessageIds.has(id); row.classList.toggle('selected', selected); const check = row.querySelector('.message-select-indicator'); if (check) check.textContent = selected ? '✓' : ''; }
+      updateSelectionToolbar();
+      try { window.Telegram?.WebApp?.HapticFeedback?.selectionChanged?.(); } catch { }
+    }
+    function confirmDestructiveAction(title, description, confirmLabel, onConfirm) {
+      const overlay = document.createElement('div'); overlay.className = 'overlay';
+      overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true"><div class="sheet-title"></div><p class="sheet-description"></p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="confirm"></button><button class="sheet-btn" type="button" data-action="cancel">Cancel</button></div></div>';
+      overlay.querySelector('.sheet-title').textContent = title; overlay.querySelector('.sheet-description').textContent = description; const confirmBtn = overlay.querySelector('[data-action="confirm"]'); confirmBtn.textContent = confirmLabel;
+      let busy = false;
+      const dismiss = () => { if (!busy) overlay.remove(); };
+      overlay.addEventListener('click', e => { if (e.target === overlay || e.target.closest('[data-action="cancel"]')) dismiss(); });
+      confirmBtn.addEventListener('click', async () => { if (busy) return; busy = true; confirmBtn.disabled = true; confirmBtn.textContent = 'Working…'; try { await onConfirm(confirmBtn, overlay); } catch (e) { busy = false; confirmBtn.disabled = false; confirmBtn.textContent = confirmLabel; showToast(e?.message || 'Action failed'); playError(); } });
+      document.body.appendChild(overlay); confirmBtn.focus(); return overlay;
+    }
+    function confirmDeleteSelectedMessages() {
+      const ids = [...state.selectedMessageIds].filter(id => state.messages.some(m => String(m.id) === id));
+      if (!ids.length) { showToast('Select at least one message'); return; }
+      const chatId = state.activeChatId; if (!chatId) return;
+      confirmDestructiveAction(`Delete ${ids.length} selected message${ids.length === 1 ? '' : 's'}?`, 'Selected messages will be permanently removed from this chat for both participants. This cannot be undone.', 'Delete selected', async (btn, overlay) => {
+        state.isDeletingMessages = true; updateSelectionToolbar(); let deletedCount = 0;
+        try {
+          for (let i = 0; i < ids.length; i += 500) {
+            if (state.activeChatId !== chatId) throw new Error('The active conversation changed. Reopen the chat to continue.');
+            const result = await callAPI({ action: 'delete_messages', chat_id: chatId, message_ids: ids.slice(i, i + 500) });
+            deletedCount += Number(result.deleted_count) || 0;
+          }
+          const removedSet = new Set(ids); for (const m of state.messages) if (removedSet.has(String(m.id)) && m.file_url) state.signedUrlCache.delete(m.file_url);
+          state.messages = state.messages.filter(m => !removedSet.has(String(m.id))); state.renderedMessageSignature = messageSignature(state.messages);
+          state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages(state.messages, false); overlay.remove();
+          showToast(`${deletedCount} message${deletedCount === 1 ? '' : 's'} deleted for both participants`); if (state.isOwner) void refreshOwnerList(false);
+        } catch (error) {
+          state.isDeletingMessages = false; setMessageSelectMode(false, false); overlay.remove();
+          try { if (state.activeChatId === chatId) await loadMessages(chatId); } catch { }
+          if (deletedCount) showToast(`${deletedCount} deleted; some messages could not be removed`); else throw error;
+        }
+      });
+    }
+    function confirmClearChatHistory() {
+      const chatId = state.activeChatId; if (!chatId) return;
+      $('chat-actions-menu').classList.add('hidden');
+      confirmDestructiveAction('Clear chat history?', 'Every message in this conversation will be permanently removed for both you and the other participant. Profiles and the conversation itself will remain. This cannot be undone.', 'Clear history', async (btn, overlay) => {
+        state.isDeletingMessages = true; btn.textContent = 'Clearing…';
+        try {
+          const result = await callAPI({ action: 'clear_chat_history', chat_id: chatId });
+          if (state.activeChatId !== chatId) { overlay.remove(); return; }
+          for (const m of state.messages) if (m.file_url) state.signedUrlCache.delete(m.file_url);
+          state.messages = []; state.renderedMessageSignature = ''; state.isDeletingMessages = false; setMessageSelectMode(false, false); renderMessages([], false); overlay.remove();
+          showToast(`Chat history cleared (${Number(result.deleted_count) || 0} messages)`); if (state.isOwner) void refreshOwnerList(false);
+        } catch (error) { state.isDeletingMessages = false; overlay.remove(); showToast(error?.message || 'Could not clear chat history'); playError(); }
+      });
+    }
+    $('chat-more-btn').addEventListener('click', e => { e.stopPropagation(); $('chat-actions-menu').classList.toggle('hidden'); });
+    document.addEventListener('click', e => { if (!e.target.closest('#chat-actions-menu') && !e.target.closest('#chat-more-btn')) $('chat-actions-menu').classList.add('hidden'); });
+    $('chat-select-messages-btn').addEventListener('click', () => setMessageSelectMode(true, true));
+    $('chat-clear-history-btn').addEventListener('click', confirmClearChatHistory);
+    $('selection-cancel-btn').addEventListener('click', () => setMessageSelectMode(false, true));
+    $('selection-select-all-btn').addEventListener('click', () => {
+      if (!state.messageSelectMode) return;
+      const ids = state.messages.filter(m => m?.id && !String(m.id).startsWith('tmp_')).map(m => String(m.id));
+      const allSelected = ids.length > 0 && ids.every(id => state.selectedMessageIds.has(id));
+      state.selectedMessageIds.clear(); if (!allSelected) for (const id of ids) state.selectedMessageIds.add(id);
+      renderMessages(state.messages, true);
+    });
+    $('selection-delete-btn').addEventListener('click', confirmDeleteSelectedMessages);
 
     function startReply(msg) { if (!state.activeChatId) return; state.replyTo = msg; state.editMsg = null; $('edit-bar').classList.remove('visible'); $('reply-bar').classList.add('visible'); $('reply-sender-label').textContent = getOtherSenderName(msg); $('reply-preview-text').textContent = messagePreview(msg).slice(0, 100); $('composer-input').focus({ preventScroll: true }); }
     function clearReply() { state.replyTo = null; $('reply-bar').classList.remove('visible'); }
@@ -3545,7 +3833,7 @@
     function stopChatPolling() { if (state.pollingTimer) clearInterval(state.pollingTimer); state.pollingTimer = null; }
     function startChatPolling(chatId) {
       stopChatPolling(); state.pollingTimer = setInterval(async () => {
-        if (state.activeChatId !== chatId || document.visibilityState === 'hidden') return; try {
+        if (state.activeChatId !== chatId || document.visibilityState === 'hidden' || state.isDeletingMessages) return; try {
           const data = await callAPI({ action: 'list_messages', chat_id: chatId }); if (state.activeChatId !== chatId) return; const messages = Array.isArray(data.messages) ? data.messages : []; const newIds = new Set(messages.map(m => m.id)); const oldIds = new Set(state.messages.map(m => m.id)); const oldMap = new Map(state.messages.map(m => [m.id, m])); const changed = messageSignature(messages) !== state.renderedMessageSignature; if (!changed) return; const incomingNew = messages.filter(m => !oldIds.has(m.id) && ((state.isOwner && m.sender_type !== 'owner') || (!state.isOwner && m.sender_type === 'owner'))); state.messages = messages; state.renderedMessageSignature = messageSignature(messages); renderMessages(messages, true); if (incomingNew.length) { playReceive(); if (state.isOwner) refreshOwnerList(false); } // render only when server data actually changed
         } catch {/* Temporary network errors do not clear the current conversation. */ }
       }, 3200);
@@ -3560,9 +3848,9 @@
     async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Conversations could not be loaded. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Retry'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
     function applySearch() { const q = $('search-input').value.trim().toLowerCase(); document.querySelectorAll('.chat-item').forEach(item => { const n = item.querySelector('.chat-item-name')?.textContent.toLowerCase() || ''; const p = item.querySelector('.chat-preview')?.textContent.toLowerCase() || ''; item.style.display = (!q || n.includes(q) || p.includes(q)) ? '' : 'none'; }); }
     $('search-input').addEventListener('input', applySearch);
-    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId) return; if (state.activeChatId === chatId) { hideSidebar(); return; } stopChatPolling(); state.activeChatId = chatId; state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); $('active-chat').classList.remove('hidden'); $('active-chat').style.display = 'flex'; $('header-name').textContent = name || 'Conversation'; $('header-status').textContent = profile?.username ? `@${String(profile.username).replace(/^@/, '')}` : 'Private conversation'; renderAvatar($('header-avatar'), name, avatarUrl); if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
+    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId) return; if (state.activeChatId === chatId) { hideSidebar(); return; } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); $('active-chat').classList.remove('hidden'); $('active-chat').style.display = 'flex'; $('header-name').textContent = name || 'Conversation'; $('header-status').textContent = profile?.username ? `@${String(profile.username).replace(/^@/, '')}` : 'Private conversation'; renderAvatar($('header-avatar'), name, avatarUrl); if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
     function hideSidebar() { if (window.innerWidth < 768) $('sidebar').classList.remove('mobile-open'); }
-    function backToConversations() { if (!state.isOwner) return; stopChatPolling(); state.lastLoadToken++; state.activeChatId = null; state.activeChatProfile = null; state.messages = []; state.replyTo = null; state.editMsg = null; $('active-chat').classList.add('hidden'); $('no-chat-placeholder').classList.remove('hidden'); document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active')); $('sidebar').classList.add('mobile-open'); }
+    function backToConversations() { if (!state.isOwner) return; setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.lastLoadToken++; state.activeChatId = null; state.activeChatProfile = null; state.messages = []; state.replyTo = null; state.editMsg = null; $('active-chat').classList.add('hidden'); $('no-chat-placeholder').classList.remove('hidden'); document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active')); $('sidebar').classList.add('mobile-open'); }
     $('back-btn').addEventListener('click', backToConversations);
 
     // Profile panel: customers edit their own application profile; owner can inspect a customer's profile read-only or edit the owner's own profile from the sidebar.
