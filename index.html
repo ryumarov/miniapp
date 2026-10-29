@@ -407,7 +407,31 @@
     .message-empty-state strong{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
     @media(max-width:767px){.chat-actions-menu{top:calc(var(--header-height) + 5px);right:6px}.selection-count{font-size:13px}.selection-toolbar .icon-btn{width:36px}}
 
-</style>
+
+    /* Owner-controlled copy/save deterrent (best effort; browsers cannot block screenshots completely). */
+    .msg-row.protected-content .bubble-text { user-select: none !important; -webkit-user-select: none !important; -webkit-touch-callout: none; }
+    .msg-row.protected-content .photo-message, .msg-row.protected-content img, .msg-row.protected-content video, .msg-row.protected-content audio {
+      -webkit-user-select: none; user-select: none; -webkit-user-drag: none; -webkit-touch-callout: none;
+    }
+    .protection-badge { display:inline-flex; align-items:center; gap:3px; color:var(--muted); font-size:10px; font-weight:650; }
+    .file-attach.protected-file { cursor:not-allowed; opacity:.88; }
+    .drop-overlay { position:absolute; z-index:70; inset:calc(var(--header-height) + 8px) 12px 92px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; border:2px dashed var(--accent); border-radius:22px; background:color-mix(in srgb, var(--bg) 86%, var(--accent)); color:var(--text); text-align:center; padding:24px; pointer-events:none; box-shadow:0 16px 48px rgba(0,0,0,.14); }
+    .drop-overlay.hidden { display:none!important; }
+    .drop-overlay strong { font-size:17px; }
+    .drop-overlay span { font-size:13px; color:var(--muted); }
+    .protection-description { font-size:12px; line-height:1.5; color:var(--muted); margin:0 0 10px; }
+    .protection-action { color:var(--accent-strong); }
+
+
+    #attachment-preview-overlay { align-items:center; justify-content:center; padding: max(14px, env(safe-area-inset-top,0px)) 12px max(14px, env(safe-area-inset-bottom,0px)); background:rgba(5,8,12,.58); -webkit-backdrop-filter:blur(7px); backdrop-filter:blur(7px); }
+    .attachment-preview-card { display:flex; flex-direction:column; width:min(620px, 100%); height:min(76dvh, 650px); min-height:280px; overflow:hidden; border:1px solid rgba(255,255,255,.14); border-radius:20px; background:#0b0e14; color:#fff; box-shadow:0 22px 80px rgba(0,0,0,.42); }
+    .attachment-preview-card .attachment-preview-stage { flex:1 1 auto; min-height:0; padding:10px; }
+    .attachment-preview-card #attachment-preview-img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; }
+    .attachment-preview-card .attachment-preview-footer { flex:0 0 auto; }
+    @media(max-width:767px) { .attachment-preview-card { width:min(560px,100%); height:min(72dvh,600px); min-height:250px; border-radius:18px; } .attachment-preview-card .attachment-preview-stage { padding:7px; } }
+    @media(max-height:520px) { .attachment-preview-card { height:calc(100dvh - 24px); min-height:220px; } .attachment-preview-card .attachment-preview-header { flex-basis:48px; height:48px; min-height:48px; } .attachment-preview-card .attachment-preview-footer { padding:8px 12px; } }
+
+  </style>
 </head>
 <body>
   <div id="loading-screen"><div class="spinner" aria-hidden="true"></div><p class="loading-text" id="loading-text">Telegram seansi tekshirilmoqda…</p></div>
@@ -446,7 +470,7 @@
           <div class="header-actions"><button class="icon-btn" id="chat-settings-btn" type="button" aria-label="Sozlamalar" title="Sozlamalar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15l1.4 1.1-1.4 2.4-1.7-.7a8 8 0 0 1-1.6.9l-.3 1.8h-2.8l-.3-1.8a8 8 0 0 1-1.6-.9l-1.7.7-1.4-2.4L7.1 13a7 7 0 0 1 0-2L5.7 9.9l1.4-2.4 1.7.7a8 8 0 0 1 1.6-.9l.3-1.8h2.8l.3 1.8a8 8 0 0 1 1.6.9l1.7-.7 1.4 2.4L19.4 11a7 7 0 0 1 0 2z" transform="translate(-1 0)"/></svg></button><button class="icon-btn" id="profile-btn" type="button" aria-label="Profil" title="Profil"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button><button class="icon-btn" id="chat-more-btn" type="button" aria-label="Chat amallari" title="Chat amallari"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button></div>
           <div id="selection-toolbar" class="selection-toolbar hidden" aria-label="Xabarlarni tanlash"><button class="icon-btn" id="selection-cancel-btn" type="button" aria-label="Tanlashni bekor qilish" title="Bekor qilish"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button><span id="selection-count" class="selection-count">0 ta tanlandi</span><button class="icon-btn" id="selection-select-all-btn" type="button" aria-label="Barcha xabarlarni tanlash" title="Barchasini tanlash"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m7 12 3.2 3.2L17 8.5"/></svg></button><button class="icon-btn" id="selection-delete-btn" type="button" aria-label="Tanlangan xabarlarni o‘chirish" title="Tanlanganlarni o‘chirish" disabled><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg></button></div>
         </header>
-        <div id="chat-actions-menu" class="chat-actions-menu hidden" role="menu" aria-label="Chat amallari"><button class="ctx-item" id="chat-select-messages-btn" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m7 12 3.2 3.2L17 8.5"/></svg>Xabarlarni tanlash</button><div class="ctx-divider"></div><button class="ctx-item destructive" id="chat-clear-history-btn" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg>Suhbat tarixini tozalash</button></div>
+        <div id="chat-actions-menu" class="chat-actions-menu hidden" role="menu" aria-label="Chat amallari"><button class="ctx-item owner-only-chat-action hidden" id="chat-protect-content-btn" type="button" role="menuitem">🔒 Saqlash va nusxalashni cheklash: o‘chiq</button><div class="ctx-divider owner-only-chat-action hidden" id="chat-protect-divider"></div><button class="ctx-item" id="chat-select-messages-btn" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m7 12 3.2 3.2L17 8.5"/></svg>Xabarlarni tanlash</button><div class="ctx-divider"></div><button class="ctx-item destructive" id="chat-clear-history-btn" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></svg>Suhbat tarixini tozalash</button></div>
         <div id="message-list" role="log" aria-live="polite" aria-label="Xabarlar"></div>
         <footer id="composer-wrap">
           <div id="reply-bar"><div class="bar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg></div><div class="bar-content"><div class="bar-label" id="reply-sender-label">Javob berish</div><div class="bar-text" id="reply-preview-text"></div></div><button class="icon-btn" id="cancel-reply-btn" type="button" aria-label="Javob yozishni bekor qilish"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
@@ -459,26 +483,29 @@
           </div><div id="upload-progress" role="status"></div>
         </footer>
       </section>
+      <div id="drop-overlay" class="drop-overlay hidden" aria-hidden="true"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5-5 5 5M12 5v12"/></svg><strong>Rasmni shu yerga tashlang</strong><span>Yuborishdan oldin rasmni ko‘rib chiqishingiz mumkin</span></div>
     </main>
   </div>
 
 
   <!-- Rasmni to‘liq ekranda ko‘rib chiqish va yuborishdan oldin izoh qo‘shish oynasi. -->
   <section id="attachment-preview-overlay" class="attachment-preview-overlay hidden" role="dialog" aria-modal="true" aria-label="Rasmni ko‘rib chiqish">
-    <div class="attachment-preview-header">
-      <button class="icon-btn" id="attachment-preview-cancel" type="button" aria-label="Rasmni bekor qilish" title="Bekor qilish">
-        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-      </button>
-      <div class="attachment-preview-title">Rasmni ko‘rib chiqish</div>
-      <button class="attachment-preview-send" id="attachment-preview-send-top" type="button" aria-label="Rasmni yuborish" title="Rasmni yuborish">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-      </button>
-    </div>
-    <div class="attachment-preview-stage"><img id="attachment-preview-img" alt="Tanlangan rasm ko‘rinishi"><div id="attachment-preview-loading" class="image-viewer-status hidden">Ko‘rib chiqish tayyorlanmoqda…</div></div>
-    <div class="attachment-preview-footer">
-      <div class="attachment-preview-file" id="attachment-preview-file"></div>
-      <textarea id="attachment-caption" rows="1" maxlength="4000" placeholder="Rasmga izoh yozing…" aria-label="Rasm izohi"></textarea>
-      <div class="attachment-preview-bottom"><span class="attachment-preview-hint" id="attachment-preview-hint">Rasm shu chatga yuboriladi</span><button class="attachment-send-label" id="attachment-preview-send" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>Rasmni yuborish</span></button></div>
+    <div class="attachment-preview-card">
+      <div class="attachment-preview-header">
+        <button class="icon-btn" id="attachment-preview-cancel" type="button" aria-label="Rasmni bekor qilish" title="Bekor qilish">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="attachment-preview-title">Rasmni ko‘rib chiqish</div>
+        <button class="attachment-preview-send" id="attachment-preview-send-top" type="button" aria-label="Rasmni yuborish" title="Rasmni yuborish">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </button>
+      </div>
+      <div class="attachment-preview-stage"><img id="attachment-preview-img" alt="Tanlangan rasm ko‘rinishi"><div id="attachment-preview-loading" class="image-viewer-status hidden">Ko‘rib chiqish tayyorlanmoqda…</div></div>
+      <div class="attachment-preview-footer">
+        <div class="attachment-preview-file" id="attachment-preview-file"></div>
+        <textarea id="attachment-caption" rows="1" maxlength="4000" placeholder="Rasmga izoh yozing…" aria-label="Rasm izohi"></textarea>
+        <div class="attachment-preview-bottom"><span class="attachment-preview-hint" id="attachment-preview-hint">Rasm shu chatga yuboriladi</span><button class="attachment-send-label" id="attachment-preview-send" type="button"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>Rasmni yuborish</span></button></div>
+      </div>
     </div>
   </section>
 
@@ -500,6 +527,7 @@
   <div id="ctx-menu" role="menu" aria-label="Xabar amallari">
     <button class="ctx-item" id="ctx-copy" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>Nusxalash</button>
     <button class="ctx-item" id="ctx-reply" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>Javob berish</button>
+    <button class="ctx-item hidden" id="ctx-protect-content" type="button" role="menuitem">🔒 Saqlash va nusxalashni cheklash</button>
     <button class="ctx-item" id="ctx-select" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m7 12 3.2 3.2L17 8.5"/></svg>Tanlash</button>
     <button class="ctx-item" id="ctx-edit" type="button" role="menuitem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>Tahrirlash</button>
     <div class="ctx-divider" id="ctx-divider"></div>
@@ -532,6 +560,12 @@
         </div>
         <div class="generated-link-meta">Havola Telegram’ni ochib, xabar matnini kiritadi. Xabarni qabul qiluvchi “Yuborish” tugmasini o‘zi bosadi. Yangi havola yaratilganda avvalgi havola ishlamay qoladi.</div>
       </div>
+    </div>
+    <div class="settings-section hidden" id="owner-content-protection">
+      <div class="settings-section-title">Kontent himoyasi</div>
+      <div class="settings-row"><span>Barcha chatlarda himoya</span><button class="toggle" id="protect-all-owner-content-toggle" type="button" role="switch" aria-label="Barcha chatlarda owner yuborgan kontentni himoyalash" aria-checked="false"></button></div>
+      <p class="protection-description">Yoqilganda barcha suhbatlarda siz yuborgan xabarlar nusxalash va faylni yuklab olishga qarshi qo‘shimcha cheklov bilan ko‘rsatiladi. Alohida suhbat yoki xabar uchun ham himoyani boshqarishingiz mumkin.</p>
+      <div class="panel-subtitle" id="content-protection-status" aria-live="polite"></div>
     </div>
     <div class="settings-section hidden" id="owner-notification-settings">
       <div class="settings-section-title">Telegram bot bildirishnomalari</div>
@@ -587,6 +621,7 @@
   const state = {
     initData:'', user:null, isOwner:false, myProfile:null, supportProfile:null, activeChatId:null, activeChatProfile:null,
     presenceSessionId: createPresenceSessionId(), presenceStatus: null, presenceTimer: null,
+    protectAllOwnerContent:false, activeChatProtection:false,
     chats:[], messages:[], replyTo:null, editMsg:null, contextTarget:null, messageSelectMode:false, selectedMessageIds:new Set(), isDeletingMessages:false,
     pollingTimer:null, ownerListTimer:null, isSending:false, isUploading:false,
     audioEnabled:true, soundSettings:{send:true,receive:true,error:true}, audioCtx:null, audioUnlocked:false,
@@ -868,7 +903,9 @@
   function makeFileCard(msg){
     const btn=document.createElement('button');btn.type='button';btn.className='file-attach';btn.dataset.filePath=String(msg.file_url||'');
     const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');icon.setAttribute('width','23');icon.setAttribute('height','23');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','1.8');icon.setAttribute('stroke-linecap','round');icon.setAttribute('stroke-linejoin','round');icon.innerHTML='<path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M13 2v7h7"/>';
-    const info=document.createElement('div');info.className='file-attach-info';const name=document.createElement('div');name.className='file-attach-name';name.textContent=msg.file_name||'Biriktirilgan fayl';const type=document.createElement('div');type.className='file-attach-size';type.textContent=prettyFileType(msg.file_type,msg.file_name);info.append(name,type);btn.append(icon,info);btn.addEventListener('click',async()=>{btn.disabled=true;try{const url=await signedFileUrl(btn.dataset.filePath);if(url)window.open(url,'_blank','noopener,noreferrer');else showToast('Fayl mavjud emas.');}catch(e){showToast(uiError(e.message)||'Faylni ochib bo‘lmadi.');playError();}finally{btn.disabled=false;}});return btn;
+    const info=document.createElement('div');info.className='file-attach-info';const name=document.createElement('div');name.className='file-attach-name';name.textContent=msg.content_protected&&!state.isOwner?'🔒 Himoyalangan fayl':(msg.file_name||'Biriktirilgan fayl');const type=document.createElement('div');type.className='file-attach-size';type.textContent=msg.content_protected&&!state.isOwner?'Egasi yuklab olishni cheklagan':prettyFileType(msg.file_type,msg.file_name);info.append(name,type);btn.append(icon,info);
+    if(msg.content_protected&&!state.isOwner){btn.classList.add('protected-file');btn.setAttribute('aria-label','Egasi yuklab olishni cheklagan fayl');btn.addEventListener('click',()=>showToast('Egasi bu faylni yuklab olishni cheklagan.'));}
+    else btn.addEventListener('click',async()=>{btn.disabled=true;try{const url=await signedFileUrl(btn.dataset.filePath);if(url)window.open(url,'_blank','noopener,noreferrer');else showToast('Fayl mavjud emas.');}catch(e){showToast(uiError(e.message)||'Faylni ochib bo‘lmadi.');playError();}finally{btn.disabled=false;}});return btn;
   }
   function makeImageMessage(msg){
     const btn=document.createElement('button');btn.type='button';btn.className='photo-message';btn.setAttribute('aria-label',`Rasmni ko‘rish: ${msg.file_name||'Rasm'}`);btn.title='Rasmni ko‘rish';
@@ -992,11 +1029,12 @@
       receipt.title=msg.read_at?`Foydalanuvchi ${fmtTime(msg.read_at)} da o‘qigan`:'Foydalanuvchi chatni hali ochib, xabarni o‘qimagan';
       meta.appendChild(receipt);
     }
+    if(msg.content_protected){const protectedMark=document.createElement('span');protectedMark.className='protection-badge';protectedMark.textContent='🔒 Himoyalangan';protectedMark.title='Egasi nusxalash va saqlashni cheklagan';meta.appendChild(protectedMark);}
     if(msg._sending){const sending=document.createElement('span');sending.textContent='Yuborilmoqda';meta.appendChild(sending);}else if(msg._failed){const fail=document.createElement('span');fail.style.color='var(--danger)';fail.textContent='Yuborilmadi';meta.appendChild(fail);}
     bubble.appendChild(meta);return bubble;
   }
   function openImageViewer(msg){
-    state.viewerMessage=msg;$('image-viewer-title').textContent=msg.file_name||'Rasm';$('image-viewer-caption').textContent=messageText(msg);$('image-viewer-status').textContent='Rasm yuklanmoqda…';$('image-viewer-status').classList.remove('hidden');$('viewer-image').classList.add('hidden');$('viewer-image').classList.remove('zoomed');$('viewer-image').removeAttribute('src');$('image-viewer').classList.remove('hidden');
+    state.viewerMessage=msg;$('image-viewer-open-original').classList.toggle('hidden',Boolean(msg.content_protected&&!state.isOwner));$('image-viewer-title').textContent=msg.file_name||'Rasm';$('image-viewer-caption').textContent=messageText(msg);$('image-viewer-status').textContent='Rasm yuklanmoqda…';$('image-viewer-status').classList.remove('hidden');$('viewer-image').classList.add('hidden');$('viewer-image').classList.remove('zoomed');$('viewer-image').removeAttribute('src');$('image-viewer').classList.remove('hidden');
     signedFileUrl(msg.file_url).then(url=>{if(state.viewerMessage?.id!==msg.id)return;if(!url)throw new Error('Rasm mavjud emas');state.viewerUrl=url;$('viewer-image').src=url;}).catch(e=>{if(state.viewerMessage?.id===msg.id){$('image-viewer-status').textContent=uiError(e.message)||'Rasmni yuklab bo‘lmadi.';playError();}});
   }
   function closeImageViewer(){ $('image-viewer').classList.add('hidden');$('viewer-image').removeAttribute('src');$('viewer-image').classList.remove('zoomed');state.viewerMessage=null;state.viewerUrl=null; }
@@ -1009,7 +1047,7 @@
 
   function makeMessageRow(msg){
     const outgoing=state.isOwner?msg.sender_type==='owner':msg.sender_type==='customer';
-    const row=document.createElement('div');row.className=`msg-row ${outgoing?'outgoing':'incoming'}`;row.dataset.messageId=String(msg.id);row.dataset.senderType=msg.sender_type;
+    const row=document.createElement('div');row.className=`msg-row ${outgoing?'outgoing':'incoming'}`;if(msg.content_protected&&!state.isOwner)row.classList.add('protected-content');row.dataset.messageId=String(msg.id);row.dataset.senderType=msg.sender_type;
     const selectIndicator=document.createElement('span');selectIndicator.className='message-select-indicator';selectIndicator.setAttribute('aria-hidden','true');selectIndicator.textContent=state.selectedMessageIds.has(String(msg.id))?'✓':'';
     const indicator=document.createElement('div');indicator.className='reply-indicator';indicator.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>';
     const wrap=document.createElement('div');wrap.className='bubble-wrap';wrap.appendChild(buildBubble(msg,outgoing));row.append(selectIndicator,indicator,wrap);
@@ -1027,7 +1065,7 @@
     list.replaceChildren(frag);list.classList.toggle('selection-mode',state.messageSelectMode);if(state.messageSelectMode)updateSelectionToolbar();
     if(oldBottom||messages.length<2)scrollBottom(false);else if(keepPosition)list.scrollTop=previousTop;
   }
-  function messageSignature(messages){return messages.map(m=>`${m.id}|${m.content||''}|${m.edited_at||''}|${m.file_url||''}|${m.reply_to_message_id||''}|${m.created_at}|${m.read_at||''}`).join('\n');}
+  function messageSignature(messages){return messages.map(m=>`${m.id}|${m.content||''}|${m.edited_at||''}|${m.file_url||''}|${m.reply_to_message_id||''}|${m.created_at}|${m.read_at||''}|${m.content_protected?'protected':'open'}|${m.protect_content?'single-protected':'single-open'}`).join('\n');}
   function addOrReplaceMessage(msg){const idx=state.messages.findIndex(m=>m.id===msg.id);if(idx>=0)state.messages[idx]=msg;else state.messages.push(msg);state.messages.sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));renderMessages(state.messages,true);}
   function setComposerEnabled(value){$('composer-input').contentEditable=value?'true':'false';$('attach-btn').disabled=!value;$('send-btn').disabled=!value||!$('composer-input').innerText.trim()||state.isSending||state.isUploading;}
 
@@ -1047,13 +1085,13 @@
     row.addEventListener('contextmenu',e=>{e.preventDefault();if(!state.messageSelectMode)openContextMenu(e.clientX,e.clientY,msg);});
     row.addEventListener('click',e=>{if(longPressTriggered){e.preventDefault();e.stopPropagation();longPressTriggered=false;}},{capture:true});
   }
-  function openContextMenu(x,y,msg){ctxMsg=msg;const own=isOwnMessage(msg)&&!String(msg.id).startsWith('tmp_');$('ctx-edit').hidden=!own||!messageText(msg);$('ctx-delete').hidden=!own;$('ctx-divider').hidden=!own;
+  function openContextMenu(x,y,msg){ctxMsg=msg;const own=isOwnMessage(msg)&&!String(msg.id).startsWith('tmp_');const ownerSent=state.isOwner&&msg.sender_type==='owner'&&!String(msg.id).startsWith('tmp_');$('ctx-edit').hidden=!own||!messageText(msg);$('ctx-delete').hidden=!own;$('ctx-divider').hidden=!own;$('ctx-protect-content').classList.toggle('hidden',!ownerSent);$('ctx-protect-content').textContent=msg.protect_content?'🔓 Ushbu xabar himoyasini o‘chirish':'🔒 Saqlash va nusxalashni cheklash';$('ctx-copy').hidden=Boolean(msg.content_protected&&!state.isOwner);
     ctxMenu.classList.add('open');ctxMenu.style.left='0px';ctxMenu.style.top='0px';const rect=ctxMenu.getBoundingClientRect();const left=Math.max(8,Math.min(x,window.innerWidth-rect.width-8));let top=y;if(top+rect.height>window.innerHeight-8)top=Math.max(8,y-rect.height);ctxMenu.style.left=`${left}px`;ctxMenu.style.top=`${Math.max(8,top)}px`;
     const row=findMessageRow(msg.id);row?.classList.add('menu-target');if(row)row.querySelector('.bubble').style.filter='brightness(.88)';
   }
   function closeContextMenu(){ctxMenu.classList.remove('open');if(ctxMsg){const row=findMessageRow(ctxMsg.id);if(row)row.querySelector('.bubble').style.filter='';}ctxMsg=null;}
   document.addEventListener('click',e=>{if(!ctxMenu.contains(e.target))closeContextMenu();});document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContextMenu();if(!$('image-viewer').classList.contains('hidden')){closeImageViewer();return;}if(!$('attachment-preview-overlay').classList.contains('hidden')){closeAttachmentPreview();return;}if($('profile-panel').classList.contains('open'))closeProfile();if($('settings-panel').classList.contains('open'))closeSettings();}});
-  $('ctx-copy').addEventListener('click',async()=>{const msg=ctxMsg;closeContextMenu();if(!msg)return;const text=messageText(msg)||msg.file_name||'';if(!text){showToast('Nusxalash uchun matn yo‘q.');return;}unlockAudio();try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);else throw new Error('Clipboard unavailable');showToast('Nusxalandi');}catch{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch{}ta.remove();showToast(ok?'Nusxalandi':'Bu brauzerda nusxalash imkoni yo‘q.');}});
+  $('ctx-copy').addEventListener('click',async()=>{const msg=ctxMsg;closeContextMenu();if(!msg)return;if(msg.content_protected&&!state.isOwner){showToast('Bu xabardan nusxa olish egasi tomonidan cheklangan.');return;}const text=messageText(msg)||msg.file_name||'';if(!text){showToast('Nusxalash uchun matn yo‘q.');return;}unlockAudio();try{if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(text);else throw new Error('Clipboard unavailable');showToast('Nusxalandi');}catch{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand('copy');}catch{}ta.remove();showToast(ok?'Nusxalandi':'Bu brauzerda nusxalash imkoni yo‘q.');}});
   $('ctx-reply').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)startReply(m);});$('ctx-select').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();setMessageSelectMode(true,true);if(m)toggleSelectedMessage(String(m.id));});$('ctx-edit').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)startEdit(m);});$('ctx-delete').addEventListener('click',()=>{const m=ctxMsg;closeContextMenu();if(m)confirmDelete(m);});
 
 
@@ -1086,6 +1124,13 @@
     updateSelectionToolbar();
     try{window.Telegram?.WebApp?.HapticFeedback?.selectionChanged?.();}catch{}
   }
+  $('ctx-protect-content').addEventListener('click',async()=>{
+    const msg=ctxMsg;closeContextMenu();if(!state.isOwner||!msg||msg.sender_type!=='owner'||String(msg.id).startsWith('tmp_'))return;
+    const enabled=!Boolean(msg.protect_content);
+    try{const result=await callAPI({action:'set_message_content_protection',message_id:msg.id,enabled});msg.protect_content=Boolean(result.protect_content);msg.content_protected=state.protectAllOwnerContent||state.activeChatProtection||msg.protect_content;state.renderedMessageSignature=messageSignature(state.messages);renderMessages(state.messages,true);showToast(msg.protect_content?'Xabar himoyalandi.':'Xabar himoyasi o‘chirildi.');}
+    catch(error){showToast(uiError(error.message)||'Xabar himoyasini o‘zgartirib bo‘lmadi.');playError();}
+  });
+
   function confirmDestructiveAction(title,description,confirmLabel,onConfirm){
     const overlay=document.createElement('div');overlay.className='overlay';
     overlay.innerHTML='<div class="sheet" role="dialog" aria-modal="true"><div class="sheet-title"></div><p class="sheet-description"></p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="confirm"></button><button class="sheet-btn" type="button" data-action="cancel">Bekor qilish</button></div></div>';
@@ -1141,7 +1186,13 @@
   const composer=$('composer-input');function composerText(){return (composer.innerText||composer.textContent||'').replace(/\r/g,'').replace(/\u00a0/g,' ').trim();}
   function updateSendButton(){const hasText=!!composerText();$('send-btn').disabled=!state.activeChatId||(!hasText&&!state.editMsg)||state.isSending||state.isUploading;}
   composer.addEventListener('input',updateSendButton);composer.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&window.innerWidth>=768){e.preventDefault();doSend();}});
-  composer.addEventListener('paste',e=>{e.preventDefault();const text=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,text);});
+  composer.addEventListener('paste',e=>{
+    const clipboard=e.clipboardData||window.clipboardData;
+    const imageItem=[...(clipboard?.items||[])].find(item=>item.kind==='file'&&String(item.type||'').startsWith('image/'));
+    const pastedImage=imageItem?.getAsFile?.();
+    if(pastedImage){e.preventDefault();const ext=(pastedImage.type.split('/')[1]||'png').replace('jpeg','jpg');const file=new File([pastedImage],`clipboard-rasm-${Date.now()}.${ext}`,{type:pastedImage.type||'image/png'});void handleIncomingFile(file);return;}
+    e.preventDefault();const text=clipboard?.getData('text/plain')||'';document.execCommand('insertText',false,text);
+  });
   $('send-btn').addEventListener('click',doSend);
   async function doSend(){if(state.isSending||state.isUploading||!state.activeChatId)return;unlockAudio();const content=composerText();const editId=state.editMsg?.id||null;const replyId=state.replyTo?.id||null;if(editId&&!content){showToast('Xabar matni bo‘sh bo‘lmasligi kerak.');return;}if(!editId&&!content)return;if(content.length>4000){showToast('Xabar 4 000 belgidan oshmasligi kerak.');return;}
     state.isSending=true;updateSendButton();const previousEdit=state.editMsg;
@@ -1172,8 +1223,15 @@
   $('attachment-preview-send').addEventListener('click',sendPendingPhoto);
   $('attachment-preview-send-top').addEventListener('click',sendPendingPhoto);
   async function sendPendingPhoto(){const file=state.pendingAttachment;if(!file||state.isUploading)return;await uploadAndSendFile(file,$('attachment-caption').value,true);}
-  $('attach-btn').addEventListener('click',()=>{if(!state.activeChatId||state.isUploading)return;$('file-input').click();});
-  $('file-input').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(!state.activeChatId)return;if(file.size>MAX_FILE_BYTES){showToast('Fayl hajmi 10 MB dan oshmasligi kerak.');return;}const type=(file.type||'').toLowerCase();if(!ALLOWED_TYPES.has(type)){showToast('Bu fayl turi qo‘llab-quvvatlanmaydi.');return;}unlockAudio();if(isImageFile(file)){openAttachmentPreview(file);return;}await uploadAndSendFile(file,'',false);});
+  $('attach-btn').addEventListener('click',()=>$('file-input').click());
+  async function handleIncomingFile(file){if(!file)return;if(!state.activeChatId){showToast('Avval suhbatni oching.');return;}if(file.size>MAX_FILE_BYTES){showToast('Fayl hajmi 10 MB dan oshmasligi kerak.');return;}const type=(file.type||'').toLowerCase();if(!ALLOWED_TYPES.has(type)){showToast('Bu fayl turi qo‘llab-quvvatlanmaydi.');return;}unlockAudio();if(isImageFile(file)){openAttachmentPreview(file);return;}await uploadAndSendFile(file,'',false);}
+  $('file-input').addEventListener('change',async e=>{const file=e.target.files?.[0];e.target.value='';await handleIncomingFile(file);});
+  const chatPanelForDrop=$('chat-panel');let activeDragDepth=0;
+  function hasFileDrag(e){return Array.from(e.dataTransfer?.types||[]).includes('Files');}
+  chatPanelForDrop.addEventListener('dragenter',e=>{if(!state.activeChatId||!hasFileDrag(e))return;e.preventDefault();activeDragDepth++;$('drop-overlay').classList.remove('hidden');});
+  chatPanelForDrop.addEventListener('dragover',e=>{if(!state.activeChatId||!hasFileDrag(e))return;e.preventDefault();if(e.dataTransfer)e.dataTransfer.dropEffect='copy';});
+  chatPanelForDrop.addEventListener('dragleave',e=>{if(!hasFileDrag(e))return;activeDragDepth=Math.max(0,activeDragDepth-1);if(activeDragDepth===0)$('drop-overlay').classList.add('hidden');});
+  chatPanelForDrop.addEventListener('drop',e=>{if(!hasFileDrag(e))return;e.preventDefault();activeDragDepth=0;$('drop-overlay').classList.add('hidden');const files=[...(e.dataTransfer?.files||[])];if(files.length>1)showToast('Hozircha bir vaqtda bitta fayl tashlang.');if(files[0])void handleIncomingFile(files[0]);});
 
   async function uploadAndSendFile(file,caption='',fromPreview=false){
     if(!state.activeChatId||state.isUploading)return;
@@ -1207,14 +1265,14 @@
     }catch{/* Temporary network errors do not clear the current conversation. */}},3200);}
 
   function chatLatestMessage(chat){const messages=Array.isArray(chat.messages)?chat.messages:[];return messages.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]||null;}
-  function chatListSignature(chats){return chats.map(c=>{const p=getChatProfile(c),m=chatLatestMessage(c);return `${c.id}|${p?.first_name||p?.display_name||''}|${p?.avatar_url||''}|${p?.is_online?'on':'off'}|${p?.last_seen_at||''}|${m?.id||''}|${m?.content||''}|${m?.created_at||''}|${m?.read_at||''}`;}).join('\n');}
+  function chatListSignature(chats){return chats.map(c=>{const p=getChatProfile(c),m=chatLatestMessage(c);return `${c.id}|${p?.first_name||p?.display_name||''}|${p?.avatar_url||''}|${p?.is_online?'on':'off'}|${p?.last_seen_at||''}|${m?.id||''}|${m?.content||''}|${m?.created_at||''}|${m?.read_at||''}|${c.protect_owner_content?'chat-protected':'chat-open'}|${m?.protect_content?'last-protected':'last-open'}`;}).join('\n');}
   function renderChatList(chats){const list=$('chat-list');const active=state.activeChatId;list.replaceChildren();if(!chats.length){const empty=document.createElement('div');empty.className='empty-list';empty.textContent='Hozircha suhbatlar yo‘q';list.appendChild(empty);return;}
     const sorted=[...chats].sort((a,b)=>new Date(chatLatestMessage(b)?.created_at||b.created_at)-new Date(chatLatestMessage(a)?.created_at||a.created_at));for(const chat of sorted){const profile=getChatProfile(chat);const name=personName(profile,null,`Mijoz ${String(chat.id).slice(0,6)}`);const latest=chatLatestMessage(chat);const item=document.createElement('div');item.className='chat-item'+(chat.id===active?' active':'')+(profile?.is_online?' is-online':'');item.dataset.chatId=chat.id;item.tabIndex=0;item.setAttribute('role','button');item.setAttribute('aria-label',`${name} bilan suhbatni ochish${profile?.is_online?', hozir onlayn':`, oxirgi faollik ${fmtLastSeen(profile?.last_seen_at)}`}`);const avatar=document.createElement('div');avatar.className='avatar'+(profile?.is_online?' is-online':'');avatar.title=profile?.is_online?'Onlayn':`Oxirgi faollik: ${fmtLastSeen(profile?.last_seen_at)}`;renderAvatar(avatar,name,profile?.avatar_url);const body=document.createElement('div');body.className='chat-item-body';const top=document.createElement('div');top.className='chat-item-top';const nm=document.createElement('div');nm.className='chat-item-name';nm.textContent=name;const time=document.createElement('div');time.className='chat-time';time.textContent=latest?fmtTime(latest.created_at):'';top.append(nm,time);const preview=document.createElement('div');preview.className='chat-preview';preview.textContent=latest?messagePreview(latest):'Hozircha xabar yo‘q';body.append(top,preview);item.append(avatar,body);const open=()=>openChat(chat.id,name,profile?.avatar_url,profile);item.addEventListener('click',open);item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}});list.appendChild(item);}
   }
-  async function refreshOwnerList(force=true){if(!state.isOwner)return;try{const data=await callAPI({action:'list_chats'});const chats=Array.isArray(data.chats)?data.chats:[];const sig=chatListSignature(chats);state.chats=chats;if(force||sig!==state.ownerListSignature){state.ownerListSignature=sig;renderChatList(chats);$('search-wrap').classList.remove('hidden');applySearch();}if(state.activeChatId){const active=chats.find(c=>c.id===state.activeChatId);const latestProfile=active?getChatProfile(active):null;if(latestProfile){state.activeChatProfile=latestProfile;updateOwnerPresence(latestProfile);}}}catch(e){if(force){$('chat-list').replaceChildren();const el=document.createElement('div');el.className='empty-list';el.textContent='Suhbatlarni yuklab bo‘lmadi. ';const btn=document.createElement('button');btn.type='button';btn.style.color='var(--accent)';btn.textContent='Qayta yuklash';btn.addEventListener('click',()=>refreshOwnerList(true));el.appendChild(btn);$('chat-list').appendChild(el);}}}
+  async function refreshOwnerList(force=true){if(!state.isOwner)return;try{const data=await callAPI({action:'list_chats'});const chats=Array.isArray(data.chats)?data.chats:[];const sig=chatListSignature(chats);state.chats=chats;if(force||sig!==state.ownerListSignature){state.ownerListSignature=sig;renderChatList(chats);$('search-wrap').classList.remove('hidden');applySearch();}if(state.activeChatId){const active=chats.find(c=>c.id===state.activeChatId);if(active){state.activeChatProtection=Boolean(active.protect_owner_content);syncChatProtectionButton();}const latestProfile=active?getChatProfile(active):null;if(latestProfile){state.activeChatProfile=latestProfile;updateOwnerPresence(latestProfile);}}}catch(e){if(force){$('chat-list').replaceChildren();const el=document.createElement('div');el.className='empty-list';el.textContent='Suhbatlarni yuklab bo‘lmadi. ';const btn=document.createElement('button');btn.type='button';btn.style.color='var(--accent)';btn.textContent='Qayta yuklash';btn.addEventListener('click',()=>refreshOwnerList(true));el.appendChild(btn);$('chat-list').appendChild(el);}}}
   function applySearch(){const q=$('search-input').value.trim().toLowerCase();document.querySelectorAll('.chat-item').forEach(item=>{const n=item.querySelector('.chat-item-name')?.textContent.toLowerCase()||'';const p=item.querySelector('.chat-preview')?.textContent.toLowerCase()||'';item.style.display=(!q||n.includes(q)||p.includes(q))?'':'none';});}
   $('search-input').addEventListener('input',applySearch);
-  async function openChat(chatId,name,avatarUrl,profile=null){if(!chatId)return;if(state.activeChatId===chatId){hideSidebar();return;}setMessageSelectMode(false,false);$('chat-actions-menu').classList.add('hidden');stopChatPolling();state.activeChatId=chatId;state.activeChatProfile=profile;state.replyTo=null;state.editMsg=null;$('reply-bar').classList.remove('visible');$('edit-bar').classList.remove('visible');composer.textContent='';updateSendButton();$('no-chat-placeholder').classList.add('hidden');$('active-chat').classList.remove('hidden');$('active-chat').style.display='flex';$('header-name').textContent=name||'Suhbat';renderAvatar($('header-avatar'),name,avatarUrl);if(state.isOwner)updateOwnerPresence(profile);else{$('header-status').classList.remove('is-online');$('header-status').textContent=getSupportLabel(state.supportProfile||profile);$('header-avatar').classList.remove('is-online');}if(window.innerWidth<768&&state.isOwner)hideSidebar();document.querySelectorAll('.chat-item').forEach(el=>el.classList.toggle('active',el.dataset.chatId===chatId));await loadMessages(chatId);if(state.activeChatId===chatId)startChatPolling(chatId);}
+  async function openChat(chatId,name,avatarUrl,profile=null){if(!chatId)return;if(state.activeChatId===chatId){hideSidebar();return;}setMessageSelectMode(false,false);$('chat-actions-menu').classList.add('hidden');stopChatPolling();state.activeChatId=chatId;state.activeChatProtection=Boolean(state.chats.find(c=>c.id===chatId)?.protect_owner_content);syncChatProtectionButton();state.activeChatProfile=profile;state.replyTo=null;state.editMsg=null;$('reply-bar').classList.remove('visible');$('edit-bar').classList.remove('visible');composer.textContent='';updateSendButton();$('no-chat-placeholder').classList.add('hidden');$('active-chat').classList.remove('hidden');$('active-chat').style.display='flex';$('header-name').textContent=name||'Suhbat';renderAvatar($('header-avatar'),name,avatarUrl);if(state.isOwner)updateOwnerPresence(profile);else{$('header-status').classList.remove('is-online');$('header-status').textContent=getSupportLabel(state.supportProfile||profile);$('header-avatar').classList.remove('is-online');}if(window.innerWidth<768&&state.isOwner)hideSidebar();document.querySelectorAll('.chat-item').forEach(el=>el.classList.toggle('active',el.dataset.chatId===chatId));await loadMessages(chatId);if(state.activeChatId===chatId)startChatPolling(chatId);}
   function hideSidebar(){if(window.innerWidth<768)$('sidebar').classList.remove('mobile-open');}
   function backToSuhbats(){if(!state.isOwner)return;setMessageSelectMode(false,false);$('chat-actions-menu').classList.add('hidden');stopChatPolling();state.lastLoadToken++;state.activeChatId=null;state.activeChatProfile=null;state.messages=[];state.replyTo=null;state.editMsg=null;$('active-chat').classList.add('hidden');$('no-chat-placeholder').classList.remove('hidden');document.querySelectorAll('.chat-item').forEach(el=>el.classList.remove('active'));$('sidebar').classList.add('mobile-open');}
   $('back-btn').addEventListener('click',backToSuhbats);
@@ -1297,6 +1355,26 @@
     }
   }
 
+  async function loadContentProtectionSettings(){
+    if(!state.isOwner)return;
+    const status=$('content-protection-status');status.textContent='Yuklanmoqda…';
+    try{const result=await callAPI({action:'get_content_protection_settings'});state.protectAllOwnerContent=Boolean(result.settings?.protect_all_owner_content);setToggle('protect-all-owner-content-toggle',state.protectAllOwnerContent);status.textContent=state.protectAllOwnerContent?'Barcha chatlar uchun himoya yoqilgan.':'Umumiy himoya o‘chiq. Chat yoki alohida xabar uchun himoya yoqishingiz mumkin.';}
+    catch(error){status.textContent=uiError(error.message)||'Himoya sozlamalarini yuklab bo‘lmadi.';}
+  }
+  $('protect-all-owner-content-toggle').addEventListener('click',async()=>{
+    if(!state.isOwner)return;const toggle=$('protect-all-owner-content-toggle');const previous=state.protectAllOwnerContent;const enabled=toggle.getAttribute('aria-checked')!=='true';toggle.disabled=true;setToggle('protect-all-owner-content-toggle',enabled);$('content-protection-status').textContent='Saqlanmoqda…';
+    try{const result=await callAPI({action:'save_content_protection_settings',enabled});state.protectAllOwnerContent=Boolean(result.settings?.protect_all_owner_content);setToggle('protect-all-owner-content-toggle',state.protectAllOwnerContent);$('content-protection-status').textContent=state.protectAllOwnerContent?'Barcha chatlarda himoya yoqildi.':'Umumiy himoya o‘chirildi.';showToast(state.protectAllOwnerContent?'Barcha chatlarda himoya yoqildi.':'Umumiy himoya o‘chirildi.');if(state.activeChatId)await loadMessages(state.activeChatId);}
+    catch(error){state.protectAllOwnerContent=previous;setToggle('protect-all-owner-content-toggle',previous);$('content-protection-status').textContent=uiError(error.message)||'Himoya sozlamasini saqlab bo‘lmadi.';playError();}
+    finally{toggle.disabled=false;}
+  });
+  function syncChatProtectionButton(){const btn=$('chat-protect-content-btn');if(!btn)return;btn.classList.toggle('hidden',!state.isOwner||!state.activeChatId);btn.textContent=state.activeChatProtection?'🔒 Bu suhbatda himoya: yoqilgan':'🔓 Bu suhbatda himoya: o‘chiq';btn.setAttribute('aria-checked',String(state.activeChatProtection));}
+  $('chat-protect-content-btn').addEventListener('click',async()=>{
+    if(!state.isOwner||!state.activeChatId)return;const chatId=state.activeChatId;const enabled=!state.activeChatProtection;const btn=$('chat-protect-content-btn');btn.disabled=true;
+    try{const result=await callAPI({action:'set_chat_content_protection',chat_id:chatId,enabled});state.activeChatProtection=Boolean(result.protect_owner_content);const found=state.chats.find(c=>c.id===chatId);if(found)found.protect_owner_content=state.activeChatProtection;syncChatProtectionButton();$('chat-actions-menu').classList.add('hidden');showToast(state.activeChatProtection?'Ushbu suhbat uchun himoya yoqildi.':'Ushbu suhbat himoyasi o‘chirildi.');if(state.isOwner)await refreshOwnerList(false);}
+    catch(error){showToast(uiError(error.message)||'Suhbat himoyasini saqlab bo‘lmadi.');playError();}
+    finally{btn.disabled=false;}
+  });
+
   $('notification-settings-save').addEventListener('click', async () => {
     if (!state.isOwner) return;
     const button = $('notification-settings-save');
@@ -1328,7 +1406,7 @@
     closeProfile();
     settingsPanel.classList.add('open');
     syncSoundToggles();
-    if (state.isOwner) void loadNotificationSettings();
+    if (state.isOwner) { void loadNotificationSettings(); void loadContentProtectionSettings(); }
   }
   $('settings-btn').addEventListener('click', openSettingsPanel);
   $('chat-settings-btn').addEventListener('click', openSettingsPanel);
@@ -1341,7 +1419,8 @@
 
   // Avoid browser context menus on the app surface while keeping normal editing and paste in controls.
   document.addEventListener('contextmenu',e=>{if(e.target.closest('.msg-row')){e.preventDefault();return;}if(!e.target.closest('input,textarea,[contenteditable="true"]'))e.preventDefault();});
-  document.addEventListener('selectstart',e=>{if(e.target.closest('.msg-row,.chat-item,.date-divider,.header-identity,.sidebar-header,.panel-header,.ctx-menu,.settings-row')&&!e.target.closest('.bubble-text'))e.preventDefault();});
+  document.addEventListener('selectstart',e=>{if(e.target.closest('.protected-content')){e.preventDefault();return;}if(e.target.closest('.msg-row,.chat-item,.date-divider,.header-identity,.sidebar-header,.panel-header,.ctx-menu,.settings-row')&&!e.target.closest('.bubble-text'))e.preventDefault();});
+  document.addEventListener('copy',e=>{const selection=window.getSelection();const node=selection?.anchorNode;const el=node?.nodeType===1?node:node?.parentElement;if(el?.closest?.('.protected-content')&&!state.isOwner){e.preventDefault();showToast('Bu xabardan nusxa olish cheklangan.');}});
   document.addEventListener('dragstart',e=>{if(e.target.closest('img,.msg-row,.chat-item'))e.preventDefault();});
   document.addEventListener('touchstart',unlockAudio,{once:true,passive:true});document.addEventListener('click',unlockAudio,{once:true});
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&state.activeChatId){startChatPolling(state.activeChatId);if(state.isOwner)refreshOwnerList(false);}});
@@ -1498,7 +1577,7 @@
     } catch (error) { console.warn('Telegram viewport setup failed:', error); }
     const initData=typeof tg.initData==='string'?tg.initData:'';if(!initData){showAuthError('Telegram seans ma’lumoti topilmadi. Oynani yoping va ilovani Telegram ichidan qayta oching.',true);return;}state.initData=initData;state.user=tg.initDataUnsafe?.user||null;
     if(!SUPABASE_PUBLISHABLE_KEY||SUPABASE_PUBLISHABLE_KEY==='YOUR_SUPABASE_PUBLISHABLE_KEY'){showAuthError('index.html fayliga Supabase Publishable kalitini kiriting va saytni qayta joylashtiring.',false);return;}
-    try{setLoadingText('Telegram akkauntingiz tekshirilmoqda…');const auth=await callAuth(initData);state.isOwner=Boolean(auth.is_owner??auth.isOwner);if(auth.user)state.user=auth.user;if(auth.profile)state.myProfile=auth.profile;try{const ownProfile=await callAPI({action:'get_my_profile'});if(ownProfile.profile)state.myProfile=ownProfile.profile;}catch(profileError){console.warn('Could not refresh own profile fields:',profileError?.message||'unavailable');}startMiniAppPresenceTracking(tg);$('owner-notification-settings').classList.toggle('hidden',!state.isOwner);const app=$('app');app.classList.remove('hidden');app.classList.add(state.isOwner?'owner-mode':'customer-mode');$('loading-screen').classList.add('hidden');
+    try{setLoadingText('Telegram akkauntingiz tekshirilmoqda…');const auth=await callAuth(initData);state.isOwner=Boolean(auth.is_owner??auth.isOwner);if(auth.user)state.user=auth.user;if(auth.profile)state.myProfile=auth.profile;try{const ownProfile=await callAPI({action:'get_my_profile'});if(ownProfile.profile)state.myProfile=ownProfile.profile;}catch(profileError){console.warn('Could not refresh own profile fields:',profileError?.message||'unavailable');}startMiniAppPresenceTracking(tg);$('owner-notification-settings').classList.toggle('hidden',!state.isOwner);$('owner-content-protection').classList.toggle('hidden',!state.isOwner);$('chat-protect-content-btn').classList.toggle('hidden',!state.isOwner||!state.activeChatId);const app=$('app');app.classList.remove('hidden');app.classList.add(state.isOwner?'owner-mode':'customer-mode');$('loading-screen').classList.add('hidden');
       if(state.isOwner){$('sidebar').classList.add('mobile-open');$('my-profile-btn').classList.remove('hidden');await refreshOwnerList(true);state.ownerListTimer=setInterval(()=>{if(document.visibilityState==='visible')refreshOwnerList(false);},8000);}
       else{$('my-profile-btn').classList.add('hidden');try{const data=await callAPI({action:'get_my_chat'});state.myProfile=data.profile||state.myProfile;state.supportProfile=data.support_profile||null;const chat=data.chat;if(!chat?.id)throw new Error('Server shaxsiy suhbatni qaytarmadi.');const supportName=personName(state.supportProfile,null,'Yordam');await openChat(chat.id,supportName,state.supportProfile?.avatar_url||null,state.supportProfile);$('header-name').textContent=supportName;$('header-status').textContent=getSupportLabel(state.supportProfile);state.supportProfileTimer=setInterval(async()=>{if(document.visibilityState!=='visible')return;try{const fresh=await callAPI({action:'get_my_chat'});if(!fresh.support_profile)return;state.supportProfile=fresh.support_profile;state.activeChatProfile=fresh.support_profile;const freshName=personName(state.supportProfile,null,'Yordam');$('header-name').textContent=freshName;$('header-status').textContent=getSupportLabel(state.supportProfile);renderAvatar($('header-avatar'),freshName,state.supportProfile.avatar_url||null);if(profilePanel.classList.contains('open')&&state.profileMode==='readonly'){const avatarName=personName(state.supportProfile,null,'Yordam');renderAvatar($('profile-avatar-big'),avatarName,state.supportProfile.avatar_url||null);}}catch(error){console.warn('Support profile refresh failed:',error?.message||'unavailable');}},30000);}catch(e){showAuthError(`Shaxsiy suhbatingizni ochib bo‘lmadi. ${e.message||''}`.trim(),true);}}
     }catch(e){showAuthError(`Tasdiqlashda xatolik yuz berdi. ${e.message||'Ilovani Telegram ichidan qayta oching.'}`,true);}}
