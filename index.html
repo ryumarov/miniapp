@@ -3987,6 +3987,504 @@
         bottom: 10px;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       BOT CHAT — Chat row wrapper and Telegram Bot button
+       ═══════════════════════════════════════════════════════════════════ */
+
+    .chat-row-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border-radius: 13px;
+      transition: background .15s;
+      position: relative;
+    }
+
+    .chat-row-wrap .chat-item {
+      flex: 1;
+      min-width: 0;
+      border-radius: 13px 0 0 13px;
+    }
+
+    .chat-row-wrap:has(.chat-item.active) {
+      background: var(--accent);
+    }
+
+    .chat-row-wrap .chat-item:hover {
+      background: var(--surface);
+    }
+
+    .chat-row-wrap:has(.chat-item.active) .chat-item {
+      background: var(--accent);
+    }
+
+    .bot-chat-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 38px;
+      border-radius: 0 13px 13px 0;
+      background: none;
+      color: var(--muted);
+      border: 0;
+      cursor: pointer;
+      transition: background .15s, color .15s, transform .12s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bot-chat-btn:hover {
+      background: color-mix(in srgb, var(--accent) 14%, transparent);
+      color: var(--accent);
+    }
+
+    .bot-chat-btn:active {
+      transform: scale(.88);
+    }
+
+    .chat-row-wrap:has(.chat-item.active) .bot-chat-btn {
+      color: rgba(255,255,255,.75);
+    }
+
+    .chat-row-wrap:has(.chat-item.active) .bot-chat-btn:hover {
+      background: rgba(255,255,255,.18);
+      color: #fff;
+    }
+
+    @media(max-width:767px) {
+      .bot-chat-btn {
+        width: 44px;
+        min-width: 44px;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       BOT CHAT PANEL
+       ═══════════════════════════════════════════════════════════════════ */
+
+    #bot-chat-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      transform: translateX(105%);
+      transition: transform .25s var(--ease);
+      padding-top: calc(max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px)) + var(--messages-extra-top-gap, 0px));
+      will-change: transform;
+      overscroll-behavior: contain;
+    }
+
+    #bot-chat-panel.open {
+      transform: translateX(0);
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      #bot-chat-panel {
+        transition-duration: .01ms !important;
+      }
+    }
+
+    #bot-chat-header {
+      flex: 0 0 var(--header-height);
+      height: var(--header-height);
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px 0 4px;
+      border-bottom: 1px solid var(--border);
+      background: var(--overlay);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: 2;
+    }
+
+    #bot-header-identity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    #bot-header-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    #bot-header-name {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #bot-header-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #bot-channel-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      border-radius: 6px;
+      padding: 2px 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    #bot-message-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 12px max(10px, calc((100% - 880px) / 2)) 12px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    .bot-date-divider {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0 6px;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .bot-date-divider span {
+      font-size: 11px;
+      font-weight: 600;
+      background: var(--surface-2);
+      color: var(--muted);
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+
+    .bot-msg-row {
+      display: flex;
+      padding: 2px 0;
+      width: 100%;
+    }
+
+    .bot-msg-row.bot-incoming {
+      justify-content: flex-start;
+    }
+
+    .bot-msg-row.bot-outgoing {
+      justify-content: flex-end;
+    }
+
+    .bot-bubble-wrap {
+      display: flex;
+      flex-direction: column;
+      max-width: min(78%, 600px);
+      min-width: 40px;
+    }
+
+    .bot-incoming .bot-bubble-wrap {
+      align-items: flex-start;
+    }
+
+    .bot-outgoing .bot-bubble-wrap {
+      align-items: flex-end;
+    }
+
+    .bot-bubble {
+      position: relative;
+      border-radius: var(--bubble-radius);
+      padding: 8px 11px 5px;
+      max-width: 100%;
+      font-size: 15px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .bot-incoming .bot-bubble {
+      background: var(--in);
+      color: var(--in-text);
+      border-bottom-left-radius: 5px;
+    }
+
+    .bot-outgoing .bot-bubble {
+      background: var(--out);
+      color: var(--out-text);
+      border-bottom-right-radius: 5px;
+    }
+
+    .bot-bubble-text {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .bot-bubble-meta {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      margin-top: 3px;
+      font-size: 10px;
+      line-height: 1.3;
+      opacity: .64;
+      white-space: nowrap;
+    }
+
+    .bot-type-badge {
+      display: inline-block;
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .bot-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px 24px;
+      gap: 12px;
+      color: var(--muted);
+      flex: 1;
+      min-height: 200px;
+    }
+
+    .bot-empty-state-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+    }
+
+    .bot-empty-state strong {
+      display: block;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .bot-empty-state p {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .bot-load-more-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 10px 0 4px;
+    }
+
+    .bot-load-more-btn {
+      font-size: 12px;
+      color: var(--accent);
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 6px 16px;
+      border: 0;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .bot-load-more-btn:hover {
+      background: var(--surface-2);
+    }
+
+    .bot-status-banner {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 8px 0;
+      padding: 10px 13px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .bot-status-banner.info {
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .bot-status-banner.warning {
+      background: color-mix(in srgb, #f97316 10%, transparent);
+      color: #c05010;
+      border: 1px solid color-mix(in srgb, #f97316 22%, transparent);
+    }
+
+    @media(prefers-color-scheme:dark) {
+      .bot-status-banner.warning {
+        color: #fb923c;
+      }
+    }
+
+    .bot-status-banner.error {
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
+      color: var(--danger);
+      border: 1px solid color-mix(in srgb, var(--danger) 22%, transparent);
+    }
+
+    #bot-composer-wrap {
+      flex-shrink: 0;
+      border-top: 1px solid var(--border);
+      padding: 8px 10px calc(8px + max(env(safe-area-inset-bottom, 0px), var(--messages-safe-bottom, 0px)) + var(--messages-composer-extra-bottom, 0px));
+      background: var(--overlay);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    #bot-composer-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    #bot-composer-input {
+      flex: 1;
+      min-width: 0;
+      min-height: 42px;
+      max-height: 130px;
+      resize: none;
+      background: var(--surface);
+      border-radius: 21px;
+      padding: 11px 15px;
+      font-size: 15px;
+      line-height: 1.35;
+      outline: none;
+      border: none;
+      color: var(--text);
+      font-family: var(--font);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      transition: box-shadow .16s;
+    }
+
+    #bot-composer-input::placeholder {
+      color: var(--subtle);
+    }
+
+    #bot-composer-input:focus {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    #bot-composer-input:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    #bot-send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--accent);
+      color: white;
+      flex-shrink: 0;
+      transition: transform .12s, background .15s;
+      border: 0;
+      cursor: pointer;
+    }
+
+    #bot-send-btn:hover:not(:disabled) {
+      background: var(--accent-strong);
+    }
+
+    #bot-send-btn:active:not(:disabled) {
+      transform: scale(.93);
+    }
+
+    #bot-send-btn:disabled {
+      background: var(--surface-2);
+      color: var(--subtle);
+      cursor: not-allowed;
+    }
+
+    #bot-send-status {
+      font-size: 11px;
+      text-align: center;
+      padding: 4px 10px 0;
+      max-width: 920px;
+      margin: 0 auto;
+      min-height: 16px;
+      line-height: 1.4;
+      color: var(--muted);
+    }
+
+    #bot-send-status.error {
+      color: var(--danger);
+    }
+
+    #bot-send-status.warning {
+      color: #c05010;
+    }
+
+    @media(prefers-color-scheme:dark) {
+      #bot-send-status.warning {
+        color: #fb923c;
+      }
+    }
+
+    @media(max-width:767px) {
+      #bot-message-list {
+        padding: 10px 9px;
+      }
+
+      .bot-bubble-wrap {
+        max-width: 84%;
+      }
+
+      #bot-chat-header {
+        padding: 0 6px 0 2px;
+      }
+
+      #bot-composer-wrap {
+        padding-left: 6px;
+        padding-right: 6px;
+      }
+
+      #bot-send-btn {
+        width: 44px;
+        height: 44px;
+      }
+    }
+
+    @media(max-width:380px) {
+      .bot-bubble {
+        font-size: 14px;
+        padding: 7px 10px 5px;
+      }
+    }
   </style>
   <!-- ═══════════════════════════════════════════════════════════════════
        TASK 4 — SERVICE WORKER REGISTRATION
@@ -4243,6 +4741,50 @@
     </main>
   </div>
 
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       BOT CHAT PANEL — independent Telegram bot conversation interface
+       ═══════════════════════════════════════════════════════════════════ -->
+  <section id="bot-chat-panel" role="dialog" aria-modal="true" aria-label="Telegram Bot suhbati">
+    <header id="bot-chat-header">
+      <button class="icon-btn" id="bot-back-btn" type="button" aria-label="Orqaga" title="Orqaga">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </button>
+      <div id="bot-header-identity">
+        <div class="avatar small" id="bot-header-avatar"></div>
+        <div id="bot-header-copy">
+          <div id="bot-header-name">Bot suhbati</div>
+          <div id="bot-header-sub"></div>
+        </div>
+      </div>
+      <div id="bot-channel-badge" aria-label="Telegram Bot kanali">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+        </svg>
+        BOT
+      </div>
+    </header>
+
+    <div id="bot-message-list" role="log" aria-live="polite" aria-label="Bot xabarlari"></div>
+
+    <footer id="bot-composer-wrap">
+      <div id="bot-composer-row">
+        <textarea id="bot-composer-input" placeholder="Bot orqali xabar yozing…"
+          maxlength="4000" rows="1" aria-label="Bot xabari" spellcheck="true" disabled></textarea>
+        <button id="bot-send-btn" type="button" aria-label="Bot orqali yuborish" title="Yuborish" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
+          </svg>
+        </button>
+      </div>
+      <div id="bot-send-status" aria-live="polite"></div>
+    </footer>
+  </section>
 
   <!-- Telegram uslubidagi biriktirma manbai tanlash paneli. -->
   <div id="attachment-source-overlay" class="attachment-source-overlay hidden" role="presentation">
@@ -4550,7 +5092,20 @@
       optimisticMessages: new Map(),
       // Chat message cache: keyed by chatId → { messages, signature, loadedAt }
       // Keeps the last-fetched message list per chat so switching feels instant.
-      chatCache: new Map()
+      chatCache: new Map(),
+      // ── Bot chat independent state ─────────────────────────────────
+      botChatOpen: false,
+      activeBotCustomerTelegramId: null,
+      activeBotCustomerProfile: null,
+      activeBotCustomerName: '',
+      botMessages: [],
+      botPollingTimer: null,
+      botPollingInFlight: false,
+      botMessagesSignature: '',
+      botHasMore: false,
+      botNextBefore: null,
+      isSendingBotMessage: false,
+      botPendingRequest: null   // { request_id, customer_telegram_id, content }
     };
 
     function escapeHTML(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -5094,7 +5649,7 @@
       const row = findMessageRow(msg.id); row?.classList.add('menu-target'); if (row) row.querySelector('.bubble').style.filter = 'brightness(.88)';
     }
     function closeContextMenu() { ctxMenu.classList.remove('open'); if (ctxMsg) { const row = findMessageRow(ctxMsg.id); if (row) row.querySelector('.bubble').style.filter = ''; } ctxMsg = null; }
-    document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) closeContextMenu(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContextMenu(); if (!$('image-viewer').classList.contains('hidden')) { closeImageViewer(); return; } if (!$('attachment-preview-overlay').classList.contains('hidden')) { closeAttachmentPreview(); return; } if ($('profile-panel').classList.contains('open')) closeProfile(); if ($('settings-panel').classList.contains('open')) closeSettings(); } });
+    document.addEventListener('click', e => { if (!ctxMenu.contains(e.target)) closeContextMenu(); }); document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeContextMenu(); if (!$('image-viewer').classList.contains('hidden')) { closeImageViewer(); return; } if (!$('attachment-preview-overlay').classList.contains('hidden')) { closeAttachmentPreview(); return; } if (state.botChatOpen) { closeBotChat(); return; } if ($('profile-panel').classList.contains('open')) closeProfile(); if ($('settings-panel').classList.contains('open')) closeSettings(); } });
     $('ctx-copy').addEventListener('click', async () => { const msg = ctxMsg; closeContextMenu(); if (!msg) return; if (msg.content_protected && !state.isOwner) { showToast('Bu xabardan nusxa olish egasi tomonidan cheklangan.'); return; } const text = messageText(msg) || msg.file_name || ''; if (!text) { showToast('Nusxalash uchun matn yo‘q.'); return; } unlockAudio(); try { if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text); else throw new Error('Clipboard unavailable'); showToast('Nusxalandi'); } catch { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch { } ta.remove(); showToast(ok ? 'Nusxalandi' : 'Bu brauzerda nusxalash imkoni yo‘q.'); } });
     $('ctx-reply').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startReply(m); }); $('ctx-select').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); setMessageSelectMode(true, true); if (m) toggleSelectedMessage(String(m.id)); }); $('ctx-edit').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) startEdit(m); }); $('ctx-delete').addEventListener('click', () => { const m = ctxMsg; closeContextMenu(); if (m) confirmDelete(m); });
 
@@ -5700,8 +6255,73 @@
     function chatLatestMessage(chat) { const messages = Array.isArray(chat.messages) ? chat.messages : []; return messages.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] || null; }
     function chatListSignature(chats) { return chats.map(c => { const p = getChatProfile(c), m = chatLatestMessage(c); return `${c.id}|${p?.first_name || p?.display_name || ''}|${p?.avatar_url || ''}|${p?.is_online ? 'on' : 'off'}|${p?.last_seen_at || ''}|${m?.id || ''}|${m?.content || ''}|${m?.created_at || ''}|${m?.read_at || ''}|${c.protect_owner_content ? 'chat-protected' : 'chat-open'}|${m?.protect_content ? 'last-protected' : 'last-open'}`; }).join('\n'); }
     function renderChatList(chats) {
-      const list = $('chat-list'); const active = state.activeChatId; list.replaceChildren(); if (!chats.length) { const empty = document.createElement('div'); empty.className = 'empty-list'; empty.textContent = 'Hozircha suhbatlar yo‘q'; list.appendChild(empty); return; }
-      const sorted = [...chats].sort((a, b) => new Date(chatLatestMessage(b)?.created_at || b.created_at) - new Date(chatLatestMessage(a)?.created_at || a.created_at)); for (const chat of sorted) { const profile = getChatProfile(chat); const name = personName(profile, null, `Mijoz ${String(chat.id).slice(0, 6)}`); const latest = chatLatestMessage(chat); const item = document.createElement('div'); item.className = 'chat-item' + (chat.id === active ? ' active' : '') + (profile?.is_online ? ' is-online' : ''); item.dataset.chatId = chat.id; item.tabIndex = 0; item.setAttribute('role', 'button'); item.setAttribute('aria-label', `${name} bilan suhbatni ochish${profile?.is_online ? ', hozir onlayn' : `, oxirgi faollik ${fmtLastSeen(profile?.last_seen_at)}`}`); const avatar = document.createElement('div'); avatar.className = 'avatar' + (profile?.is_online ? ' is-online' : ''); avatar.title = profile?.is_online ? 'Onlayn' : `Oxirgi faollik: ${fmtLastSeen(profile?.last_seen_at)}`; renderAvatar(avatar, name, profile?.avatar_url); const body = document.createElement('div'); body.className = 'chat-item-body'; const top = document.createElement('div'); top.className = 'chat-item-top'; const nm = document.createElement('div'); nm.className = 'chat-item-name'; nm.textContent = name; const time = document.createElement('div'); time.className = 'chat-time'; time.textContent = latest ? fmtTime(latest.created_at) : ''; top.append(nm, time); const preview = document.createElement('div'); preview.className = 'chat-preview'; preview.textContent = latest ? messagePreview(latest) : 'Hozircha xabar yo‘q'; body.append(top, preview); item.append(avatar, body); const open = () => openChat(chat.id, name, profile?.avatar_url, profile); item.addEventListener('click', open); item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }); list.appendChild(item); }
+      const list = $('chat-list');
+      const active = state.activeChatId;
+      list.replaceChildren();
+      if (!chats.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-list';
+        empty.textContent = ‘Hozircha suhbatlar yo’q’;
+        list.appendChild(empty);
+        return;
+      }
+      const sorted = [...chats].sort((a, b) => new Date(chatLatestMessage(b)?.created_at || b.created_at) - new Date(chatLatestMessage(a)?.created_at || a.created_at));
+      for (const chat of sorted) {
+        const profile = getChatProfile(chat);
+        const name = personName(profile, null, `Mijoz ${String(chat.id).slice(0, 6)}`);
+        const latest = chatLatestMessage(chat);
+        const item = document.createElement('div');
+        item.className = 'chat-item' + (chat.id === active ? ' active' : '') + (profile?.is_online ? ' is-online' : '');
+        item.dataset.chatId = chat.id;
+        item.tabIndex = 0;
+        item.setAttribute('role', 'button');
+        item.setAttribute('aria-label', `${name} bilan suhbatni ochish${profile?.is_online ? ', hozir onlayn' : `, oxirgi faollik ${fmtLastSeen(profile?.last_seen_at)}`}`);
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar' + (profile?.is_online ? ' is-online' : '');
+        avatar.title = profile?.is_online ? 'Onlayn' : `Oxirgi faollik: ${fmtLastSeen(profile?.last_seen_at)}`;
+        renderAvatar(avatar, name, profile?.avatar_url);
+        const body = document.createElement('div');
+        body.className = 'chat-item-body';
+        const top = document.createElement('div');
+        top.className = 'chat-item-top';
+        const nm = document.createElement('div');
+        nm.className = 'chat-item-name';
+        nm.textContent = name;
+        const time = document.createElement('div');
+        time.className = 'chat-time';
+        time.textContent = latest ? fmtTime(latest.created_at) : '';
+        top.append(nm, time);
+        const preview = document.createElement('div');
+        preview.className = 'chat-preview';
+        preview.textContent = latest ? messagePreview(latest) : ‘Hozircha xabar yo’q’;
+        body.append(top, preview);
+        item.append(avatar, body);
+        const open = () => openChat(chat.id, name, profile?.avatar_url, profile);
+        item.addEventListener('click', open);
+        item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+        // Bot chat row wrapper (owner-only, requires a valid telegram_user_id)
+        const telegramUserId = profile?.telegram_user_id;
+        const hasBotAccess = state.isOwner && telegramUserId && Number(telegramUserId) > 0;
+        if (hasBotAccess) {
+          const wrap = document.createElement('div');
+          wrap.className = 'chat-row-wrap';
+          wrap.dataset.chatId = String(chat.id);
+          const botBtn = document.createElement('button');
+          botBtn.type = 'button';
+          botBtn.className = 'bot-chat-btn';
+          botBtn.setAttribute('aria-label', 'Bot yozishmalari');
+          botBtn.setAttribute('title', 'Bot yozishmalari');
+          botBtn.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+          botBtn.addEventListener('click', e => {
+            e.stopPropagation();
+            openBotChat(Number(telegramUserId), profile, name);
+          });
+          wrap.append(item, botBtn);
+          list.appendChild(wrap);
+        } else {
+          list.appendChild(item);
+        }
+      }
     }
     async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); if (force) { void preloadAllChatMessages(chats); } } if (state.activeChatId) { const active = chats.find(c => c.id === state.activeChatId); if (active) { state.activeChatProtection = Boolean(active.protect_owner_content); syncChatProtectionButton(); } const latestProfile = active ? getChatProfile(active) : null; if (latestProfile) { state.activeChatProfile = latestProfile; updateOwnerPresence(latestProfile); } } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Suhbatlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta yuklash'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
     // ── Background chat preloader ────────────────────────────────────────────
@@ -5735,7 +6355,19 @@
       }
     }
 
-    function applySearch() { const q = $('search-input').value.trim().toLowerCase(); document.querySelectorAll('.chat-item').forEach(item => { const n = item.querySelector('.chat-item-name')?.textContent.toLowerCase() || ''; const p = item.querySelector('.chat-preview')?.textContent.toLowerCase() || ''; item.style.display = (!q || n.includes(q) || p.includes(q)) ? '' : 'none'; }); }
+    function applySearch() {
+      const q = $('search-input').value.trim().toLowerCase();
+      // Handle both plain .chat-item rows and .chat-row-wrap (which contains a .chat-item + .bot-chat-btn)
+      const list = $('chat-list');
+      list.querySelectorAll('.chat-row-wrap, .chat-item:not(.chat-row-wrap .chat-item)').forEach(el => {
+        const nameEl = el.querySelector ? el.querySelector('.chat-item-name') : null;
+        const previewEl = el.querySelector ? el.querySelector('.chat-preview') : null;
+        const n = nameEl?.textContent.toLowerCase() || '';
+        const p = previewEl?.textContent.toLowerCase() || '';
+        const show = !q || n.includes(q) || p.includes(q);
+        el.style.display = show ? '' : 'none';
+      });
+    }
     $('search-input').addEventListener('input', applySearch);
     async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId || state.isNavigatingBack) return; if (state.activeChatId === chatId) { hideSidebar(); return; } // Drop optimistic messages for the previous chat; they cannot be reconciled across a chat switch.
       for (const [tmpId, rec] of [...state.optimisticMessages.entries()]) { if (rec.chatId !== chatId) state.optimisticMessages.delete(tmpId); } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProtection = Boolean(state.chats.find(c => c.id === chatId)?.protect_owner_content); syncChatProtectionButton(); state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); const active = $('active-chat'); active.classList.remove('chat-slide-exit', 'chat-slide-enter', 'hidden'); active.style.transform = ''; active.style.display = 'flex'; if (window.innerWidth < 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { void active.offsetWidth; active.classList.add('chat-slide-enter'); setTimeout(() => active.classList.remove('chat-slide-enter'), 300); } $('header-name').textContent = name || 'Suhbat'; renderAvatar($('header-avatar'), name, avatarUrl); if (state.isOwner) updateOwnerPresence(profile); else { $('header-status').classList.remove('is-online'); $('header-status').textContent = getSupportLabel(state.supportProfile || profile); $('header-avatar').classList.remove('is-online'); } if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
@@ -6271,6 +6903,565 @@
 
 
       updateStbVisibility();
+    })();
+
+
+    /* ═══════════════════════════════════════════════════════════════════
+       BOT CHAT — Independent Telegram Bot conversation feature
+       ═══════════════════════════════════════════════════════════════════ */
+
+    // ── UUID helper ──────────────────────────────────────────────────────────
+    function generateUUID() {
+      if (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function') {
+        return globalThis.crypto.randomUUID();
+      }
+      // Fallback UUID v4 generator
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      });
+    }
+
+    // ── Signature helper for bot messages ───────────────────────────────────
+    function botMessageSignature(messages) {
+      return messages.map(m => m.id + '|' + (m.content || '') + '|' + m.created_at).join('\n');
+    }
+
+    // ── Format timestamp (time only) ─────────────────────────────────────────
+    function botFmtTime(value) {
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return '';
+      return d.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── Format date for dividers ─────────────────────────────────────────────
+    function botFmtDate(value) {
+      const d = new Date(value), now = new Date();
+      if (isNaN(d.getTime())) return '';
+      if (d.toDateString() === now.toDateString()) return 'Bugun';
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      if (d.toDateString() === yesterday.toDateString()) return 'Kecha';
+      return d.toLocaleDateString('uz-UZ', { month: 'short', day: 'numeric', year: d.getFullYear() !== now.getFullYear() ? 'numeric' : undefined });
+    }
+
+    function botSameDate(a, b) {
+      return new Date(a).toDateString() === new Date(b).toDateString();
+    }
+
+    // ── Render message type badge text ────────────────────────────────────────
+    function botMessageTypeBadge(type) {
+      const map = {
+        photo: '[Rasm]', document: '[Fayl]', video: '[Video]', voice: '[Ovozli xabar]',
+        audio: '[Audio]', sticker: '[Sticker]', animation: '[GIF]', other: '[Mediya]'
+      };
+      return map[type] || null;
+    }
+
+    // ── Render all bot messages into the DOM ──────────────────────────────────
+    function renderBotMessages(messages, animate) {
+      const list = document.getElementById('bot-message-list');
+      if (!list) return;
+
+      // Loading older messages — load-more button at the top
+      const loadMoreWrap = state.botHasMore ? (() => {
+        const wrap = document.createElement('div');
+        wrap.className = 'bot-load-more-wrap';
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'bot-load-more-btn';
+        btn.textContent = 'Avvalgi xabarlarni yuklash';
+        btn.addEventListener('click', () => loadOlderBotMessages());
+        wrap.appendChild(btn);
+        return wrap;
+      })() : null;
+
+      // Preserve scroll position when prepending
+      const prevScrollFromBottom = list.scrollHeight - list.scrollTop - list.clientHeight;
+      const wasAtBottom = prevScrollFromBottom < 60;
+
+      list.replaceChildren();
+
+      if (!messages.length) {
+        const empty = document.createElement('div');
+        empty.className = 'bot-empty-state';
+        const icon = document.createElement('div');
+        icon.className = 'bot-empty-state-icon';
+        icon.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+        const strong = document.createElement('strong');
+        strong.textContent = 'Bot suhbati topilmadi';
+        const p = document.createElement('p');
+        p.textContent = 'Bu mijoz hali Telegram botga xabar yubormagan. Bot yozishmalari faqat mijoz @bot_username orqali xabar yuborganidan keyin boshlanadi.';
+        empty.append(icon, strong, p);
+        list.appendChild(empty);
+        return;
+      }
+
+      if (loadMoreWrap) list.appendChild(loadMoreWrap);
+
+      let lastDate = null;
+      for (const msg of messages) {
+        // Date separator
+        if (!lastDate || !botSameDate(lastDate, msg.created_at)) {
+          const div = document.createElement('div');
+          div.className = 'bot-date-divider';
+          const span = document.createElement('span');
+          span.textContent = botFmtDate(msg.created_at);
+          div.appendChild(span);
+          list.appendChild(div);
+          lastDate = msg.created_at;
+        }
+
+        const isOut = msg.sender_type === 'owner';
+        const row = document.createElement('div');
+        row.className = 'bot-msg-row ' + (isOut ? 'bot-outgoing' : 'bot-incoming');
+        row.dataset.botMsgId = String(msg.id);
+
+        const wrap = document.createElement('div');
+        wrap.className = 'bot-bubble-wrap';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bot-bubble';
+
+        const typeBadge = botMessageTypeBadge(msg.message_type);
+        const displayText = typeBadge
+          ? (msg.content && msg.content !== typeBadge ? typeBadge + ' ' + msg.content : typeBadge)
+          : (msg.content || '');
+
+        const textEl = document.createElement('div');
+        textEl.className = 'bot-bubble-text';
+        if (typeBadge && msg.message_type !== 'text') {
+          const badge = document.createElement('span');
+          badge.className = 'bot-type-badge';
+          badge.textContent = typeBadge;
+          textEl.appendChild(badge);
+          if (msg.content && msg.content !== typeBadge) {
+            textEl.appendChild(document.createTextNode(' ' + msg.content));
+          }
+        } else {
+          textEl.textContent = displayText;
+        }
+
+        const meta = document.createElement('div');
+        meta.className = 'bot-bubble-meta';
+        meta.textContent = botFmtTime(msg.created_at);
+
+        bubble.append(textEl, meta);
+        wrap.appendChild(bubble);
+        row.appendChild(wrap);
+        list.appendChild(row);
+      }
+
+      // Scroll behaviour
+      if (wasAtBottom || animate) {
+        list.scrollTo({ top: list.scrollHeight, behavior: animate ? 'smooth' : 'auto' });
+      } else {
+        // Restore relative scroll position after prepend
+        list.scrollTop = list.scrollHeight - list.clientHeight - prevScrollFromBottom;
+      }
+    }
+
+    // ── Load older bot messages (pagination) ──────────────────────────────────
+    async function loadOlderBotMessages() {
+      if (!state.activeBotCustomerTelegramId || !state.botHasMore || !state.botNextBefore) return;
+      const tid = state.activeBotCustomerTelegramId;
+      try {
+        const data = await callAPI({
+          action: 'list_bot_messages',
+          customer_telegram_id: tid,
+          limit: 500,
+          before_created_at: state.botNextBefore
+        });
+        if (state.activeBotCustomerTelegramId !== tid) return;
+        const older = Array.isArray(data.messages) ? data.messages : [];
+        // Deduplicate by id
+        const existingIds = new Set(state.botMessages.map(m => m.id));
+        const newOld = older.filter(m => !existingIds.has(m.id));
+        state.botMessages = [...newOld, ...state.botMessages];
+        state.botMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        state.botHasMore = Boolean(data.has_more);
+        state.botNextBefore = data.next_before || null;
+        state.botMessagesSignature = botMessageSignature(state.botMessages);
+        renderBotMessages(state.botMessages, false);
+      } catch (e) {
+        showToast('Avvalgi xabarlarni yuklab bo\u2019lmadi.');
+      }
+    }
+
+    // ── Poll bot messages ─────────────────────────────────────────────────────
+    function stopBotPolling() {
+      if (state.botPollingTimer) clearInterval(state.botPollingTimer);
+      state.botPollingTimer = null;
+      state.botPollingInFlight = false;
+    }
+
+    function startBotPolling(customerTelegramId) {
+      stopBotPolling();
+      state.botPollingTimer = setInterval(async () => {
+        if (!state.botChatOpen || state.activeBotCustomerTelegramId !== customerTelegramId) return;
+        if (document.visibilityState === 'hidden') return;
+        if (state.botPollingInFlight) return;
+        state.botPollingInFlight = true;
+        try {
+          const data = await callAPI({
+            action: 'list_bot_messages',
+            customer_telegram_id: customerTelegramId,
+            limit: 500
+          });
+          if (state.activeBotCustomerTelegramId !== customerTelegramId || !state.botChatOpen) return;
+          const incoming = Array.isArray(data.messages) ? data.messages : [];
+          const newSig = botMessageSignature(incoming);
+          if (newSig === state.botMessagesSignature) return;
+          // Merge: deduplicate by id, keep older loaded messages
+          const incomingIds = new Set(incoming.map(m => m.id));
+          // Keep older-history messages that aren't in the latest page
+          const olderKept = state.botMessages.filter(m => !incomingIds.has(m.id) && new Date(m.created_at) < new Date(incoming[0]?.created_at || Date.now()));
+          const merged = [...olderKept, ...incoming];
+          merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          const list = document.getElementById('bot-message-list');
+          const wasAtBottom = list ? (list.scrollHeight - list.scrollTop - list.clientHeight) < 80 : true;
+          state.botMessages = merged;
+          state.botHasMore = Boolean(data.has_more);
+          state.botNextBefore = data.next_before || null;
+          state.botMessagesSignature = botMessageSignature(merged);
+          renderBotMessages(merged, wasAtBottom);
+        } catch {
+          // Transient errors — keep existing messages visible
+        } finally {
+          state.botPollingInFlight = false;
+        }
+      }, 4500);
+    }
+
+    // ── Open bot chat panel ───────────────────────────────────────────────────
+    async function openBotChat(customerTelegramId, profile, name) {
+      if (!state.isOwner) return;
+      if (!customerTelegramId || !(Number(customerTelegramId) > 0)) {
+        showToast('Bu mijozning Telegram ID si topilmadi.');
+        return;
+      }
+
+      state.botChatOpen = true;
+      state.activeBotCustomerTelegramId = Number(customerTelegramId);
+      state.activeBotCustomerProfile = profile || null;
+      state.activeBotCustomerName = name || 'Mijoz';
+      state.botMessages = [];
+      state.botMessagesSignature = '';
+      state.botHasMore = false;
+      state.botNextBefore = null;
+      // Do NOT reset pending request if same customer (idempotency)
+      if (state.botPendingRequest && state.botPendingRequest.customer_telegram_id !== Number(customerTelegramId)) {
+        state.botPendingRequest = null;
+      }
+
+      // Render panel header
+      const headerName = document.getElementById('bot-header-name');
+      const headerSub = document.getElementById('bot-header-sub');
+      const headerAvatar = document.getElementById('bot-header-avatar');
+      if (headerName) headerName.textContent = name || 'Mijoz';
+      if (headerSub) {
+        const parts = [];
+        if (profile?.username) parts.push('@' + profile.username);
+        if (profile?.telegram_user_id) parts.push('ID: ' + profile.telegram_user_id);
+        headerSub.textContent = parts.join(' · ') || 'Telegram Bot kanali';
+      }
+      if (headerAvatar) renderAvatar(headerAvatar, name || 'Mijoz', profile?.avatar_url || null);
+
+      // Show panel
+      const panel = document.getElementById('bot-chat-panel');
+      if (panel) panel.classList.add('open');
+
+      // Composer initial state
+      updateBotComposer();
+
+      // Show loading state
+      const msgList = document.getElementById('bot-message-list');
+      if (msgList) {
+        msgList.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Yuklanmoqda"></div></div>';
+      }
+
+      // Load messages
+      try {
+        const data = await callAPI({
+          action: 'list_bot_messages',
+          customer_telegram_id: Number(customerTelegramId),
+          limit: 500
+        });
+        if (state.activeBotCustomerTelegramId !== Number(customerTelegramId) || !state.botChatOpen) return;
+        const msgs = Array.isArray(data.messages) ? data.messages : [];
+        msgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        state.botMessages = msgs;
+        state.botHasMore = Boolean(data.has_more);
+        state.botNextBefore = data.next_before || null;
+        state.botMessagesSignature = botMessageSignature(msgs);
+        renderBotMessages(msgs, false);
+        // Scroll to bottom
+        if (msgList) msgList.scrollTop = msgList.scrollHeight;
+      } catch (e) {
+        if (state.activeBotCustomerTelegramId !== Number(customerTelegramId) || !state.botChatOpen) return;
+        if (msgList) {
+          msgList.innerHTML = '';
+          const errWrap = document.createElement('div');
+          errWrap.className = 'bot-empty-state';
+          const strong = document.createElement('strong');
+          strong.textContent = 'Xabarlarni yuklab bo\u2019lmadi';
+          const p = document.createElement('p');
+          p.textContent = uiError(e.message) || 'Internetni tekshirib, qayta urinib ko\u2019ring.';
+          const retryBtn = document.createElement('button');
+          retryBtn.type = 'button';
+          retryBtn.className = 'bot-load-more-btn';
+          retryBtn.textContent = 'Qayta urinish';
+          retryBtn.style.marginTop = '12px';
+          retryBtn.addEventListener('click', () => openBotChat(customerTelegramId, profile, name));
+          errWrap.append(strong, p, retryBtn);
+          msgList.appendChild(errWrap);
+        }
+      }
+
+      // Start polling
+      startBotPolling(Number(customerTelegramId));
+      updateBotComposer();
+    }
+
+    // ── Close bot chat panel ──────────────────────────────────────────────────
+    function closeBotChat() {
+      stopBotPolling();
+      state.botChatOpen = false;
+      const panel = document.getElementById('bot-chat-panel');
+      if (panel) panel.classList.remove('open');
+      // Clear transient display state only — don't wipe pending request
+      state.activeBotCustomerTelegramId = null;
+      state.activeBotCustomerProfile = null;
+      state.activeBotCustomerName = '';
+      state.botMessages = [];
+      state.botMessagesSignature = '';
+      state.botHasMore = false;
+      state.botNextBefore = null;
+      // Do NOT stop normal chat polling or modify normal chat state
+    }
+
+    // ── Update bot composer enabled/disabled state ─────────────────────────────
+    function updateBotComposer() {
+      const input = document.getElementById('bot-composer-input');
+      const btn = document.getElementById('bot-send-btn');
+      const hasMessages = state.botMessages.length > 0;
+      const isSending = state.isSendingBotMessage;
+      const hasPending = Boolean(state.botPendingRequest) && state.botPendingRequest.customer_telegram_id === state.activeBotCustomerTelegramId;
+
+      // Disable composer if: no bot conversation exists yet, OR currently sending, OR ambiguous pending
+      const shouldDisable = !hasMessages || isSending;
+      if (input) {
+        input.disabled = shouldDisable;
+        if (shouldDisable && !isSending) {
+          input.placeholder = 'Mijoz hali bot bilan suhbat boshlamagan';
+        } else if (isSending) {
+          input.placeholder = 'Yuborilmoqda…';
+        } else {
+          input.placeholder = 'Bot orqali xabar yozing\u2026';
+        }
+      }
+      if (btn) {
+        const text = (input?.value || '').trim();
+        btn.disabled = shouldDisable || !text || isSending;
+      }
+    }
+
+    // ── Send a bot message ────────────────────────────────────────────────────
+    async function sendBotMessage() {
+      if (!state.isOwner || !state.botChatOpen) return;
+      const input = document.getElementById('bot-composer-input');
+      const content = (input?.value || '').trim();
+      if (!content) return;
+
+      const customerTelegramId = state.activeBotCustomerTelegramId;
+      if (!customerTelegramId) return;
+
+      // Check for an unresolved pending request for this customer
+      if (state.botPendingRequest && state.botPendingRequest.customer_telegram_id === customerTelegramId) {
+        // Already have a pending request — do not create a new one
+        setBotSendStatus('Avvalgi xabar yetkazilganligi aniq emas. Qayta yuborishdan oldin mijozning Telegram suhbatini tekshiring.', 'warning');
+        return;
+      }
+
+      // Block if already sending
+      if (state.isSendingBotMessage) return;
+
+      // Generate a fresh UUID for this new message
+      const requestId = generateUUID();
+      state.botPendingRequest = { request_id: requestId, customer_telegram_id: customerTelegramId, content };
+      state.isSendingBotMessage = true;
+      updateBotComposer();
+      setBotSendStatus('Yuborilmoqda\u2026', 'info');
+
+      try {
+        const result = await callAPI({
+          action: 'send_bot_message',
+          customer_telegram_id: customerTelegramId,
+          content,
+          request_id: requestId
+        });
+
+        if (state.activeBotCustomerTelegramId !== customerTelegramId) {
+          // User navigated away — clear state
+          state.isSendingBotMessage = false;
+          state.botPendingRequest = null;
+          return;
+        }
+
+        // Success (including duplicate_request: true means already delivered)
+        state.botPendingRequest = null;
+        state.isSendingBotMessage = false;
+        if (input) input.value = '';
+        setBotSendStatus('', '');
+
+        // Merge returned message
+        if (result.message) {
+          const existing = state.botMessages.findIndex(m => m.id === result.message.id);
+          if (existing < 0) {
+            state.botMessages.push(result.message);
+            state.botMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          } else {
+            state.botMessages[existing] = result.message;
+          }
+          state.botMessagesSignature = botMessageSignature(state.botMessages);
+          renderBotMessages(state.botMessages, true);
+        }
+
+        updateBotComposer();
+      } catch (e) {
+        state.isSendingBotMessage = false;
+
+        // Check for HTTP 409 (conflict) — ambiguous delivery
+        const isAmbiguous = e.message && (e.message.includes('409') || e.message.toLowerCase().includes('conflict') || e.message.toLowerCase().includes('ambiguous') || e.message.toLowerCase().includes('unknown'));
+        if (isAmbiguous) {
+          // Keep pending request — do NOT auto-retry
+          setBotSendStatus(
+            'Telegram yetkazilishi aniq emas. Mijozning Telegram suhbatini tekshirib ko\u2019ring, so\u2019ngra qayta yuboring.',
+            'warning'
+          );
+        } else {
+          // Clear pending request on definite failure so owner can retry
+          state.botPendingRequest = null;
+          setBotSendStatus(uiError(e.message) || 'Xabar yuborib bo\u2019lmadi. Qayta urinib ko\u2019ring.', 'error');
+        }
+        updateBotComposer();
+      }
+    }
+
+    // ── Retry bot send (reuse same request_id and content) ───────────────────
+    function retryBotSend() {
+      if (!state.botPendingRequest) return;
+      if (state.isSendingBotMessage) return;
+      const { request_id, customer_telegram_id, content } = state.botPendingRequest;
+      if (customer_telegram_id !== state.activeBotCustomerTelegramId) return;
+
+      state.isSendingBotMessage = true;
+      updateBotComposer();
+      setBotSendStatus('Qayta yuborilmoqda\u2026', 'info');
+
+      callAPI({
+        action: 'send_bot_message',
+        customer_telegram_id,
+        content,
+        request_id  // Reuse SAME UUID
+      }).then(result => {
+        if (state.activeBotCustomerTelegramId !== customer_telegram_id) {
+          state.isSendingBotMessage = false;
+          state.botPendingRequest = null;
+          return;
+        }
+        state.botPendingRequest = null;
+        state.isSendingBotMessage = false;
+        const input = document.getElementById('bot-composer-input');
+        if (input) input.value = '';
+        setBotSendStatus('', '');
+        if (result.message) {
+          const existing = state.botMessages.findIndex(m => m.id === result.message.id);
+          if (existing < 0) {
+            state.botMessages.push(result.message);
+            state.botMessages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          } else {
+            state.botMessages[existing] = result.message;
+          }
+          state.botMessagesSignature = botMessageSignature(state.botMessages);
+          renderBotMessages(state.botMessages, true);
+        }
+        updateBotComposer();
+      }).catch(e => {
+        state.isSendingBotMessage = false;
+        const isAmbiguous = e.message && (e.message.includes('409') || e.message.toLowerCase().includes('conflict') || e.message.toLowerCase().includes('ambiguous'));
+        if (!isAmbiguous) {
+          state.botPendingRequest = null;
+        }
+        setBotSendStatus(
+          isAmbiguous
+            ? 'Telegram yetkazilishi aniq emas. Mijozning Telegram suhbatini tekshirib ko\u2019ring.'
+            : (uiError(e.message) || 'Xabar yuborib bo\u2019lmadi.'),
+          isAmbiguous ? 'warning' : 'error'
+        );
+        updateBotComposer();
+      });
+    }
+
+    // ── Helper: set bot send status bar ──────────────────────────────────────
+    function setBotSendStatus(text, type) {
+      const el = document.getElementById('bot-send-status');
+      if (!el) return;
+      el.textContent = text;
+      el.className = type ? ('error' === type ? 'error' : type === 'warning' ? 'warning' : '') : '';
+    }
+
+    // ── Wire up bot panel event listeners ─────────────────────────────────────
+    (function initBotChatEvents() {
+      const backBtn = document.getElementById('bot-back-btn');
+      if (backBtn) backBtn.addEventListener('click', closeBotChat);
+
+      const sendBtn = document.getElementById('bot-send-btn');
+      if (sendBtn) sendBtn.addEventListener('click', () => {
+        if (state.botPendingRequest && state.botPendingRequest.customer_telegram_id === state.activeBotCustomerTelegramId) {
+          retryBotSend();
+        } else {
+          sendBotMessage();
+        }
+      });
+
+      const input = document.getElementById('bot-composer-input');
+      if (input) {
+        input.addEventListener('input', () => {
+          updateBotComposer();
+          // Auto-resize textarea
+          input.style.height = 'auto';
+          input.style.height = Math.min(130, input.scrollHeight) + 'px';
+        });
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Enter' && !e.shiftKey && window.innerWidth >= 768) {
+            e.preventDefault();
+            if (state.botPendingRequest && state.botPendingRequest.customer_telegram_id === state.activeBotCustomerTelegramId) {
+              retryBotSend();
+            } else {
+              sendBotMessage();
+            }
+          }
+        });
+        input.addEventListener('focus', () => {
+          setTimeout(() => {
+            if (input && document.activeElement === input) {
+              input.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+          }, 320);
+        }, { passive: true });
+      }
+
+      // Pause/resume bot polling on visibility change
+      document.addEventListener('visibilitychange', () => {
+        if (!state.botChatOpen) return;
+        if (document.visibilityState === 'visible' && state.activeBotCustomerTelegramId) {
+          // Resume — restart polling if needed
+          if (!state.botPollingTimer) {
+            startBotPolling(state.activeBotCustomerTelegramId);
+          }
+        }
+      });
     })();
 
     init();
