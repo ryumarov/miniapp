@@ -5181,6 +5181,11 @@
       <h2 id="settings-title">Sozlamalar</h2>
       <div style="width:40px"></div>
     </div>
+    <div class="settings-section hidden" id="owner-bot-manager-entry" style="margin:10px 12px 14px;padding:16px;border:1px solid var(--accent);border-radius:16px;background:var(--surface)">
+      <div class="settings-section-title" style="color:var(--text);font-size:13px;letter-spacing:.3px;text-transform:none">Telegram bot menyusi</div>
+      <p class="panel-subtitle" style="text-align:left;margin:0 0 10px">/start rasmi va matni, menyu tugmalari, yangi komandalar hamda avtomatik javoblarni shu yerdan boshqaring.</p>
+      <button class="primary-wide" id="open-bot-manager-btn" type="button">Bot menyusi va komandalarni boshqarish</button>
+    </div>
     <div class="settings-section" id="owner-content-protection">
       <div class="settings-section-title">Kontent himoyasi</div>
       <div class="settings-row"><span>Barcha chatlarda himoya</span><button class="toggle"
@@ -5258,11 +5263,6 @@
       <button class="primary-wide" id="notification-settings-save" type="button">Bildirishnoma matnlarini
         saqlash</button>
       <div class="panel-subtitle" id="notification-settings-status" aria-live="polite"></div>
-    </div>
-    <div class="settings-section hidden" id="owner-bot-manager-entry">
-      <div class="settings-section-title">Telegram bot menyusi</div>
-      <p class="panel-subtitle" style="text-align:left;margin:0 0 10px">/start matni va rasmi, mijozlarga ko‘rinadigan tugmalar hamda avtomatik javob beruvchi komandalarni boshqaring.</p>
-      <button class="primary-wide" id="open-bot-manager-btn" type="button">Bot menyusi va komandalarni boshqarish</button>
     </div>
   </section>
 
@@ -7454,7 +7454,7 @@
       const botManagerEntry = $('owner-bot-manager-entry');
       if (protection) protection.classList.toggle('hidden', !visible);
       if (notifications) notifications.classList.toggle('hidden', !visible);
-      if (botManagerEntry) botManagerEntry.classList.toggle('hidden', !visible);
+      if (botManagerEntry) { botManagerEntry.classList.toggle('hidden', !visible); botManagerEntry.setAttribute('aria-hidden', String(!visible)); }
       const chatProtection = $('chat-protect-content-btn');
       if (chatProtection) chatProtection.classList.toggle('hidden', !visible || !state.activeChatId);
       return visible;
