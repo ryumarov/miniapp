@@ -4692,6 +4692,138 @@
       }
     }
 
+
+
+    /* Owner-only all-chat Telegram Bot inbox. */
+    .bot-inbox-launch-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 38px;
+      min-width: 62px;
+      padding: 0 10px;
+      border: 1px solid rgba(41,159,227,.24);
+      border-radius: 12px;
+      background: rgba(41,159,227,.09);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 750;
+      flex: 0 0 auto;
+    }
+    .bot-inbox-launch-btn svg { width: 17px; height: 17px; }
+    .bot-inbox-launch-btn:active { transform: scale(.96); }
+    #bot-inbox-panel {
+      position: fixed;
+      inset: 0;
+      z-index: 310;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: var(--messages-app-height, 100vh);
+      height: var(--messages-app-height, 100dvh);
+      min-height: 0;
+      overflow: hidden;
+      color: var(--text);
+      background: var(--bg);
+      isolation: isolate;
+    }
+    #bot-inbox-panel.hidden { display: none !important; }
+    .bot-inbox-topbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      min-height: calc(var(--header-height) + max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px)));
+      padding: max(env(safe-area-inset-top, 0px), var(--messages-content-safe-top, 0px)) 12px 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--overlay);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .bot-inbox-topbar .icon-btn { color: var(--accent); }
+    .bot-inbox-brand-icon { display:grid; place-items:center; width:36px; height:36px; flex:0 0 36px; border-radius:12px; background:rgba(41,159,227,.12); color:var(--accent); }
+    .bot-inbox-brand-icon svg { width:20px; height:20px; }
+    .bot-inbox-topcopy { min-width:0; flex:1; display:flex; flex-direction:column; gap:2px; }
+    .bot-inbox-topcopy strong { font-size:15px; font-weight:800; }
+    .bot-inbox-topcopy span { color:var(--muted); font-size:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .bot-inbox-layout { display:flex; flex:1 1 auto; min-height:0; min-width:0; }
+    .bot-inbox-sidebar { width:320px; min-width:270px; max-width:38%; display:flex; flex-direction:column; min-height:0; border-right:1px solid var(--border); background:var(--bg); }
+    .bot-inbox-search-wrap { display:flex; align-items:center; gap:9px; margin:12px 12px 8px; padding:0 12px; min-height:42px; border-radius:13px; background:var(--surface); color:var(--muted); }
+    .bot-inbox-search-wrap svg { width:16px; height:16px; flex:0 0 16px; }
+    .bot-inbox-search-wrap input { width:100%; min-width:0; outline:none; border:0; background:transparent; color:var(--text); font-size:13px; }
+    .bot-inbox-list-meta { display:flex; justify-content:space-between; padding:8px 16px; color:var(--subtle); font-size:10px; font-weight:800; letter-spacing:.65px; }
+    .bot-inbox-conversation-list { min-height:0; flex:1; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:2px 8px 12px; }
+    .bot-inbox-conversation-item { display:flex; align-items:center; gap:10px; width:100%; min-height:68px; padding:9px 10px; border-radius:13px; text-align:left; color:var(--text); }
+    .bot-inbox-conversation-item:hover { background:var(--surface); }
+    .bot-inbox-conversation-item.active { background:var(--surface-2); }
+    .bot-inbox-conversation-avatar { display:grid; place-items:center; flex:0 0 42px; width:42px; height:42px; border-radius:50%; background:var(--surface-2); color:var(--accent); font-size:16px; font-weight:800; overflow:hidden; }
+    .bot-inbox-conversation-avatar.group { border-radius:14px; }
+    .bot-inbox-conversation-copy { display:flex; flex-direction:column; min-width:0; flex:1; gap:4px; }
+    .bot-inbox-conversation-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .bot-inbox-conversation-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; font-weight:750; }
+    .bot-inbox-conversation-time { flex:0 0 auto; color:var(--subtle); font-size:10px; }
+    .bot-inbox-conversation-preview { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); font-size:11px; }
+    .bot-inbox-empty-list { padding:34px 16px; color:var(--muted); font-size:12px; line-height:1.5; text-align:center; }
+    .bot-inbox-thread { display:flex; flex:1 1 auto; min-width:0; min-height:0; background:var(--bg); }
+    .bot-inbox-empty-state { display:flex; flex:1; flex-direction:column; justify-content:center; align-items:center; gap:10px; padding:24px; color:var(--muted); text-align:center; }
+    .bot-inbox-empty-state strong { color:var(--text); font-size:16px; }
+    .bot-inbox-empty-state p { max-width:330px; margin:0; font-size:12px; line-height:1.55; }
+    .bot-inbox-empty-icon { display:grid; place-items:center; width:64px; height:64px; border-radius:22px; background:var(--surface); color:var(--accent); }
+    .bot-inbox-empty-icon svg { width:30px; height:30px; }
+    .bot-inbox-active-thread { display:flex; flex:1; flex-direction:column; min-width:0; min-height:0; }
+    .bot-inbox-active-thread.hidden { display:none !important; }
+    .bot-inbox-thread-header { display:flex; align-items:center; gap:10px; min-height:61px; padding:8px 14px; border-bottom:1px solid var(--border); background:var(--overlay); }
+    .bot-inbox-thread-back { display:none; }
+    .bot-inbox-thread-avatar { display:grid; place-items:center; flex:0 0 40px; width:40px; height:40px; border-radius:50%; background:var(--surface-2); color:var(--accent); font-size:15px; font-weight:800; }
+    .bot-inbox-thread-avatar.group { border-radius:13px; }
+    .bot-inbox-thread-title-wrap { display:flex; flex:1; min-width:0; flex-direction:column; gap:3px; }
+    .bot-inbox-thread-title-wrap strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+    .bot-inbox-thread-title-wrap span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--muted); font-size:11px; }
+    .bot-inbox-type-badge { flex:0 0 auto; padding:6px 8px; border-radius:9px; background:rgba(41,159,227,.1); color:var(--accent); font-size:10px; font-weight:750; }
+    .bot-inbox-messages { display:flex; flex:1 1 auto; min-height:0; flex-direction:column; gap:3px; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; padding:14px max(12px,calc((100% - 900px)/2)); }
+    .bot-inbox-message-row { display:flex; width:100%; padding:2px 1px; }
+    .bot-inbox-message-row.incoming { justify-content:flex-start; }
+    .bot-inbox-message-row.outgoing { justify-content:flex-end; }
+    .bot-inbox-message-bubble { display:flex; flex-direction:column; max-width:min(78%,620px); min-width:42px; padding:8px 11px 5px; border-radius:var(--bubble-radius); font-size:15px; line-height:1.45; overflow-wrap:anywhere; word-break:break-word; }
+    .bot-inbox-message-row.incoming .bot-inbox-message-bubble { border-bottom-left-radius:5px; background:var(--in); color:var(--in-text); }
+    .bot-inbox-message-row.outgoing .bot-inbox-message-bubble { border-bottom-right-radius:5px; background:var(--out); color:var(--out-text); }
+    .bot-inbox-message-sender { margin-bottom:3px; color:var(--accent); font-size:10px; font-weight:800; }
+    .bot-inbox-message-text { white-space:pre-wrap; user-select:text; -webkit-user-select:text; }
+    .bot-inbox-message-meta { align-self:flex-end; margin-top:4px; font-size:10px; opacity:.65; white-space:nowrap; }
+    .bot-inbox-date-divider { display:flex; justify-content:center; margin:10px 0 7px; }
+    .bot-inbox-date-divider span { padding:5px 11px; border-radius:20px; background:var(--surface-2); color:var(--muted); font-size:10px; font-weight:650; }
+    .bot-inbox-send-status { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 13px; border-top:1px solid var(--border); background:var(--surface); color:var(--muted); font-size:11px; }
+    .bot-inbox-send-status.hidden { display:none !important; }
+    .bot-inbox-send-status button { flex:0 0 auto; padding:6px 9px; border:1px solid currentColor; border-radius:9px; color:inherit; font-size:10px; font-weight:750; }
+    .bot-inbox-composer-wrap { flex:0 0 auto; padding:10px 12px calc(8px + env(safe-area-inset-bottom,0px)); border-top:1px solid var(--border); background:var(--overlay); }
+    .bot-inbox-composer { display:flex; align-items:flex-end; gap:8px; max-width:920px; margin:0 auto; }
+    #bot-inbox-input { flex:1; min-width:0; min-height:42px; max-height:132px; resize:none; overflow-y:auto; padding:11px 15px; border:0; border-radius:21px; outline:none; background:var(--surface); color:var(--text); font-size:15px; line-height:1.35; user-select:text; -webkit-user-select:text; }
+    #bot-inbox-input:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+    #bot-inbox-input:disabled { opacity:.58; cursor:not-allowed; }
+    #bot-inbox-send-btn { display:grid; flex:0 0 42px; width:42px; height:42px; place-items:center; border-radius:50%; background:var(--accent); color:white; }
+    #bot-inbox-send-btn:disabled { background:var(--surface-2); color:var(--subtle); }
+    .bot-inbox-composer-meta { display:flex; justify-content:space-between; gap:8px; max-width:920px; margin:5px auto 0; padding:0 3px; color:var(--subtle); font-size:10px; }
+    @media(max-width:767px) {
+      .bot-inbox-launch-btn { min-width:54px; height:36px; padding:0 8px; }
+      .bot-inbox-layout { position:relative; overflow:hidden; }
+      .bot-inbox-sidebar { width:100%; min-width:100%; max-width:100%; border-right:0; }
+      .bot-inbox-thread { position:absolute; inset:0; display:none; }
+      #bot-inbox-layout.has-active-chat .bot-inbox-sidebar { display:none; }
+      #bot-inbox-layout.has-active-chat .bot-inbox-thread { display:flex; }
+      .bot-inbox-thread-back { display:inline-flex; }
+      .bot-inbox-thread-header { gap:6px; padding:7px; }
+      .bot-inbox-type-badge { padding:5px 6px; font-size:9px; }
+      .bot-inbox-messages { padding:10px 9px; }
+      .bot-inbox-message-bubble { max-width:84%; font-size:14px; }
+      .bot-inbox-composer-wrap { padding:8px 7px calc(8px + env(safe-area-inset-bottom,0px)); }
+      #bot-inbox-send-btn { flex-basis:44px; width:44px; height:44px; }
+      #bot-inbox-input { min-height:44px; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      .bot-inbox-launch-btn, #bot-inbox-messages { transition-duration:.01ms !important; scroll-behavior:auto !important; }
+    }
+
   </style>
   <!-- ═══════════════════════════════════════════════════════════════════
        TASK 4 — SERVICE WORKER REGISTRATION
@@ -4764,6 +4896,9 @@
     <aside id="sidebar" aria-label="Suhbatlar">
       <div class="sidebar-header">
         <h1>Xabarlar</h1>
+        <button class="bot-inbox-launch-btn hidden" id="bot-inbox-launch-btn" type="button" aria-label="Telegram Bot suhbatlari" title="Telegram Bot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.8 2.2 14.7 21.3l-4.1-8-8.4-4.1 19.6-7Z"/><path d="m10.6 13.3 5.2-5.2"/></svg><span>Bot</span>
+        </button>
         <button class="icon-btn" id="my-profile-btn" type="button" aria-label="Mening profilim" title="Mening profilim">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
             stroke-linecap="round" stroke-linejoin="round">
@@ -4949,6 +5084,39 @@
   </div>
 
 
+
+  <!-- Owner-only Telegram Bot inbox. All Telegram traffic is routed through the server-side bot token. -->
+  <section id="bot-inbox-panel" class="hidden" aria-label="Telegram Bot suhbatlari" aria-hidden="true">
+    <header class="bot-inbox-topbar">
+      <button class="icon-btn" id="bot-inbox-close-btn" type="button" aria-label="Bot oynasini yopish" title="Yopish">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="bot-inbox-brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 2.2 14.7 21.3l-4.1-8-8.4-4.1 19.6-7Z"/><path d="m10.6 13.3 5.2-5.2"/></svg></div>
+      <div class="bot-inbox-topcopy"><strong>Telegram Bot</strong><span>Bot orqali kelgan barcha shaxsiy va guruh suhbatlari</span></div>
+      <button class="icon-btn" id="bot-inbox-refresh-btn" type="button" aria-label="Ro‘yxatni yangilash" title="Yangilash"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>
+    </header>
+    <div class="bot-inbox-layout" id="bot-inbox-layout">
+      <aside class="bot-inbox-sidebar" id="bot-inbox-sidebar">
+        <div class="bot-inbox-search-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.4-4.4"/></svg><input id="bot-inbox-search" type="search" placeholder="Bot suhbatlarini qidirish" autocomplete="off" aria-label="Bot suhbatlarini qidirish"></div>
+        <div class="bot-inbox-list-meta"><span>SUHBATLAR</span><span id="bot-inbox-count">0</span></div>
+        <div id="bot-inbox-conversation-list" class="bot-inbox-conversation-list"><div class="bot-inbox-empty-list">Bot suhbatlari yuklanmoqda…</div></div>
+      </aside>
+      <section class="bot-inbox-thread" aria-label="Bot suhbat oynasi">
+        <div class="bot-inbox-empty-state" id="bot-inbox-empty-state"><div class="bot-inbox-empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 2.2 14.7 21.3l-4.1-8-8.4-4.1 19.6-7Z"/><path d="m10.6 13.3 5.2-5.2"/></svg></div><strong>Bot suhbatini tanlang</strong><p>/start yuborgan foydalanuvchilar va bot qo‘shilgan guruhlar shu yerda ko‘rinadi.</p></div>
+        <div class="bot-inbox-active-thread hidden" id="bot-inbox-active-thread">
+          <header class="bot-inbox-thread-header">
+            <button class="icon-btn bot-inbox-thread-back" id="bot-inbox-back-btn" type="button" aria-label="Suhbatlar ro‘yxatiga qaytish"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+            <div class="bot-inbox-thread-avatar" id="bot-inbox-thread-avatar">B</div>
+            <div class="bot-inbox-thread-title-wrap"><strong id="bot-inbox-thread-title">Suhbat</strong><span id="bot-inbox-thread-subtitle">Telegram Bot</span></div>
+            <span class="bot-inbox-type-badge" id="bot-inbox-thread-type">Shaxsiy</span>
+          </header>
+          <div id="bot-inbox-messages" class="bot-inbox-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+          <div id="bot-inbox-send-status" class="bot-inbox-send-status hidden" role="status" aria-live="polite"><span id="bot-inbox-send-status-text"></span><button id="bot-inbox-retry-send-btn" type="button" class="hidden">Xuddi shu xabarni tekshirish</button></div>
+          <footer class="bot-inbox-composer-wrap"><div class="bot-inbox-composer"><textarea id="bot-inbox-input" rows="1" maxlength="4000" placeholder="Bot nomidan xabar yozing…" aria-label="Telegram Bot xabari" disabled></textarea><button id="bot-inbox-send-btn" type="button" aria-label="Bot orqali yuborish" title="Yuborish" disabled><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button></div><div class="bot-inbox-composer-meta"><span>Bot token orqali yuboriladi • 4 000 belgigacha</span><span id="bot-inbox-counter">0/4000</span></div></footer>
+        </div>
+      </section>
+    </div>
+  </section>
 
   <!-- Independent owner-only Telegram Bot conversation panel. -->
   <section id="bot-chat-panel" class="hidden" aria-label="Telegram Bot yozishmasi" aria-hidden="true">
@@ -5383,7 +5551,10 @@
       botHasMore: false, botNextBefore: null, botOlderPagesLoaded: false, botMessagesLoaded: false,
       botInitialLoading: false, botInitialLoadError: false, botLoadingOlder: false, botNetworkError: '',
       isSendingBotMessage: false, botPendingRequest: null, botSendFeedback: null, botReturnFocus: null,
-      botManager: { loaded: false, loading: false, settings: null, buttons: [], commands: [] }
+      botManager: { loaded: false, loading: false, settings: null, buttons: [], commands: [] },
+      botInboxOpen: false, botInboxConversations: [], botInboxActiveConversation: null, botInboxMessages: [],
+      botInboxMessagesSignature: '', botInboxPollingTimer: null, botInboxPollingInFlight: false,
+      botInboxSending: false, botInboxPending: null, botInboxError: '', botInboxSendFeedback: ''
     };
 
     // Persist the single unresolved bot-send request across WebView reloads.
@@ -7357,6 +7528,354 @@
       }
     });
 
+    /* ═══════════════════════════════════════════════════════════════════
+       OWNER TELEGRAM BOT INBOX — PRIVATE CHATS + GROUPS
+       All Telegram API calls happen inside chat-api using TELEGRAM_BOT_TOKEN.
+       The browser only sends authenticated owner actions with Telegram initData.
+       ═══════════════════════════════════════════════════════════════════ */
+    function botInboxChatId(value) {
+      const raw = String(value ?? '').trim();
+      if (!/^-?[1-9]\d*$/.test(raw)) return null;
+      const n = Number(raw);
+      return Number.isSafeInteger(n) && n !== 0 ? n : null;
+    }
+    function botInboxDisplayName(conversation) {
+      if (!conversation) return 'Telegram suhbat';
+      if (conversation.chat_type === 'private') {
+        const name = [conversation.first_name, conversation.last_name].filter(Boolean).join(' ').trim();
+        return name || conversation.title || (conversation.username ? `@${conversation.username}` : `Mijoz ${conversation.customer_telegram_id || conversation.telegram_chat_id}`);
+      }
+      return conversation.title || conversation.username || `Guruh ${conversation.telegram_chat_id}`;
+    }
+    function botInboxTypeLabel(conversation) {
+      return conversation?.chat_type === 'group' || conversation?.chat_type === 'supergroup' ? 'Guruh' : 'Shaxsiy chat';
+    }
+    function botInboxPreview(conversation) {
+      const preview = String(conversation?.last_message_text || '').trim();
+      if (!preview) return 'Hozircha yangi xabar yo‘q';
+      return `${conversation.last_sender_name === 'Umarov' ? 'Siz: ' : ''}${preview}`;
+    }
+    function botInboxStatus(message, kind = '') {
+      const wrap = $('bot-inbox-send-status');
+      const text = $('bot-inbox-send-status-text');
+      const retry = $('bot-inbox-retry-send-btn');
+      if (!wrap || !text || !retry) return;
+      text.textContent = message || '';
+      wrap.classList.toggle('hidden', !message);
+      wrap.dataset.kind = kind;
+      const showRetry = Boolean(state.botInboxPending && !state.botInboxSending && state.botInboxPending.retryable);
+      retry.classList.toggle('hidden', !showRetry);
+    }
+    function renderBotInboxConversations() {
+      const list = $('bot-inbox-conversation-list');
+      if (!list) return;
+      const query = String($('bot-inbox-search')?.value || '').trim().toLowerCase();
+      list.replaceChildren();
+      const all = Array.isArray(state.botInboxConversations) ? state.botInboxConversations : [];
+      const filtered = all.filter(item => {
+        const haystack = `${botInboxDisplayName(item)} ${item.username || ''} ${item.last_message_text || ''} ${botInboxTypeLabel(item)}`.toLowerCase();
+        return !query || haystack.includes(query);
+      });
+      $('bot-inbox-count').textContent = String(filtered.length);
+      if (!filtered.length) {
+        const empty = document.createElement('div');
+        empty.className = 'bot-inbox-empty-list';
+        empty.textContent = all.length ? 'Qidiruv bo‘yicha suhbat topilmadi.' : 'Hozircha botga /start yuborgan foydalanuvchi yoki bot qo‘shilgan guruh yo‘q.';
+        list.appendChild(empty);
+        return;
+      }
+      for (const conversation of filtered) {
+        const chatId = botInboxChatId(conversation.telegram_chat_id);
+        if (chatId === null) continue;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'bot-inbox-conversation-item' + (String(state.botInboxActiveConversation?.telegram_chat_id) === String(chatId) ? ' active' : '');
+        button.dataset.telegramChatId = String(chatId);
+        const avatar = document.createElement('div');
+        avatar.className = 'bot-inbox-conversation-avatar' + (conversation.chat_type !== 'private' ? ' group' : '');
+        avatar.textContent = conversation.chat_type === 'private' ? (botInboxDisplayName(conversation).trim().charAt(0).toUpperCase() || 'U') : '👥';
+        const copy = document.createElement('div');
+        copy.className = 'bot-inbox-conversation-copy';
+        const top = document.createElement('div');
+        top.className = 'bot-inbox-conversation-top';
+        const name = document.createElement('div');
+        name.className = 'bot-inbox-conversation-name';
+        name.textContent = botInboxDisplayName(conversation);
+        const time = document.createElement('div');
+        time.className = 'bot-inbox-conversation-time';
+        time.textContent = conversation.last_message_at ? fmtTime(conversation.last_message_at) : '';
+        top.append(name, time);
+        const preview = document.createElement('div');
+        preview.className = 'bot-inbox-conversation-preview';
+        preview.textContent = botInboxPreview(conversation);
+        copy.append(top, preview);
+        button.append(avatar, copy);
+        button.addEventListener('click', () => void openBotInboxConversation(conversation));
+        list.appendChild(button);
+      }
+    }
+    function renderBotInboxMessages() {
+      const list = $('bot-inbox-messages');
+      if (!list) return;
+      list.replaceChildren();
+      if (!state.botInboxActiveConversation) return;
+      if (!state.botInboxMessages.length) {
+        const empty = document.createElement('div');
+        empty.className = 'bot-inbox-empty-list';
+        empty.textContent = 'Bu suhbatda hali saqlangan xabar yo‘q.';
+        list.appendChild(empty);
+        return;
+      }
+      let previousDate = '';
+      for (const message of state.botInboxMessages) {
+        const dateKey = botDateKey(message.created_at);
+        if (dateKey && dateKey !== previousDate) {
+          const divider = document.createElement('div');
+          divider.className = 'bot-inbox-date-divider';
+          const label = document.createElement('span');
+          label.textContent = botDateLabel(message.created_at);
+          divider.appendChild(label);
+          list.appendChild(divider);
+          previousDate = dateKey;
+        }
+        const outgoing = message.sender_type === 'owner';
+        const row = document.createElement('div');
+        row.className = `bot-inbox-message-row ${outgoing ? 'outgoing' : 'incoming'}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'bot-inbox-message-bubble';
+        if (!outgoing && (state.botInboxActiveConversation.chat_type === 'group' || state.botInboxActiveConversation.chat_type === 'supergroup') && message.sender_name) {
+          const sender = document.createElement('div');
+          sender.className = 'bot-inbox-message-sender';
+          sender.textContent = message.sender_name;
+          bubble.appendChild(sender);
+        }
+        const type = String(message.message_type || 'text').toLowerCase();
+        const labels = { photo: '[Rasm]', document: '[Fayl]', video: '[Video]', voice: '[Ovozli xabar]', audio: '[Audio]', sticker: '[Sticker]', animation: '[GIF]', other: '[Media]' };
+        const body = document.createElement('div');
+        body.className = 'bot-inbox-message-text';
+        body.textContent = (labels[type] && (!message.content || String(message.content).startsWith('['))) ? (message.content || labels[type]) : String(message.content || '');
+        bubble.appendChild(body);
+        const meta = document.createElement('div');
+        meta.className = 'bot-inbox-message-meta';
+        meta.textContent = fmtTime(message.created_at);
+        bubble.appendChild(meta);
+        row.appendChild(bubble);
+        list.appendChild(row);
+      }
+      updateBotInboxComposer();
+    }
+    function updateBotInboxComposer() {
+      const input = $('bot-inbox-input');
+      const send = $('bot-inbox-send-btn');
+      if (!input || !send) return;
+      const conversation = state.botInboxActiveConversation;
+      const canSend = Boolean(state.isOwner && state.botInboxOpen && conversation && conversation.is_active !== false && !state.botInboxSending && !state.botInboxPending);
+      input.disabled = !canSend;
+      send.disabled = !canSend || !input.value.trim();
+      input.placeholder = conversation?.is_active === false ? 'Bot bu chatdan chiqarilgan.' : (conversation ? 'Bot nomidan xabar yozing…' : 'Avval suhbatni tanlang');
+      $('bot-inbox-counter').textContent = `${input.value.length}/4000`;
+    }
+    function persistBotInboxPending() {
+      try {
+        const ownerId = normalizeTelegramUserId(state.user?.id ?? state.myProfile?.telegram_user_id);
+        if (!ownerId) return;
+        const key = `messages.botInboxPending.v1.${ownerId}`;
+        if (state.botInboxPending) localStorage.setItem(key, JSON.stringify(state.botInboxPending));
+        else localStorage.removeItem(key);
+      } catch (error) { console.warn('[bot-inbox] Pending send storage unavailable:', error?.message || 'unknown'); }
+    }
+    function restoreBotInboxPending() {
+      try {
+        const ownerId = normalizeTelegramUserId(state.user?.id ?? state.myProfile?.telegram_user_id);
+        if (!ownerId) return;
+        const raw = localStorage.getItem(`messages.botInboxPending.v1.${ownerId}`);
+        if (!raw) return;
+        const pending = JSON.parse(raw);
+        if (isUuidV4(pending?.request_id) && botInboxChatId(pending?.telegram_chat_id) !== null && typeof pending?.content === 'string') {
+          state.botInboxPending = { request_id: pending.request_id, telegram_chat_id: pending.telegram_chat_id, content: pending.content, retryable: pending.retryable === true };
+        }
+      } catch (error) { console.warn('[bot-inbox] Pending send restore failed:', error?.message || 'unknown'); }
+    }
+    async function refreshBotInboxConversations(silent = false) {
+      if (!state.isOwner || !state.botInboxOpen || state.botInboxPollingInFlight) return false;
+      state.botInboxPollingInFlight = true;
+      try {
+        const result = await callAPI({ action: 'list_bot_conversations' });
+        if (!state.botInboxOpen) return false;
+        state.botInboxConversations = Array.isArray(result.conversations) ? result.conversations : [];
+        if (state.botInboxActiveConversation) {
+          const current = state.botInboxConversations.find(item => String(item.telegram_chat_id) === String(state.botInboxActiveConversation.telegram_chat_id));
+          if (current) state.botInboxActiveConversation = current;
+        }
+        renderBotInboxConversations();
+        if (!state.botInboxActiveConversation) {
+          const empty = $('bot-inbox-empty-state');
+          empty.classList.remove('hidden');
+          $('bot-inbox-active-thread').classList.add('hidden');
+        }
+        return true;
+      } catch (error) {
+        if (!silent) showToast(uiError(error.message) || 'Bot suhbatlarini yuklab bo‘lmadi. SQL migratsiyasi bajarilganini tekshiring.');
+        const list = $('bot-inbox-conversation-list');
+        if (list && !state.botInboxConversations.length) {
+          list.replaceChildren();
+          const empty = document.createElement('div'); empty.className = 'bot-inbox-empty-list';
+          empty.textContent = uiError(error.message) || 'Bot suhbatlari yuklanmadi. Qayta urinib ko‘ring.';
+          list.appendChild(empty);
+        }
+        return false;
+      } finally { state.botInboxPollingInFlight = false; }
+    }
+    async function refreshBotInboxMessages(silent = false) {
+      const conversation = state.botInboxActiveConversation;
+      const telegramChatId = botInboxChatId(conversation?.telegram_chat_id);
+      if (!state.botInboxOpen || telegramChatId === null) return false;
+      try {
+        const result = await callAPI({ action: 'list_bot_conversation_messages', telegram_chat_id: telegramChatId, limit: 500 });
+        if (!state.botInboxOpen || String(state.botInboxActiveConversation?.telegram_chat_id) !== String(telegramChatId)) return false;
+        const incoming = Array.isArray(result.messages) ? result.messages : [];
+        const signature = botMessagesSignature(incoming);
+        if (signature !== state.botInboxMessagesSignature) {
+          state.botInboxMessages = incoming;
+          state.botInboxMessagesSignature = signature;
+          renderBotInboxMessages();
+          const list = $('bot-inbox-messages');
+          list.scrollTop = list.scrollHeight;
+        }
+        return true;
+      } catch (error) {
+        if (!silent) botInboxStatus(uiError(error.message) || 'Bot xabarlarini yuklab bo‘lmadi.', 'error');
+        return false;
+      }
+    }
+    async function openBotInboxConversation(conversation) {
+      if (!state.isOwner || !conversation) return;
+      const id = botInboxChatId(conversation.telegram_chat_id);
+      if (id === null) return;
+      state.botInboxActiveConversation = conversation;
+      state.botInboxMessages = [];
+      state.botInboxMessagesSignature = '';
+      $('bot-inbox-layout').classList.add('has-active-chat');
+      $('bot-inbox-empty-state').classList.add('hidden');
+      $('bot-inbox-active-thread').classList.remove('hidden');
+      $('bot-inbox-thread-title').textContent = botInboxDisplayName(conversation);
+      $('bot-inbox-thread-subtitle').textContent = conversation.chat_type === 'private' ? (conversation.username ? `@${String(conversation.username).replace(/^@/, '')} · ID ${conversation.customer_telegram_id || id}` : `Telegram ID: ${conversation.customer_telegram_id || id}`) : `Guruh ID: ${id}`;
+      $('bot-inbox-thread-type').textContent = botInboxTypeLabel(conversation);
+      const avatar = $('bot-inbox-thread-avatar');
+      avatar.textContent = conversation.chat_type === 'private' ? (botInboxDisplayName(conversation).charAt(0).toUpperCase() || 'U') : '👥';
+      avatar.classList.toggle('group', conversation.chat_type !== 'private');
+      $('bot-inbox-input').value = '';
+      $('bot-inbox-input').style.height = '';
+      const pendingMatches = state.botInboxPending && String(state.botInboxPending.telegram_chat_id) === String(id);
+      if (pendingMatches) $('bot-inbox-input').value = state.botInboxPending.content;
+      botInboxStatus(pendingMatches ? 'Oldingi xabar holati tekshirilmagan. Yuborishni shu request ID bilan tekshiring.' : '', '');
+      renderBotInboxConversations();
+      renderBotInboxMessages();
+      updateBotInboxComposer();
+      await refreshBotInboxMessages(false);
+    }
+    async function openBotInbox() {
+      if (!ownerControlsVisible()) { showToast('Telegram Bot inbox faqat owner uchun.'); return; }
+      if (state.botChatOpen) closeBotChat();
+      state.botInboxOpen = true;
+      $('bot-inbox-panel').classList.remove('hidden');
+      $('bot-inbox-panel').setAttribute('aria-hidden', 'false');
+      $('bot-inbox-layout').classList.remove('has-active-chat');
+      $('bot-inbox-empty-state').classList.remove('hidden');
+      $('bot-inbox-active-thread').classList.add('hidden');
+      state.botInboxActiveConversation = null;
+      state.botInboxMessages = [];
+      state.botInboxMessagesSignature = '';
+      restoreBotInboxPending();
+      await refreshBotInboxConversations(false);
+      if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
+      state.botInboxPollingTimer = setInterval(() => {
+        if (!state.botInboxOpen || document.visibilityState !== 'visible') return;
+        void refreshBotInboxConversations(true);
+        if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
+      }, 3500);
+    }
+    function closeBotInbox() {
+      if (!state.botInboxOpen) return;
+      state.botInboxOpen = false;
+      if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
+      state.botInboxPollingTimer = null;
+      $('bot-inbox-panel').classList.add('hidden');
+      $('bot-inbox-panel').setAttribute('aria-hidden', 'true');
+      $('bot-inbox-layout').classList.remove('has-active-chat');
+      state.botInboxActiveConversation = null;
+      state.botInboxMessages = [];
+      state.botInboxMessagesSignature = '';
+    }
+    async function sendBotInboxMessage(useExisting = false) {
+      if (!state.isOwner || !state.botInboxOpen || state.botInboxSending || !state.botInboxActiveConversation) return;
+      const telegramChatId = botInboxChatId(state.botInboxActiveConversation.telegram_chat_id);
+      if (telegramChatId === null) return;
+      let pending = state.botInboxPending;
+      if (useExisting) {
+        if (!pending || String(pending.telegram_chat_id) !== String(telegramChatId)) return;
+      } else {
+        if (pending) { botInboxStatus('Oldingi xabarning yetkazilishi hali hal qilinmagan. Avval shu holatni tekshiring.'); return; }
+        const content = $('bot-inbox-input').value.trim();
+        if (!content) return;
+        if (content.length > 4000) { botInboxStatus('Xabar 4000 belgidan oshmasin.', 'error'); return; }
+        pending = { request_id: createBotRequestUuid(), telegram_chat_id: telegramChatId, content, retryable: true };
+        if (!isUuidV4(pending.request_id)) { botInboxStatus('Xavfsiz request ID yaratilmadi.', 'error'); return; }
+        state.botInboxPending = pending;
+        persistBotInboxPending();
+      }
+      state.botInboxSending = true;
+      updateBotInboxComposer();
+      botInboxStatus('Bot token orqali Telegramga yuborilmoqda…');
+      try {
+        const result = await callAPI({ action: 'send_bot_conversation_message', telegram_chat_id: telegramChatId, content: pending.content, request_id: pending.request_id });
+        if (result?.ok !== true || !result.message?.id) { const error = new Error('Server Telegram yetkazilganini tasdiqlamadi.'); error.ambiguous = true; throw error; }
+        state.botInboxMessages = mergeBotMessages(state.botInboxMessages, [result.message]);
+        state.botInboxMessagesSignature = botMessagesSignature(state.botInboxMessages);
+        state.botInboxPending = null;
+        persistBotInboxPending();
+        state.botInboxSendFeedback = 'Xabar bot orqali yuborildi.';
+        $('bot-inbox-input').value = '';
+        $('bot-inbox-input').style.height = '';
+        renderBotInboxMessages();
+        $('bot-inbox-messages').scrollTop = $('bot-inbox-messages').scrollHeight;
+        botInboxStatus('Xabar bot orqali yuborildi.', 'success');
+        void refreshBotInboxConversations(true);
+        playSend();
+      } catch (error) {
+        const isAmbiguous = error?.ambiguous === true || error?.status === 409 || !Number.isInteger(error?.status) || error.status >= 500;
+        if (state.botInboxPending === pending) {
+          pending.retryable = !isAmbiguous || error?.status === 502 || !Number.isInteger(error?.status);
+          persistBotInboxPending();
+        }
+        botInboxStatus(isAmbiguous ? 'Yetkazish natijasi noaniq. Yangi request bilan qayta yuborilmadi. Xuddi shu so‘rovni tekshirish xavfsiz.' : (uiError(error.message) || 'Xabar yuborilmadi.'), 'error');
+        if (isAmbiguous) $('bot-inbox-retry-send-btn').classList.remove('hidden');
+        playError();
+      } finally {
+        state.botInboxSending = false;
+        updateBotInboxComposer();
+      }
+    }
+    $('bot-inbox-launch-btn').addEventListener('click', () => void openBotInbox());
+    $('bot-inbox-close-btn').addEventListener('click', closeBotInbox);
+    $('bot-inbox-refresh-btn').addEventListener('click', () => void refreshBotInboxConversations(false));
+    $('bot-inbox-search').addEventListener('input', renderBotInboxConversations);
+    $('bot-inbox-back-btn').addEventListener('click', () => $('bot-inbox-layout').classList.remove('has-active-chat'));
+    $('bot-inbox-send-btn').addEventListener('click', () => void sendBotInboxMessage(false));
+    $('bot-inbox-retry-send-btn').addEventListener('click', () => void sendBotInboxMessage(true));
+    $('bot-inbox-input').addEventListener('input', () => {
+      const input = $('bot-inbox-input');
+      input.style.height = 'auto';
+      input.style.height = `${Math.min(input.scrollHeight, 132)}px`;
+      updateBotInboxComposer();
+    });
+    $('bot-inbox-input').addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) {
+        event.preventDefault();
+        if (!event.repeat) void sendBotInboxMessage(false);
+      }
+    });
+
     function applySearch() {
       const q = $('search-input').value.trim().toLowerCase();
       document.querySelectorAll('.chat-list-row').forEach(row => {
@@ -7452,6 +7971,8 @@
       const protection = $('owner-content-protection');
       const notifications = $('owner-notification-settings');
       const botManagerEntry = $('owner-bot-manager-entry');
+      const botInboxLaunch = $('bot-inbox-launch-btn');
+      if (botInboxLaunch) botInboxLaunch.classList.toggle('hidden', !visible);
       if (protection) protection.classList.toggle('hidden', !visible);
       if (notifications) notifications.classList.toggle('hidden', !visible);
       if (botManagerEntry) { botManagerEntry.classList.toggle('hidden', !visible); botManagerEntry.setAttribute('aria-hidden', String(!visible)); }
@@ -7854,10 +8375,26 @@
     document.addEventListener('touchstart', unlockAudio, { once: true, passive: true }); document.addEventListener('click', unlockAudio, { once: true });
     document.addEventListener('visibilitychange', () => {
       if (state.botChatOpen) {
-        if (document.visibilityState === 'hidden') stopBotPolling();
-        else {
+        if (document.visibilityState === 'hidden') {
+          stopBotPolling();
+        } else {
           void refreshBotMessages(true);
           startBotPolling();
+        }
+      }
+      if (state.botInboxOpen) {
+        if (document.visibilityState === 'hidden') {
+          if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
+          state.botInboxPollingTimer = null;
+        } else {
+          void refreshBotInboxConversations(true);
+          if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
+          if (!state.botInboxPollingTimer) state.botInboxPollingTimer = setInterval(() => {
+            if (state.botInboxOpen && document.visibilityState === 'visible') {
+              void refreshBotInboxConversations(true);
+              if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
+            }
+          }, 3500);
         }
       }
       if (document.visibilityState === 'visible' && state.activeChatId) {
