@@ -1406,7 +1406,9 @@
       }
 
       .header-identity {
-        gap: 8px
+        gap: 8px;
+        position: relative;
+        top: 9px
       }
 
       #composer-wrap {
@@ -1462,6 +1464,46 @@
     #message-list .bubble-text {
       -webkit-user-select: text;
       user-select: text
+    }
+
+    /* Orange text selection — applied across all selectable content. */
+    ::selection {
+      background: #f97316;
+      color: #fff
+    }
+
+    ::-moz-selection {
+      background: #f97316;
+      color: #fff
+    }
+
+    /* Explicit orange selection on chat messages, inputs, textareas, and profile text. */
+    .bubble-text::selection,
+    .header-name::selection,
+    .header-status::selection,
+    .chat-item-name::selection,
+    .chat-preview::selection,
+    .field-input::selection,
+    #composer-input::selection,
+    #attachment-caption::selection,
+    textarea::selection,
+    input::selection {
+      background: #f97316;
+      color: #fff
+    }
+
+    .bubble-text::-moz-selection,
+    .header-name::-moz-selection,
+    .header-status::-moz-selection,
+    .chat-item-name::-moz-selection,
+    .chat-preview::-moz-selection,
+    .field-input::-moz-selection,
+    #composer-input::-moz-selection,
+    #attachment-caption::-moz-selection,
+    textarea::-moz-selection,
+    input::-moz-selection {
+      background: #f97316;
+      color: #fff
     }
 
     /* Telegram iOS-style media preview before sending and in-chat image viewer. */
@@ -3227,6 +3269,38 @@
       }
     }
 
+    /* Optimistic (locally-inserted) message entrance — snappier than the polled-arrival animation */
+    .msg-row.optimistic-enter .bubble {
+      transform-origin: bottom right;
+      animation: optimistic-enter 220ms cubic-bezier(.18, .72, .22, 1.04) both
+    }
+
+    @keyframes optimistic-enter {
+      0%  { opacity: 0; transform: translateY(8px) scale(.97); filter: blur(.5px) }
+      65% { opacity: 1; transform: translateY(-1px) scale(1.004); filter: blur(0) }
+      100%{ opacity: 1; transform: translateY(0) scale(1); filter: none }
+    }
+
+    /* Retry button inside failed bubble */
+    .bubble-retry-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 5px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: var(--danger);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 650;
+      cursor: pointer;
+      border: 0;
+      line-height: 1.3;
+      transition: opacity .15s
+    }
+    .bubble-retry-btn:hover { opacity: .85 }
+    .bubble-retry-btn:active { opacity: .7 }
+
     .msg-row.message-arrive .bubble {
       transform-origin: bottom var(--message-origin, right);
       animation: message-arrive .34s cubic-bezier(.18, .72, .22, 1.04) both
@@ -3600,6 +3674,313 @@
         flex-basis: 53px !important;
       }
     }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TASK 3 — PROFESSIONAL CHAT UX & MOBILE EXPERIENCE
+       ═══════════════════════════════════════════════════════════════════ */
+
+    /* ── 1. Scroll-to-bottom FAB ───────────────────────────────────────── */
+    #scroll-to-bottom {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      z-index: 30;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--overlay);
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      /* hidden by default */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(6px) scale(.92);
+      transition: opacity .18s var(--ease), transform .18s var(--ease),
+                  background .15s, color .15s, box-shadow .15s;
+      will-change: opacity, transform;
+    }
+
+    #scroll-to-bottom.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    #scroll-to-bottom:hover {
+      background: var(--surface);
+      color: var(--accent);
+      box-shadow: 0 6px 22px rgba(0,0,0,.22);
+    }
+
+    #scroll-to-bottom:active {
+      transform: scale(.92) !important;
+    }
+
+    /* Unread badge on the scroll-to-bottom button */
+    #scroll-to-bottom .stb-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 18px;
+      text-align: center;
+      padding: 0 4px;
+      display: none;
+      border: 2px solid var(--bg);
+    }
+
+    #scroll-to-bottom.has-unread .stb-badge {
+      display: block;
+    }
+
+    /* ── 2. Composer auto-resize ───────────────────────────────────────── */
+    /* Use a grid trick to auto-grow contenteditable without JS measuring */
+    #composer-wrap {
+      /* already flex-shrink:0; ensure it doesn't compress chat */
+      flex-shrink: 0;
+      /* smooth height changes */
+      transition: padding .12s ease;
+    }
+
+    #composer-input {
+      /* Allow natural growth; cap keeps chat visible */
+      min-height: 42px;
+      max-height: 160px; /* ~6 lines on mobile */
+      /* Smooth height change as user types */
+      transition: box-shadow .16s ease, min-height .1s ease;
+    }
+
+    #composer-input:focus {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    /* ── 3. Polished input / button feedback ──────────────────────────── */
+    .search-box input:focus {
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+    .sheet-btn {
+      transition: transform .12s, background .15s, opacity .15s;
+    }
+
+    .sheet-btn:active {
+      transform: scale(.97);
+    }
+
+    .primary-wide {
+      transition: transform .12s, background .15s, opacity .15s;
+    }
+
+    .primary-wide:active:not(:disabled) {
+      transform: scale(.98);
+    }
+
+    .attach-btn {
+      transition: background .15s, color .15s, transform .12s;
+    }
+
+    .attach-btn:active {
+      transform: scale(.9);
+    }
+
+    /* Larger touch targets on mobile */
+    @media(max-width:767px) {
+      .icon-btn {
+        min-width: 44px;
+        min-height: 44px;
+      }
+
+      .attach-btn {
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+      }
+
+      #send-btn {
+        width: 44px;
+        height: 44px;
+      }
+
+      .ctx-item {
+        min-height: 48px;
+      }
+    }
+
+    /* ── 4. Chat-item press feedback ──────────────────────────────────── */
+    .chat-item {
+      transition: background .15s, transform .1s;
+    }
+
+    .chat-item:active {
+      transform: scale(.985);
+      background: var(--surface) !important;
+    }
+
+    /* ── 5. Smooth sidebar slide-in on mobile ─────────────────────────── */
+    @media(max-width:767px) {
+      /* Owner mode: sidebar starts visually off-screen via transform, not display:none,
+         so the transition animates correctly when .mobile-open is toggled.
+         customer-mode keeps sidebar fully hidden via the existing rule above.
+         We override the base `display:none` rule only for owner-mode. */
+      #app.owner-mode #sidebar {
+        display: flex !important;
+        transform: translateX(-100%);
+        transition: transform .22s var(--ease);
+        will-change: transform;
+      }
+
+      #app.owner-mode #sidebar.mobile-open {
+        transform: translateX(0) !important;
+      }
+    }
+
+    /* ── 6. Toast fade-out ────────────────────────────────────────────── */
+    .toast.toast-out {
+      animation: toast-out .2s ease forwards !important;
+    }
+
+    @keyframes toast-out {
+      from { opacity: 1; transform: translate(-50%, 0); }
+      to   { opacity: 0; transform: translate(-50%, 6px); }
+    }
+
+    /* ── 7. Overlay/sheet close animation ─────────────────────────────── */
+    .overlay.closing {
+      animation: fade-out .18s ease forwards !important;
+    }
+
+    .overlay.closing .sheet {
+      animation: sheet-out .18s var(--ease) forwards !important;
+    }
+
+    @keyframes fade-out {
+      to { opacity: 0; }
+    }
+
+    @keyframes sheet-out {
+      to { transform: translateY(18px); opacity: .8; }
+    }
+
+    /* ── 8. Side-panel close animation ────────────────────────────────── */
+    .side-panel.closing {
+      transform: translateX(105%) !important;
+      transition: transform .2s var(--ease) !important;
+    }
+
+    /* ── 9. Context menu close animation ──────────────────────────────── */
+    #ctx-menu.closing {
+      animation: menu-close .12s ease forwards !important;
+    }
+
+    @keyframes menu-close {
+      to { opacity: 0; transform: scale(.95); }
+    }
+
+    /* ── 10. Layout stability: anchor composer at bottom ─────────────── */
+    #active-chat {
+      /* isolate stacking so the absolute scroll-to-bottom btn is relative to this */
+      isolation: isolate;
+      /* already position:relative from earlier rule */
+    }
+
+    /* message-list doesn't jump when new content is added near the bottom */
+    #message-list {
+      /* overflow-anchor: auto is default and correct; explicitly set for clarity */
+      overflow-anchor: auto;
+      /* smooth programmatic scrolls */
+      scroll-behavior: smooth;
+    }
+
+    /* ── 11. Long-message / overflow hardening ────────────────────────── */
+    .bubble-text {
+      /* already has overflow-wrap:anywhere; add word-break as fallback */
+      word-break: break-word;
+      /* prevent inline images from overflowing */
+      overflow-x: hidden;
+    }
+
+    .bubble-wrap {
+      /* ensure wrap never exceeds parent */
+      overflow: hidden;
+    }
+
+    .chat-item-name,
+    .header-name {
+      /* belt-and-suspenders for very long display names */
+      max-width: 100%;
+    }
+
+    /* ── 12. Mobile keyboard / safe-area hardening ────────────────────── */
+    /* Prevent horizontal overflow on very narrow screens */
+    #app {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    #message-list {
+      overscroll-behavior-y: contain;
+    }
+
+    /* ── 13. Attachment preview button — min touch target ─────────────── */
+    .attachment-send-label {
+      min-height: 48px;
+    }
+
+    @media(max-width:767px) {
+      .attachment-send-label {
+        min-height: 50px;
+      }
+
+      /* Comfortable spacing for the footer caption area */
+      .attachment-preview-footer {
+        padding-bottom: calc(16px + max(env(safe-area-inset-bottom, 0px), var(--messages-safe-bottom, 0px)));
+      }
+    }
+
+    /* ── 14. Search input focus ───────────────────────────────────────── */
+    .search-box input:focus {
+      outline: none;
+    }
+
+    /* ── 15. Reduced-motion overrides for new additions ───────────────── */
+    @media(prefers-reduced-motion:reduce) {
+      #scroll-to-bottom,
+      .chat-item,
+      .toast.toast-out,
+      .overlay.closing,
+      .overlay.closing .sheet,
+      .side-panel.closing,
+      #ctx-menu.closing,
+      #composer-input,
+      #app.owner-mode #sidebar {
+        animation: none !important;
+        transition-duration: .01ms !important;
+      }
+
+      #app.owner-mode #sidebar.mobile-open {
+        transform: none !important;
+      }
+    }
+
+    /* ── 16. Scroll-to-bottom button — mobile bottom adjustment ────────── */
+    @media(max-width:767px) {
+      #scroll-to-bottom {
+        right: 10px;
+        bottom: 10px;
+      }
+    }
   </style>
 </head>
 
@@ -3733,6 +4114,14 @@
             </svg>Suhbat tarixini tozalash</button>
         </div>
         <div id="message-list" role="log" aria-live="polite" aria-label="Xabarlar"></div>
+        <!-- Scroll-to-bottom FAB — shown when user scrolls up into history -->
+        <button id="scroll-to-bottom" type="button" aria-label="Pastga o'tish" title="Eng oxirgi xabarga o'tish">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"/>
+          </svg>
+          <span class="stb-badge" id="stb-badge" aria-hidden="true"></span>
+        </button>
         <footer id="composer-wrap">
           <div id="reply-bar">
             <div class="bar-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -4101,7 +4490,9 @@
       signedUrlCache: new Map(), pendingAvatarPath: null, profileMode: 'own', profileTarget: null,
       renderedMessageSignature: '', ownerListSignature: '', lastLoadToken: 0, previewObjectUrl: null,
       pendingAttachment: null, pendingAttachmentObjectUrl: null, pendingAttachmentQueue: [], viewerMessage: null, viewerUrl: null,
-      animateMessageIds: new Set(), editedMessageIds: new Set(), isNavigatingBack: false
+      animateMessageIds: new Set(), editedMessageIds: new Set(), isNavigatingBack: false,
+      // Optimistic UI: keyed by tmp_ id → { tmpId, content, replyTo, chatId, retryPayload, failed }
+      optimisticMessages: new Map()
     };
 
     function escapeHTML(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -4505,7 +4896,18 @@
         meta.appendChild(receipt);
       }
       if (msg.content_protected) { const protectedMark = document.createElement('span'); protectedMark.className = 'protection-badge'; protectedMark.textContent = '🔒 Himoyalangan'; protectedMark.title = 'Egasi nusxalash va saqlashni cheklagan'; meta.appendChild(protectedMark); }
-      if (msg._sending) { const sending = document.createElement('span'); sending.textContent = 'Yuborilmoqda'; meta.appendChild(sending); } else if (msg._failed) { const fail = document.createElement('span'); fail.style.color = 'var(--danger)'; fail.textContent = 'Yuborilmadi'; meta.appendChild(fail); }
+      if (msg._sending) {
+        const sending = document.createElement('span'); sending.textContent = 'Yuborilmoqda'; meta.appendChild(sending);
+      } else if (msg._failed) {
+        const fail = document.createElement('span'); fail.style.color = 'var(--danger)'; fail.textContent = 'Yuborilmadi'; meta.appendChild(fail);
+        // Retry button — attached below the meta row, inside the bubble
+        const retryBtn = document.createElement('button'); retryBtn.type = 'button'; retryBtn.className = 'bubble-retry-btn';
+        retryBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg> Qayta yuborish';
+        retryBtn.setAttribute('aria-label', 'Xabarni qayta yuborish');
+        const tmpId = msg._tmpId || msg.id;
+        retryBtn.addEventListener('click', e => { e.stopPropagation(); void retryOptimisticMessage(tmpId); });
+        bubble.appendChild(meta); bubble.appendChild(retryBtn); return bubble;
+      }
       bubble.appendChild(meta); return bubble;
     }
     function openImageViewer(msg) {
@@ -4728,7 +5130,7 @@
     function confirmDelete(msg) { const overlay = document.createElement('div'); overlay.className = 'overlay'; overlay.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="delete-title"><div class="sheet-title" id="delete-title">Xabar o‘chirilsinmi?</div><p class="sheet-description">Bu xabar suhbatdan butunlay o‘chiriladi.</p><div class="sheet-actions"><button class="sheet-btn destructive" type="button" data-action="delete">Xabarni o‘chirish</button><button class="sheet-btn" type="button" data-action="cancel">Bekor qilish</button></div></div>'; overlay.addEventListener('click', e => { if (e.target === overlay || e.target.closest('[data-action="cancel"]')) overlay.remove(); }); overlay.querySelector('[data-action="delete"]').addEventListener('click', async () => { const btn = overlay.querySelector('[data-action="delete"]'); btn.disabled = true; btn.textContent = 'O‘chirilmoqda…'; try { await callAPI({ action: 'delete_message', message_id: msg.id }); overlay.remove(); const row = findMessageRow(String(msg.id)); if (row) { row.classList.add('message-deleting'); await new Promise(resolve => setTimeout(resolve, 235)); } state.messages = state.messages.filter(m => m.id !== msg.id); renderMessages(state.messages, true); playDeleteSoft(); showToast('Xabar o‘chirildi.'); } catch (e) { btn.disabled = false; btn.textContent = 'Xabarni o‘chirish'; showToast(uiError(e.message) || 'Xabarni o‘chirib bo‘lmadi.'); playError(); } }); document.body.appendChild(overlay); overlay.querySelector('[data-action="delete"]').focus(); }
 
     const composer = $('composer-input'); function composerText() { return (composer.innerText || composer.textContent || '').replace(/\r/g, '').replace(/\u00a0/g, ' ').trim(); }
-    function updateSendButton() { const hasText = !!composerText(); $('send-btn').disabled = !state.activeChatId || (!hasText && !state.editMsg) || state.isSending || state.isUploading; }
+    function updateSendButton() { const hasText = !!composerText(); $('send-btn').disabled = !state.activeChatId || (!hasText && !state.editMsg) || state.isUploading; }
     function animateSendFlight(text, messageId, originRect) {
       if (!text || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const ghost = document.createElement('div'); ghost.className = 'send-flight-ghost'; ghost.textContent = String(text).replace(/\s+/g, ' ').trim().slice(0, 74);
@@ -4751,14 +5153,196 @@
     });
     $('send-btn').addEventListener('click', doSend);
     $('send-btn').addEventListener('pointerdown', () => { $('send-btn').classList.remove('send-button-press'); void $('send-btn').offsetWidth; $('send-btn').classList.add('send-button-press'); });
-    async function doSend() {
-      if (state.isSending || state.isUploading || !state.activeChatId) return; unlockAudio(); const content = composerText(); const originRect = composer.getBoundingClientRect(); const editId = state.editMsg?.id || null; const replyId = state.replyTo?.id || null; if (editId && !content) { showToast('Xabar matni bo‘sh bo‘lmasligi kerak.'); return; } if (!editId && !content) return; if (content.length > 4000) { showToast('Xabar 4 000 belgidan oshmasligi kerak.'); return; }
-      state.isSending = true; updateSendButton(); const previousEdit = state.editMsg;
+    // ─── Optimistic message helpers ────────────────────────────────────────────
+
+    /** Generate a stable tmp_ id that is unique within this session. */
+    function makeTmpId() {
+      return 'tmp_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 7);
+    }
+
+    /**
+     * Insert a temporary optimistic message into state.messages and re-render.
+     * Returns the temp message object.
+     */
+    function insertOptimisticMessage(tmpId, content, replyId, chatId) {
+      const tmpMsg = {
+        id: tmpId,
+        content,
+        sender_type: state.isOwner ? 'owner' : 'customer',
+        created_at: new Date().toISOString(),
+        reply_to_message_id: replyId || null,
+        reply_to: replyId ? (state.messages.find(m => m.id === replyId) || state.replyTo || null) : null,
+        _sending: true,
+        _failed: false,
+        _tmpId: tmpId
+      };
+      state.messages.push(tmpMsg);
+      state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      state.optimisticMessages.set(tmpId, {
+        tmpId, content, replyId, chatId,
+        retryPayload: { action: 'send_message', chat_id: chatId, content, reply_to_message_id: replyId || undefined },
+        failed: false
+      });
+      state.renderedMessageSignature = messageSignature(state.messages);
+      renderMessages(state.messages, false);
+      requestAnimationFrame(() => {
+        const row = findMessageRow(tmpId);
+        if (row) { row.classList.add('optimistic-enter'); setTimeout(() => row.classList.remove('optimistic-enter'), 350); }
+      });
+      return tmpMsg;
+    }
+
+    /**
+     * Replace a temporary message with the real server message.
+     * Handles the race where polling received the server message first.
+     */
+    function reconcileOptimisticMessage(tmpId, serverMsg) {
+      state.optimisticMessages.delete(tmpId);
+      const tmpIdx = state.messages.findIndex(m => m.id === tmpId);
+      const existingIdx = state.messages.findIndex(m => m.id === serverMsg.id);
+      if (existingIdx >= 0) {
+        // Server message already arrived via polling — drop the tmp entry
+        if (tmpIdx >= 0) state.messages.splice(tmpIdx, 1);
+      } else {
+        if (tmpIdx >= 0) {
+          state.messages[tmpIdx] = serverMsg;
+        } else {
+          state.messages.push(serverMsg);
+        }
+      }
+      state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      state.animateMessageIds.add(String(serverMsg.id));
+      state.renderedMessageSignature = messageSignature(state.messages);
+      renderMessages(state.messages, true);
+      clearAnimatedMessageIds([serverMsg.id], 'animateMessageIds', 'message-arrive', 850);
+    }
+
+    /** Mark a temporary message as failed and re-render so the retry button appears. */
+    function markOptimisticFailed(tmpId) {
+      const rec = state.optimisticMessages.get(tmpId);
+      if (rec) rec.failed = true;
+      const idx = state.messages.findIndex(m => m.id === tmpId);
+      if (idx >= 0) { state.messages[idx]._sending = false; state.messages[idx]._failed = true; }
+      state.renderedMessageSignature = messageSignature(state.messages);
+      renderMessages(state.messages, true);
+    }
+
+    /** Remove a tmp message entirely (used by retry before re-inserting). */
+    function removeOptimisticMessage(tmpId) {
+      state.optimisticMessages.delete(tmpId);
+      const idx = state.messages.findIndex(m => m.id === tmpId);
+      if (idx >= 0) state.messages.splice(idx, 1);
+      state.renderedMessageSignature = messageSignature(state.messages);
+    }
+
+    /** Fire the actual API send for a payload. Returns the server message on success. */
+    async function dispatchSendMessage(payload) {
+      const result = await callAPI(payload);
+      return result.message;
+    }
+
+    /**
+     * Retry sending a failed optimistic message.
+     * Removes the old failed entry, inserts a fresh tmp one, fires the API.
+     */
+    async function retryOptimisticMessage(tmpId) {
+      const rec = state.optimisticMessages.get(tmpId);
+      if (!rec || rec.chatId !== state.activeChatId) return;
+      removeOptimisticMessage(tmpId);
+      const newTmpId = makeTmpId();
+      insertOptimisticMessage(newTmpId, rec.content, rec.replyId, rec.chatId);
+      const newRec = state.optimisticMessages.get(newTmpId);
       try {
-        if (editId) { const result = await callAPI({ action: 'edit_message', message_id: editId, content }); const idx = state.messages.findIndex(m => m.id === editId); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.editMsg = null; $('edit-bar').classList.remove('visible'); composer.textContent = ''; state.editedMessageIds.add(String(editId)); renderMessages(state.messages, true); clearAnimatedMessageIds([editId], 'editedMessageIds', 'message-edited-flash', 900); playEditSoft(); showToast('Xabar yangilandi.'); }
-        else { const result = await callAPI({ action: 'send_message', chat_id: state.activeChatId, content, reply_to_message_id: replyId || undefined }); state.messages.push(result.message); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); state.replyTo = null; $('reply-bar').classList.remove('visible'); composer.textContent = ''; state.animateMessageIds.add(String(result.message.id)); renderMessages(state.messages, false); clearAnimatedMessageIds([result.message.id], 'animateMessageIds', 'message-arrive', 850); animateSendFlight(content, result.message.id, originRect); $('send-btn').classList.remove('send-button-press'); $('send-btn').classList.add('send-success-pop'); setTimeout(() => $('send-btn').classList.remove('send-success-pop', 'send-button-press'), 380); $('composer-input').classList.remove('composer-send-pulse'); void $('composer-input').offsetWidth; $('composer-input').classList.add('composer-send-pulse'); setTimeout(() => $('composer-input').classList.remove('composer-send-pulse'), 300); scrollBottom(true); playSend(); if (state.isOwner) refreshOwnerList(false); }
-      } catch (e) { showToast(uiError(e.message) || (editId ? 'Xabarni tahrirlab bo‘lmadi.' : 'Xabarni yuborib bo‘lmadi.')); playError(); if (editId) { state.editMsg = previousEdit; $('edit-bar').classList.add('visible'); $('edit-preview-text').textContent = previousEdit?.content || ''; } }
-      finally { state.isSending = false; updateSendButton(); }
+        const serverMsg = await dispatchSendMessage(newRec.retryPayload);
+        reconcileOptimisticMessage(newTmpId, serverMsg);
+        if (state.activeChatId === newRec.chatId) { playSend(); if (state.isOwner) refreshOwnerList(false); }
+      } catch (e) {
+        if (state.optimisticMessages.has(newTmpId)) {
+          markOptimisticFailed(newTmpId);
+          showToast(uiError(e.message) || 'Xabarni yuborib boʻolmadi.');
+          playError();
+        }
+      }
+    }
+
+    // ─── Main send handler ────────────────────────────────────────────
+
+    async function doSend() {
+      if (state.isUploading || !state.activeChatId) return;
+      unlockAudio();
+      const content = composerText();
+      const originRect = composer.getBoundingClientRect();
+      const editId = state.editMsg?.id || null;
+      const replyId = state.replyTo?.id || null;
+
+      if (editId && !content) { showToast('Xabar matni boʻolmasligi kerak.'); return; }
+      if (!editId && !content) return;
+      if (content.length > 4000) { showToast('Xabar 4 000 belgidan oshmasligi kerak.'); return; }
+
+      // ── EDIT PATH (unchanged) ─────────────────────────────────────────────
+      if (editId) {
+        state.isSending = true; updateSendButton();
+        const previousEdit = state.editMsg;
+        try {
+          const result = await callAPI({ action: 'edit_message', message_id: editId, content });
+          const idx = state.messages.findIndex(m => m.id === editId);
+          if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message);
+          state.editMsg = null; $('edit-bar').classList.remove('visible'); composer.textContent = '';
+          state.editedMessageIds.add(String(editId));
+          renderMessages(state.messages, true);
+          clearAnimatedMessageIds([editId], 'editedMessageIds', 'message-edited-flash', 900);
+          playEditSoft(); showToast('Xabar yangilandi.');
+        } catch (e) {
+          showToast(uiError(e.message) || 'Xabarni tahrirlab boʻolmadi.'); playError();
+          state.editMsg = previousEdit; $('edit-bar').classList.add('visible');
+          $('edit-preview-text').textContent = previousEdit?.content || '';
+        } finally { state.isSending = false; updateSendButton(); }
+        return;
+      }
+
+      // ── SEND PATH — fully optimistic ─────────────────────────────────────────
+      const chatId = state.activeChatId;
+      const tmpId = makeTmpId();
+
+      // 1. Capture and immediately clear composer & reply state
+      composer.textContent = '';
+      state.replyTo = null;
+      $('reply-bar').classList.remove('visible');
+      updateSendButton();
+
+      // 2. Insert the temporary message and render instantly
+      insertOptimisticMessage(tmpId, content, replyId, chatId);
+
+      // 3. Visual feedback
+      $('send-btn').classList.remove('send-button-press');
+      $('send-btn').classList.add('send-success-pop');
+      setTimeout(() => $('send-btn').classList.remove('send-success-pop', 'send-button-press'), 380);
+      $('composer-input').classList.remove('composer-send-pulse');
+      void $('composer-input').offsetWidth;
+      $('composer-input').classList.add('composer-send-pulse');
+      setTimeout(() => $('composer-input').classList.remove('composer-send-pulse'), 300);
+
+      // Scroll only when already near the bottom; donʻt disturb users reading history
+      const msgList = $('message-list');
+      if (msgList.scrollHeight - msgList.scrollTop - msgList.clientHeight < 120) scrollBottom(true);
+
+      playSend();
+
+      // Send flight ghost targets the tmp row
+      animateSendFlight(content, tmpId, originRect);
+
+      // 4. Fire API request in the background — never blocks the composer
+      const payload = { action: 'send_message', chat_id: chatId, content, reply_to_message_id: replyId || undefined };
+      dispatchSendMessage(payload).then(serverMsg => {
+        reconcileOptimisticMessage(tmpId, serverMsg);
+        if (state.activeChatId === chatId && state.isOwner) refreshOwnerList(false);
+      }).catch(e => {
+        if (state.optimisticMessages.has(tmpId)) {
+          markOptimisticFailed(tmpId);
+          showToast(uiError(e.message) || 'Xabarni yuborib boʻolmadi.');
+          playError();
+        }
+      });
     }
 
     // Photo selection opens an iOS-style preview and optional caption. Other files upload directly.
@@ -4828,6 +5412,8 @@
 
     // Messages are synchronized through the authenticated Edge Function because direct anonymous table access is revoked.
     async function loadMessages(chatId) {
+      // Clear any optimistic messages for this chat (a full reload supersedes them)
+      for (const [tmpId, rec] of [...state.optimisticMessages.entries()]) { if (rec.chatId === chatId) state.optimisticMessages.delete(tmpId); }
       const token = ++state.lastLoadToken; const list = $('message-list'); list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Xabarlar yuklanmoqda"></div></div>'; try { const markRead = !state.isOwner && getMiniAppForegroundState(); const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead }); if (token !== state.lastLoadToken || state.activeChatId !== chatId) return; state.messages = Array.isArray(data.messages) ? data.messages : []; state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); }
         catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.'); }
     }
@@ -4835,7 +5421,54 @@
     function startChatPolling(chatId) {
       stopChatPolling(); state.pollingTimer = setInterval(async () => {
         if (state.activeChatId !== chatId || document.visibilityState === 'hidden' || state.isDeletingMessages) return; try {
-          const markRead = !state.isOwner && getMiniAppForegroundState(); const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead }); if (state.activeChatId !== chatId) return; const messages = Array.isArray(data.messages) ? data.messages : []; const newIds = new Set(messages.map(m => m.id)); const oldIds = new Set(state.messages.map(m => m.id)); const oldMap = new Map(state.messages.map(m => [m.id, m])); const changed = messageSignature(messages) !== state.renderedMessageSignature; if (!changed) return; const incomingNew = messages.filter(m => !oldIds.has(m.id) && ((state.isOwner && m.sender_type !== 'owner') || (!state.isOwner && m.sender_type === 'owner'))); state.messages = messages; state.renderedMessageSignature = messageSignature(messages); for (const m of incomingNew) state.animateMessageIds.add(String(m.id)); renderMessages(messages, true); if (incomingNew.length) { clearAnimatedMessageIds(incomingNew.map(m => m.id), 'animateMessageIds', 'message-arrive', 850); playReceive(); if (state.isOwner) refreshOwnerList(false); } // render only when server data actually changed
+          const markRead = !state.isOwner && getMiniAppForegroundState();
+          const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead });
+          if (state.activeChatId !== chatId) return;
+          const serverMessages = Array.isArray(data.messages) ? data.messages : [];
+
+          // ─ Reconcile pending optimistic messages with server results ─────────────────
+          // Build a set of server-confirmed IDs for fast lookup
+          const serverIdSet = new Set(serverMessages.map(m => m.id));
+
+          // For each pending optimistic tmp message, if the server has already returned a
+          // message that matches content+sender at approximately the same time, we quietly
+          // reconcile it.  We do NOT do text-only matching to avoid false positives; instead
+          // we rely on the fact that our dispatchSendMessage() promise will call
+          // reconcileOptimisticMessage() when the server responds.  Here we only need to
+          // ensure that server messages that arrived via polling before our send promise
+          // resolved do not duplicate with still-pending tmp entries in state.messages.
+          const pendingTmpIds = [...state.optimisticMessages.keys()];
+          const tmpMessages = state.messages.filter(m => String(m.id).startsWith('tmp_'));
+
+          // Merge: start with server messages, then append any tmp messages not yet confirmed
+          const merged = [...serverMessages];
+          for (const tmp of tmpMessages) {
+            // Keep the tmp entry in the merged list so it stays visible while in-flight
+            if (!serverIdSet.has(tmp.id)) merged.push(tmp);
+          }
+          merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+          // Compute signature against the merged list (excluding tmp entries) for change detection
+          const serverOnlySig = messageSignature(serverMessages);
+          const changed = serverOnlySig !== state.renderedMessageSignature;
+          if (!changed && tmpMessages.length === 0) return;
+
+          // Determine truly new incoming messages (from other side, not our own sends)
+          const oldIds = new Set(state.messages.map(m => m.id));
+          const incomingNew = serverMessages.filter(m =>
+            !oldIds.has(m.id) &&
+            ((state.isOwner && m.sender_type !== 'owner') || (!state.isOwner && m.sender_type === 'owner'))
+          );
+
+          state.messages = merged;
+          if (changed) state.renderedMessageSignature = serverOnlySig;
+          for (const m of incomingNew) state.animateMessageIds.add(String(m.id));
+          renderMessages(merged, true);
+          if (incomingNew.length) {
+            clearAnimatedMessageIds(incomingNew.map(m => m.id), 'animateMessageIds', 'message-arrive', 850);
+            playReceive();
+            if (state.isOwner) refreshOwnerList(false);
+          }
         } catch {/* Temporary network errors do not clear the current conversation. */ }
       }, 3200);
     }
@@ -4849,7 +5482,8 @@
     async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); } if (state.activeChatId) { const active = chats.find(c => c.id === state.activeChatId); if (active) { state.activeChatProtection = Boolean(active.protect_owner_content); syncChatProtectionButton(); } const latestProfile = active ? getChatProfile(active) : null; if (latestProfile) { state.activeChatProfile = latestProfile; updateOwnerPresence(latestProfile); } } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Suhbatlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta yuklash'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
     function applySearch() { const q = $('search-input').value.trim().toLowerCase(); document.querySelectorAll('.chat-item').forEach(item => { const n = item.querySelector('.chat-item-name')?.textContent.toLowerCase() || ''; const p = item.querySelector('.chat-preview')?.textContent.toLowerCase() || ''; item.style.display = (!q || n.includes(q) || p.includes(q)) ? '' : 'none'; }); }
     $('search-input').addEventListener('input', applySearch);
-    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId || state.isNavigatingBack) return; if (state.activeChatId === chatId) { hideSidebar(); return; } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProtection = Boolean(state.chats.find(c => c.id === chatId)?.protect_owner_content); syncChatProtectionButton(); state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); const active = $('active-chat'); active.classList.remove('chat-slide-exit', 'chat-slide-enter', 'hidden'); active.style.transform = ''; active.style.display = 'flex'; if (window.innerWidth < 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { void active.offsetWidth; active.classList.add('chat-slide-enter'); setTimeout(() => active.classList.remove('chat-slide-enter'), 300); } $('header-name').textContent = name || 'Suhbat'; renderAvatar($('header-avatar'), name, avatarUrl); if (state.isOwner) updateOwnerPresence(profile); else { $('header-status').classList.remove('is-online'); $('header-status').textContent = getSupportLabel(state.supportProfile || profile); $('header-avatar').classList.remove('is-online'); } if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
+    async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId || state.isNavigatingBack) return; if (state.activeChatId === chatId) { hideSidebar(); return; } // Drop optimistic messages for the previous chat; they cannot be reconciled across a chat switch.
+      for (const [tmpId, rec] of [...state.optimisticMessages.entries()]) { if (rec.chatId !== chatId) state.optimisticMessages.delete(tmpId); } setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); stopChatPolling(); state.activeChatId = chatId; state.activeChatProtection = Boolean(state.chats.find(c => c.id === chatId)?.protect_owner_content); syncChatProtectionButton(); state.activeChatProfile = profile; state.replyTo = null; state.editMsg = null; $('reply-bar').classList.remove('visible'); $('edit-bar').classList.remove('visible'); composer.textContent = ''; updateSendButton(); $('no-chat-placeholder').classList.add('hidden'); const active = $('active-chat'); active.classList.remove('chat-slide-exit', 'chat-slide-enter', 'hidden'); active.style.transform = ''; active.style.display = 'flex'; if (window.innerWidth < 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) { void active.offsetWidth; active.classList.add('chat-slide-enter'); setTimeout(() => active.classList.remove('chat-slide-enter'), 300); } $('header-name').textContent = name || 'Suhbat'; renderAvatar($('header-avatar'), name, avatarUrl); if (state.isOwner) updateOwnerPresence(profile); else { $('header-status').classList.remove('is-online'); $('header-status').textContent = getSupportLabel(state.supportProfile || profile); $('header-avatar').classList.remove('is-online'); } if (window.innerWidth < 768 && state.isOwner) hideSidebar(); document.querySelectorAll('.chat-item').forEach(el => el.classList.toggle('active', el.dataset.chatId === chatId)); await loadMessages(chatId); if (state.activeChatId === chatId) startChatPolling(chatId); }
     function hideSidebar() { if (window.innerWidth < 768) $('sidebar').classList.remove('mobile-open'); }
     function finishBackToSuhbats() { const active = $('active-chat'); active.classList.remove('chat-slide-exit', 'chat-slide-enter'); active.style.transform = ''; active.classList.add('hidden'); state.isNavigatingBack = false; state.activeChatId = null; state.activeChatProfile = null; state.messages = []; state.replyTo = null; state.editMsg = null; stopChatPolling(); state.lastLoadToken++; $('no-chat-placeholder').classList.remove('hidden'); document.querySelectorAll('.chat-item').forEach(el => el.classList.remove('active')); $('sidebar').classList.add('mobile-open'); }
     function backToSuhbats() { if (!state.isOwner || state.isNavigatingBack) return; setMessageSelectMode(false, false); $('chat-actions-menu').classList.add('hidden'); if (window.innerWidth < 768 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !$('active-chat').classList.contains('hidden')) { state.isNavigatingBack = true; const active = $('active-chat'); active.classList.remove('chat-slide-enter'); active.style.transform = ''; active.classList.add('chat-slide-exit'); setTimeout(finishBackToSuhbats, 245); } else { stopChatPolling(); state.lastLoadToken++; finishBackToSuhbats(); } }
@@ -5188,6 +5822,203 @@
       } catch (e) { showAuthError(`Tasdiqlashda xatolik yuz berdi. ${e.message || 'Ilovani Telegram ichidan qayta oching.'}`, true); }
     }
     $('auth-retry-btn').addEventListener('click', () => location.reload());
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TASK 3 — UX IMPROVEMENT RUNTIME
+       ═══════════════════════════════════════════════════════════════════ */
+
+    (function initUXImprovements() {
+      /* ── 1. Scroll-to-bottom FAB ──────────────────────────────────── */
+      const msgList    = $('message-list');
+      const stbBtn     = $('scroll-to-bottom');
+      const stbBadge   = $('stb-badge');
+      let   stbUnread  = 0;
+      const STB_THRESHOLD = 220; // px from bottom before button appears
+
+      function updateStbVisibility() {
+        if (!msgList) return;
+        const dist = msgList.scrollHeight - msgList.scrollTop - msgList.clientHeight;
+        const show = dist > STB_THRESHOLD;
+        stbBtn.classList.toggle('visible', show);
+        if (!show) {
+          stbUnread = 0;
+          stbBadge.textContent = '';
+          stbBtn.classList.remove('has-unread');
+        }
+      }
+
+      if (msgList) {
+        msgList.addEventListener('scroll', updateStbVisibility, { passive: true });
+      }
+
+      stbBtn.addEventListener('click', () => {
+        stbUnread = 0;
+        stbBadge.textContent = '';
+        stbBtn.classList.remove('has-unread');
+        scrollBottom(true);
+      });
+
+      // Patch renderMessages to track unread when user is scrolled up
+      const _origRender = window._renderMessagesOrig || null; // avoid double-patch
+      (function patchRenderForSTB() {
+        const rawRender = renderMessages; // closure captures the existing function
+        // We override via a wrapper on the message-list MutationObserver instead
+        // because renderMessages is a closed function.  Instead we use a MutationObserver.
+        if (msgList) {
+          const mo = new MutationObserver(() => {
+            const dist = msgList.scrollHeight - msgList.scrollTop - msgList.clientHeight;
+            if (dist > STB_THRESHOLD) {
+              // Count new .msg-row elements added while user is away
+              const count = msgList.querySelectorAll('.msg-row.message-arrive').length;
+              if (count > 0) {
+                stbUnread += count;
+                if (stbUnread > 9) stbBadge.textContent = '9+';
+                else if (stbUnread > 0) stbBadge.textContent = String(stbUnread);
+                stbBtn.classList.toggle('has-unread', stbUnread > 0);
+              }
+            }
+            updateStbVisibility();
+          });
+          mo.observe(msgList, { childList: true, subtree: false });
+        }
+      })();
+
+      /* ── 2. Composer contenteditable auto-resize ──────────────────── */
+      // The composer is a contenteditable div. We adjust max-height dynamically
+      // so that on mobile it stays within the visible viewport without compressing
+      // the message list.  The CSS already sets max-height:160px; this JS tightens
+      // it when the keyboard changes the viewport height.
+      const composerWrap  = $('composer-wrap');
+      const composerInput = $('composer-input');
+
+      function clampComposerHeight() {
+        if (!composerInput || !composerWrap) return;
+        // Available height = viewport - composer wrap's offsetTop
+        const appEl = $('app');
+        if (!appEl) return;
+        const appH  = appEl.clientHeight;
+        const headerH = $('chat-header') ? $('chat-header').offsetHeight : 58;
+        // Keep at least 40% of the app height for the message list
+        const maxAllowed = Math.max(80, appH * 0.4 - headerH - 24);
+        composerInput.style.maxHeight = Math.min(160, maxAllowed) + 'px';
+      }
+
+      if (composerInput) {
+        composerInput.addEventListener('input', clampComposerHeight, { passive: true });
+        composerInput.addEventListener('focus', clampComposerHeight, { passive: true });
+      }
+      window.addEventListener('resize', clampComposerHeight, { passive: true });
+      // Also fire when Telegram viewport changes (keyboard open/close)
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', clampComposerHeight, { passive: true });
+      }
+
+      /* ── 3. Mobile sidebar: replace display:none toggle with transform ─ */
+      // We switched to transform-based show/hide in CSS (display:flex always).
+      // The existing JS calls sidebar.classList.add/remove('mobile-open') which
+      // already works with the new CSS.  We just need to prevent the old
+      // display:none from the media-query from fighting it.
+      // The CSS sets display:flex !important, so nothing extra needed here.
+
+      /* ── 4 & 5. Smooth toast / overlay close animations ─────────────── */
+      // Single clean patch: intercept removeChild for .toast and .overlay nodes
+      // to play exit animations before actual DOM removal.
+      (function patchAnimatedRemove() {
+        const _orig = Node.prototype.removeChild;
+        Node.prototype.removeChild = function removeChild(child) {
+          if (!child || !child.classList) return _orig.call(this, child);
+
+          // Toast fade-out
+          if (child.classList.contains('toast') && !child.classList.contains('toast-out')) {
+            const parent = this;
+            child.classList.add('toast-out');
+            setTimeout(() => { try { _orig.call(parent, child); } catch (_) {} }, 195);
+            return child;
+          }
+
+          // Overlay slide-out (sheets, confirmations)
+          if (child.classList.contains('overlay') && !child.classList.contains('closing') && document.body.contains(child)) {
+            const parent = this;
+            child.classList.add('closing');
+            setTimeout(() => { try { _orig.call(parent, child); } catch (_) {} }, 175);
+            return child;
+          }
+
+          return _orig.call(this, child);
+        };
+      })();
+
+      /* ── 6. Smooth side-panel close ──────────────────────────────── */
+      // The CSS `.side-panel.open` → transform:translateX(0) already handles open.
+      // Removing `.open` → transform:translateX(105%) with transition:.25s is already
+      // present.  No extra JS needed.
+
+      /* ── 7. Context menu close animation ─────────────────────────── */
+      // The ctxMenu uses classList.remove('open') which instantly hides (display:none).
+      // We want a brief scale-out first.  Patch closeContextMenu.
+      (function patchCtxMenu() {
+        const menu = $('ctx-menu');
+        if (!menu) return;
+        // Watch for class removal
+        const mo = new MutationObserver(mutations => {
+          for (const m of mutations) {
+            if (m.type === 'attributes' && m.attributeName === 'class') {
+              const had = (m.oldValue || '').includes('open');
+              const has = menu.classList.contains('open');
+              if (had && !has) {
+                // Was just closed — force display temporarily for the animation
+                menu.style.display = 'block';
+                menu.classList.add('closing');
+                setTimeout(() => {
+                  menu.style.display = '';
+                  menu.classList.remove('closing');
+                }, 115);
+              }
+            }
+          }
+        });
+        mo.observe(menu, { attributes: true, attributeOldValue: true });
+      })();
+
+      /* ── 8. Touch ripple on icon-btn / chat-item (subtle) ─────────── */
+      // Add a very subtle scale-on-pointerdown to icon-btn via CSS active state.
+      // The CSS already has .icon-btn:active { transform: scale(.94) }.
+      // For chat items we add a brief brightness flash on tap.
+      document.addEventListener('pointerdown', e => {
+        const target = e.target.closest('.chat-item');
+        if (!target) return;
+        target.style.filter = 'brightness(.96)';
+        const clear = () => { target.style.filter = ''; };
+        target.addEventListener('pointerup',     clear, { once: true, passive: true });
+        target.addEventListener('pointercancel', clear, { once: true, passive: true });
+        target.addEventListener('pointerleave',  clear, { once: true, passive: true });
+      }, { passive: true });
+
+      /* ── 9. Keyboard / visual-viewport layout fix ─────────────────── */
+      // On some Android/Telegram builds, the keyboard open doesn't fire
+      // viewport resize reliably. We watch composerInput focus and scroll it
+      // into view after a short delay, ensuring the user sees the input.
+      if (composerInput) {
+        composerInput.addEventListener('focus', () => {
+          setTimeout(() => {
+            if (composerInput && document.activeElement === composerInput) {
+              composerInput.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+            }
+          }, 320);
+        }, { passive: true });
+      }
+
+      /* ── 10. Prevent horizontal scroll on message-list ───────────── */
+      if (msgList) {
+        // Already handled via CSS overflow-x:hidden on bubbles; belt-and-suspenders.
+        msgList.style.overflowX = 'hidden';
+      }
+
+      /* ── 11. Initial STB state ────────────────────────────────────── */
+      // When a chat is loaded and scrolled to bottom, button should be hidden.
+      updateStbVisibility();
+    })();
+
     init();
   </script>
 </body>
