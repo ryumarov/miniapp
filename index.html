@@ -4533,6 +4533,165 @@
       }
     }
 
+  
+
+    /* Owner-only Telegram bot menu and command manager. */
+    #bot-manager-panel {
+      overflow: hidden;
+      overscroll-behavior: contain;
+    }
+    #bot-manager-panel .panel-scroll {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    }
+    .bot-manager-section {
+      margin: 10px 12px 14px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--surface);
+    }
+    .bot-manager-section-title {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 750;
+      margin: 0 0 5px;
+    }
+    .bot-manager-help {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+    .bot-manager-section .profile-field { margin-bottom: 12px; }
+    .bot-manager-section textarea.field-input {
+      height: auto;
+      min-height: 100px;
+      resize: vertical;
+      padding: 11px 13px;
+      line-height: 1.45;
+    }
+    .bot-manager-section select.field-input { padding-right: 30px; }
+    .bot-manager-image-preview {
+      display: block;
+      width: 100%;
+      max-height: 190px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      margin: 8px 0 14px;
+    }
+    .bot-manager-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0 13px;
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .bot-manager-inline-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin: 8px 0 12px;
+    }
+    .bot-manager-inline-actions .primary-wide { width: auto; min-width: 0; margin-top: 0; }
+    .bot-manager-secondary-btn,
+    .bot-manager-danger-btn {
+      min-height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 650;
+    }
+    .bot-manager-secondary-btn:disabled,
+    .bot-manager-danger-btn:disabled { opacity: .5; }
+    .bot-manager-danger-btn { color: var(--danger); }
+    .bot-manager-list { display: flex; flex-direction: column; gap: 8px; }
+    .bot-manager-item {
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px;
+      background: var(--bg);
+    }
+    .bot-manager-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .bot-manager-item-title {
+      min-width: 0;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+    .bot-manager-item-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      margin-top: 4px;
+    }
+    .bot-manager-item-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .bot-manager-editor {
+      margin-top: 12px;
+      padding: 13px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .bot-manager-editor-title {
+      font-size: 13px;
+      font-weight: 750;
+      margin: 0 0 12px;
+    }
+    .bot-manager-form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 10px;
+    }
+    .bot-manager-status {
+      margin: 8px 14px 2px;
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .bot-manager-status[data-kind="success"] { color: var(--success, #16a34a); }
+    .bot-manager-status[data-kind="error"] { color: var(--danger); }
+    .bot-manager-empty {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      padding: 12px;
+      border: 1px dashed var(--border);
+      border-radius: 11px;
+      text-align: center;
+    }
+    @media (min-width: 768px) {
+      #bot-manager-panel {
+        left: auto;
+        width: min(520px, 100%);
+        box-shadow: -12px 0 36px rgba(0, 0, 0, .15);
+      }
+    }
+
   </style>
   <!-- ═══════════════════════════════════════════════════════════════════
        TASK 4 — SERVICE WORKER REGISTRATION
@@ -5100,6 +5259,80 @@
         saqlash</button>
       <div class="panel-subtitle" id="notification-settings-status" aria-live="polite"></div>
     </div>
+    <div class="settings-section hidden" id="owner-bot-manager-entry">
+      <div class="settings-section-title">Telegram bot menyusi</div>
+      <p class="panel-subtitle" style="text-align:left;margin:0 0 10px">/start matni va rasmi, mijozlarga ko‘rinadigan tugmalar hamda avtomatik javob beruvchi komandalarni boshqaring.</p>
+      <button class="primary-wide" id="open-bot-manager-btn" type="button">Bot menyusi va komandalarni boshqarish</button>
+    </div>
+  </section>
+
+  <section id="bot-manager-panel" class="side-panel" role="dialog" aria-modal="true" aria-labelledby="bot-manager-title">
+    <div class="side-panel-header">
+      <button class="icon-btn" id="bot-manager-close-btn" type="button" aria-label="Bot boshqaruvini yopish">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+      </button>
+      <h2 id="bot-manager-title">Bot menyusi va komandalar</h2>
+      <div style="width:40px"></div>
+    </div>
+    <div class="panel-scroll">
+      <div class="bot-manager-status" id="bot-manager-status" role="status" aria-live="polite"></div>
+
+      <section class="bot-manager-section">
+        <h3 class="bot-manager-section-title">/start — boshlang‘ich menyu</h3>
+        <p class="bot-manager-help">Foydalanuvchi botni ochganda yuboriladigan rasm, salomlashuv matni va tugmalar holatini sozlang. O‘zgarishlar keyingi /start bosilganda ko‘rinadi.</p>
+        <div class="profile-field">
+          <div class="field-label">Boshlang‘ich rasm URL manzili (HTTPS, ixtiyoriy)</div>
+          <input class="field-input" id="bot-manager-start-image" type="url" maxlength="2048" placeholder="https://example.com/image.jpg" autocomplete="url">
+        </div>
+        <img id="bot-manager-start-preview" class="bot-manager-image-preview hidden" alt="/start rasmi ko‘rinishi">
+        <div class="profile-field">
+          <div class="field-label">Salomlashuv matni</div>
+          <textarea class="field-input" id="bot-manager-welcome-text" maxlength="4000" placeholder="Bot ochilganda ko‘rinadigan matn…"></textarea>
+        </div>
+        <div class="bot-manager-toggle-row"><span>Inline tugmalarni ko‘rsatish</span><button class="toggle" id="bot-manager-menu-enabled" type="button" role="switch" aria-checked="true" aria-label="Bot menyu tugmalarini yoqish"></button></div>
+        <button class="primary-wide" id="bot-manager-save-start" type="button">/start sozlamalarini saqlash</button>
+      </section>
+
+      <section class="bot-manager-section">
+        <h3 class="bot-manager-section-title">Menyu tugmalari</h3>
+        <p class="bot-manager-help">Tugmalar /start xabari ostida ko‘rinadi. URL — sayt havolasi; Mini App — ilova havolasi; Komanda — yaratilgan avtomatik javobli komandani ishga tushiradi. Qator va joy 1 dan boshlanadi.</p>
+        <div class="bot-manager-inline-actions"><button class="bot-manager-secondary-btn" id="bot-manager-add-button" type="button">+ Tugma qo‘shish</button></div>
+        <div class="bot-manager-list" id="bot-manager-buttons-list"><div class="bot-manager-empty">Tugmalar yuklanmoqda…</div></div>
+        <div class="bot-manager-editor hidden" id="bot-manager-button-editor">
+          <h4 class="bot-manager-editor-title" id="bot-manager-button-editor-title">Yangi tugma</h4>
+          <input id="bot-manager-button-id" type="hidden">
+          <div class="profile-field"><div class="field-label">Tugma nomi</div><input class="field-input" id="bot-manager-button-label" type="text" maxlength="64" placeholder="Masalan: Biz haqimizda"></div>
+          <div class="profile-field"><div class="field-label">Tugma turi</div><select class="field-input" id="bot-manager-button-type"><option value="url">URL — saytga o‘tish</option><option value="web_app">Mini App — ilovani ochish</option><option value="command">Komanda — javobni yuborish</option></select></div>
+          <div class="profile-field"><div class="field-label" id="bot-manager-button-value-label">Havola</div><input class="field-input" id="bot-manager-button-value" type="text" maxlength="2048" placeholder="https://example.com"></div>
+          <div class="bot-manager-form-grid">
+            <div class="profile-field"><div class="field-label">Tugma rangi</div><select class="field-input" id="bot-manager-button-style"><option value="default">Standart</option><option value="primary">Ko‘k</option><option value="success">Yashil</option><option value="danger">Qizil</option></select></div>
+            <div class="profile-field"><div class="field-label">Qator (1–8)</div><input class="field-input" id="bot-manager-button-row" type="number" min="1" max="8" step="1" value="1"></div>
+            <div class="profile-field"><div class="field-label">Qatordagi joy (1–8)</div><input class="field-input" id="bot-manager-button-position" type="number" min="1" max="8" step="1" value="1"></div>
+          </div>
+          <div class="bot-manager-toggle-row"><span>Tugma faol</span><input id="bot-manager-button-active" type="checkbox" checked></div>
+          <div class="bot-manager-inline-actions"><button class="primary-wide" id="bot-manager-button-save" type="button" style="flex:1">Tugmani saqlash</button><button class="bot-manager-secondary-btn" id="bot-manager-button-cancel" type="button">Bekor qilish</button></div>
+        </div>
+      </section>
+
+      <section class="bot-manager-section">
+        <h3 class="bot-manager-section-title">Komandalar va avtomatik javoblar</h3>
+        <p class="bot-manager-help">Masalan, <b>/guide</b> yozilganda matn yoki rasmli javob yuboriladi. Faol komandalar Telegram’ning slash-command ro‘yxatiga ham sinxronlanadi.</p>
+        <div class="bot-manager-inline-actions"><button class="bot-manager-secondary-btn" id="bot-manager-add-command" type="button">+ Komanda qo‘shish</button></div>
+        <div class="bot-manager-list" id="bot-manager-commands-list"><div class="bot-manager-empty">Komandalar yuklanmoqda…</div></div>
+        <div class="bot-manager-editor hidden" id="bot-manager-command-editor">
+          <h4 class="bot-manager-editor-title" id="bot-manager-command-editor-title">Yangi komanda</h4>
+          <input id="bot-manager-command-id" type="hidden">
+          <div class="profile-field"><div class="field-label">Komanda nomi ( / belgisiz )</div><input class="field-input" id="bot-manager-command-name" type="text" maxlength="32" placeholder="guide" autocapitalize="none" autocomplete="off"></div>
+          <div class="profile-field"><div class="field-label">Telegram komandalar ro‘yxatidagi tavsif</div><input class="field-input" id="bot-manager-command-description" type="text" maxlength="256" placeholder="Qo‘llanmani ko‘rsatish"></div>
+          <div class="profile-field"><div class="field-label">Javob turi</div><select class="field-input" id="bot-manager-command-response-type"><option value="text">Matnli javob</option><option value="photo">Rasm va caption</option></select></div>
+          <div class="profile-field"><div class="field-label" id="bot-manager-command-response-label">Javob matni</div><textarea class="field-input" id="bot-manager-command-response-text" maxlength="4000" placeholder="Foydalanuvchiga yuboriladigan javob…"></textarea></div>
+          <div class="profile-field hidden" id="bot-manager-command-media-wrap"><div class="field-label">Rasm URL manzili (HTTPS)</div><input class="field-input" id="bot-manager-command-media-url" type="url" maxlength="2048" placeholder="https://example.com/photo.jpg"></div>
+          <img id="bot-manager-command-photo-preview" class="bot-manager-image-preview hidden" alt="Komanda rasmi ko‘rinishi">
+          <div class="bot-manager-toggle-row"><span>Komanda faol</span><input id="bot-manager-command-active" type="checkbox" checked></div>
+          <div class="bot-manager-inline-actions"><button class="primary-wide" id="bot-manager-command-save" type="button" style="flex:1">Komandani saqlash</button><button class="bot-manager-secondary-btn" id="bot-manager-command-cancel" type="button">Bekor qilish</button></div>
+        </div>
+      </section>
+    </div>
   </section>
 
   <script>
@@ -5149,7 +5382,8 @@
       botMessages: [], botPollingTimer: null, botPollingInFlight: false, botMessagesSignature: '',
       botHasMore: false, botNextBefore: null, botOlderPagesLoaded: false, botMessagesLoaded: false,
       botInitialLoading: false, botInitialLoadError: false, botLoadingOlder: false, botNetworkError: '',
-      isSendingBotMessage: false, botPendingRequest: null, botSendFeedback: null, botReturnFocus: null
+      isSendingBotMessage: false, botPendingRequest: null, botSendFeedback: null, botReturnFocus: null,
+      botManager: { loaded: false, loading: false, settings: null, buttons: [], commands: [] }
     };
 
     // Persist the single unresolved bot-send request across WebView reloads.
@@ -7217,8 +7451,10 @@
       const visible = ownerControlsVisible();
       const protection = $('owner-content-protection');
       const notifications = $('owner-notification-settings');
+      const botManagerEntry = $('owner-bot-manager-entry');
       if (protection) protection.classList.toggle('hidden', !visible);
       if (notifications) notifications.classList.toggle('hidden', !visible);
+      if (botManagerEntry) botManagerEntry.classList.toggle('hidden', !visible);
       const chatProtection = $('chat-protect-content-btn');
       if (chatProtection) chatProtection.classList.toggle('hidden', !visible || !state.activeChatId);
       return visible;
@@ -7300,6 +7536,310 @@
     $('settings-btn').addEventListener('click', openSettingsPanel);
     $('chat-settings-btn').addEventListener('click', openSettingsPanel);
     $('settings-close-btn').addEventListener('click', closeSettings);
+
+    // Owner-only Telegram bot menu, button and command management.
+    const botManagerPanel = $('bot-manager-panel');
+    function botManagerStatus(message, kind = '') {
+      const el = $('bot-manager-status');
+      el.textContent = message || '';
+      el.dataset.kind = kind;
+    }
+    function managerNode(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined && text !== null) node.textContent = String(text);
+      return node;
+    }
+    function managerActionButton(label, className, onClick) {
+      const button = managerNode('button', className, label);
+      button.type = 'button';
+      button.addEventListener('click', onClick);
+      return button;
+    }
+    function managerImagePreview(imageId, rawUrl) {
+      const image = $(imageId);
+      const url = String(rawUrl || '').trim();
+      let valid = false;
+      try { valid = new URL(url).protocol === 'https:'; } catch (_) { }
+      image.onload = () => image.classList.remove('hidden');
+      image.onerror = () => image.classList.add('hidden');
+      if (!valid) {
+        image.removeAttribute('src');
+        image.classList.add('hidden');
+        return;
+      }
+      image.referrerPolicy = 'no-referrer';
+      image.src = url;
+      image.classList.remove('hidden');
+    }
+    function showBotButtonEditor(button = null) {
+      const editor = $('bot-manager-button-editor');
+      $('bot-manager-button-id').value = button?.id || '';
+      $('bot-manager-button-editor-title').textContent = button ? 'Tugmani tahrirlash' : 'Yangi tugma';
+      $('bot-manager-button-label').value = button?.label || '';
+      $('bot-manager-button-type').value = button?.action_type || 'url';
+      $('bot-manager-button-value').value = button?.action_value || '';
+      $('bot-manager-button-style').value = button?.style || 'default';
+      $('bot-manager-button-row').value = String((Number(button?.row_index) || 0) + 1);
+      $('bot-manager-button-position').value = String((Number(button?.position_index) || 0) + 1);
+      $('bot-manager-button-active').checked = button ? button.is_active === true : true;
+      updateBotButtonValueHint();
+      editor.classList.remove('hidden');
+      editor.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      $('bot-manager-button-label').focus({ preventScroll: true });
+    }
+    function hideBotButtonEditor() { $('bot-manager-button-editor').classList.add('hidden'); }
+    function updateBotButtonValueHint() {
+      const type = $('bot-manager-button-type').value;
+      const label = $('bot-manager-button-value-label');
+      const input = $('bot-manager-button-value');
+      if (type === 'command') {
+        label.textContent = 'Komanda nomi ( / belgisiz )';
+        input.placeholder = 'guide';
+        input.maxLength = 32;
+      } else {
+        label.textContent = type === 'web_app' ? 'Mini App HTTPS URL manzili' : 'HTTPS havola';
+        input.placeholder = 'https://example.com/';
+        input.maxLength = 2048;
+      }
+    }
+    function renderBotManagerButtons() {
+      const list = $('bot-manager-buttons-list');
+      list.replaceChildren();
+      const items = [...state.botManager.buttons].sort((a, b) => Number(a.row_index) - Number(b.row_index) || Number(a.position_index) - Number(b.position_index));
+      if (!items.length) {
+        list.appendChild(managerNode('div', 'bot-manager-empty', 'Hozircha menyu tugmalari yo‘q. “Tugma qo‘shish” orqali yarating.'));
+        return;
+      }
+      for (const item of items) {
+        const card = managerNode('div', 'bot-manager-item');
+        const top = managerNode('div', 'bot-manager-item-top');
+        const title = managerNode('div', 'bot-manager-item-title', item.label || 'Nomsiz tugma');
+        const stateLabel = managerNode('div', 'bot-manager-item-meta', item.is_active ? 'Faol' : 'O‘chiq');
+        top.append(title, stateLabel);
+        const typeLabel = item.action_type === 'web_app' ? 'Mini App' : item.action_type === 'command' ? 'Komanda' : 'URL';
+        const value = managerNode('div', 'bot-manager-item-meta', `${typeLabel}: ${item.action_value || ''}`);
+        const location = managerNode('div', 'bot-manager-item-meta', `Qator ${Number(item.row_index) + 1} · Joy ${Number(item.position_index) + 1} · Rang: ${item.style || 'default'}`);
+        const actions = managerNode('div', 'bot-manager-item-actions');
+        actions.append(
+          managerActionButton('Tahrirlash', 'bot-manager-secondary-btn', () => showBotButtonEditor(item)),
+          managerActionButton('O‘chirish', 'bot-manager-danger-btn', () => void deleteBotMenuButton(item))
+        );
+        card.append(top, value, location, actions);
+        list.appendChild(card);
+      }
+    }
+    async function deleteBotMenuButton(item) {
+      if (!window.confirm(`“${item.label}” tugmasi o‘chirilsinmi?`)) return;
+      botManagerStatus('Tugma o‘chirilmoqda…');
+      try {
+        await callAPI({ action: 'delete_bot_menu_button', id: item.id });
+        await loadBotManagerData(true);
+        botManagerStatus('Tugma o‘chirildi.', 'success');
+        showToast('Bot tugmasi o‘chirildi.');
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || 'Tugmani o‘chirib bo‘lmadi.', 'error');
+        playError();
+      }
+    }
+    function showBotCommandEditor(command = null) {
+      $('bot-manager-command-id').value = command?.id || '';
+      $('bot-manager-command-editor-title').textContent = command ? 'Komandani tahrirlash' : 'Yangi komanda';
+      $('bot-manager-command-name').value = command?.command_name || '';
+      $('bot-manager-command-description').value = command?.description || '';
+      $('bot-manager-command-response-type').value = command?.response_type || 'text';
+      $('bot-manager-command-response-text').value = command?.response_text || '';
+      $('bot-manager-command-media-url').value = command?.media_url || '';
+      $('bot-manager-command-active').checked = command ? command.is_active === true : true;
+      updateBotCommandFields();
+      managerImagePreview('bot-manager-command-photo-preview', command?.media_url || '');
+      $('bot-manager-command-editor').classList.remove('hidden');
+      $('bot-manager-command-editor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      $('bot-manager-command-name').focus({ preventScroll: true });
+    }
+    function hideBotCommandEditor() { $('bot-manager-command-editor').classList.add('hidden'); }
+    function updateBotCommandFields() {
+      const isPhoto = $('bot-manager-command-response-type').value === 'photo';
+      $('bot-manager-command-media-wrap').classList.toggle('hidden', !isPhoto);
+      $('bot-manager-command-response-label').textContent = isPhoto ? 'Rasm ostidagi caption (ixtiyoriy, 1024 belgigacha)' : 'Javob matni';
+      $('bot-manager-command-response-text').maxLength = isPhoto ? 1024 : 4000;
+      $('bot-manager-command-response-text').placeholder = isPhoto ? 'Rasm ostidagi izoh…' : 'Foydalanuvchiga yuboriladigan javob…';
+      if (!isPhoto) managerImagePreview('bot-manager-command-photo-preview', '');
+      else managerImagePreview('bot-manager-command-photo-preview', $('bot-manager-command-media-url').value);
+    }
+    function renderBotManagerCommands() {
+      const list = $('bot-manager-commands-list');
+      list.replaceChildren();
+      const items = [...state.botManager.commands].sort((a, b) => String(a.command_name).localeCompare(String(b.command_name)));
+      if (!items.length) {
+        list.appendChild(managerNode('div', 'bot-manager-empty', 'Hozircha komandalar yo‘q. Masalan, /guide yaratishingiz mumkin.'));
+        return;
+      }
+      for (const item of items) {
+        const card = managerNode('div', 'bot-manager-item');
+        const top = managerNode('div', 'bot-manager-item-top');
+        top.append(
+          managerNode('div', 'bot-manager-item-title', `/${item.command_name}`),
+          managerNode('div', 'bot-manager-item-meta', item.is_active ? 'Faol' : 'O‘chiq')
+        );
+        const desc = managerNode('div', 'bot-manager-item-meta', item.description || 'Tavsif kiritilmagan');
+        const kind = managerNode('div', 'bot-manager-item-meta', item.response_type === 'photo' ? 'Rasmli javob' : 'Matnli javob');
+        const preview = managerNode('div', 'bot-manager-item-meta', String(item.response_text || item.media_url || '').slice(0, 180));
+        const actions = managerNode('div', 'bot-manager-item-actions');
+        actions.append(
+          managerActionButton('Tahrirlash', 'bot-manager-secondary-btn', () => showBotCommandEditor(item)),
+          managerActionButton('O‘chirish', 'bot-manager-danger-btn', () => void deleteBotCommand(item))
+        );
+        card.append(top, desc, kind, preview, actions);
+        list.appendChild(card);
+      }
+    }
+    async function deleteBotCommand(item) {
+      if (!window.confirm(`/${item.command_name} komandasi o‘chirilsinmi?`)) return;
+      botManagerStatus('Komanda o‘chirilmoqda…');
+      try {
+        const result = await callAPI({ action: 'delete_bot_command', id: item.id });
+        await loadBotManagerData(true);
+        botManagerStatus(result.telegram_commands_synced === false ? 'Komanda o‘chirildi, ammo Telegram komandalar menyusini sinxronlash amalga oshmadi. Qo‘lda tekshiring.' : 'Komanda o‘chirildi va Telegram ro‘yxati yangilandi.', result.telegram_commands_synced === false ? 'error' : 'success');
+        showToast('Bot komandasi o‘chirildi.');
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || 'Komandani o‘chirib bo‘lmadi.', 'error');
+        playError();
+      }
+    }
+    async function loadBotManagerData(keepStatus = false) {
+      if (!ownerControlsVisible()) return;
+      if (state.botManager.loading) return;
+      state.botManager.loading = true;
+      if (!keepStatus) botManagerStatus('Sozlamalar yuklanmoqda…');
+      try {
+        const data = await callAPI({ action: 'get_bot_manager_data' });
+        state.botManager.settings = data.settings || {};
+        state.botManager.buttons = Array.isArray(data.buttons) ? data.buttons : [];
+        state.botManager.commands = Array.isArray(data.commands) ? data.commands : [];
+        $('bot-manager-start-image').value = state.botManager.settings.image_url || '';
+        $('bot-manager-welcome-text').value = state.botManager.settings.welcome_text || '';
+        setToggle('bot-manager-menu-enabled', state.botManager.settings.is_enabled !== false);
+        managerImagePreview('bot-manager-start-preview', state.botManager.settings.image_url || '');
+        renderBotManagerButtons();
+        renderBotManagerCommands();
+        state.botManager.loaded = true;
+        if (!keepStatus) botManagerStatus('Bot boshqaruv sozlamalari yuklandi.', 'success');
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || 'Bot boshqaruv sozlamalarini yuklab bo‘lmadi.', 'error');
+        throw error;
+      } finally {
+        state.botManager.loading = false;
+      }
+    }
+    function openBotManagerPanel() {
+      if (!ownerControlsVisible()) return;
+      closeSettings();
+      botManagerPanel.classList.add('open');
+      void loadBotManagerData().catch(() => {});
+    }
+    function closeBotManagerPanel() { botManagerPanel.classList.remove('open'); }
+
+    $('open-bot-manager-btn').addEventListener('click', openBotManagerPanel);
+    $('bot-manager-close-btn').addEventListener('click', closeBotManagerPanel);
+    $('bot-manager-start-image').addEventListener('input', () => managerImagePreview('bot-manager-start-preview', $('bot-manager-start-image').value));
+    $('bot-manager-command-media-url').addEventListener('input', () => {
+      if ($('bot-manager-command-response-type').value === 'photo') managerImagePreview('bot-manager-command-photo-preview', $('bot-manager-command-media-url').value);
+    });
+    $('bot-manager-command-response-type').addEventListener('change', updateBotCommandFields);
+    $('bot-manager-button-type').addEventListener('change', updateBotButtonValueHint);
+    $('bot-manager-add-button').addEventListener('click', () => showBotButtonEditor());
+    $('bot-manager-button-cancel').addEventListener('click', hideBotButtonEditor);
+    $('bot-manager-add-command').addEventListener('click', () => showBotCommandEditor());
+    $('bot-manager-command-cancel').addEventListener('click', hideBotCommandEditor);
+
+    $('bot-manager-save-start').addEventListener('click', async () => {
+      if (!ownerControlsVisible()) return;
+      const button = $('bot-manager-save-start');
+      button.disabled = true;
+      botManagerStatus('Saqlanmoqda…');
+      try {
+        const result = await callAPI({
+          action: 'save_bot_menu_settings',
+          image_url: $('bot-manager-start-image').value.trim(),
+          welcome_text: $('bot-manager-welcome-text').value.trim(),
+          is_enabled: $('bot-manager-menu-enabled').getAttribute('aria-checked') === 'true'
+        });
+        state.botManager.settings = result.settings || state.botManager.settings;
+        managerImagePreview('bot-manager-start-preview', state.botManager.settings?.image_url || '');
+        botManagerStatus(' /start sozlamalari saqlandi. O‘zgarishlarni ko‘rish uchun botda /start yuboring.', 'success');
+        showToast('/start sozlamalari saqlandi.');
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || '/start sozlamalarini saqlab bo‘lmadi.', 'error');
+        playError();
+      } finally { button.disabled = false; }
+    });
+
+    $('bot-manager-button-save').addEventListener('click', async () => {
+      const button = $('bot-manager-button-save');
+      button.disabled = true;
+      botManagerStatus('Tugma saqlanmoqda…');
+      try {
+        const id = $('bot-manager-button-id').value.trim();
+        const type = $('bot-manager-button-type').value;
+        const value = $('bot-manager-button-value').value.trim();
+        const result = await callAPI({
+          action: 'save_bot_menu_button',
+          ...(id ? { id } : {}),
+          label: $('bot-manager-button-label').value.trim(),
+          action_type: type,
+          action_value: type === 'command' ? value.replace(/^\/+/, '').toLowerCase() : value,
+          style: $('bot-manager-button-style').value,
+          row_index: Number($('bot-manager-button-row').value) - 1,
+          position_index: Number($('bot-manager-button-position').value) - 1,
+          is_active: $('bot-manager-button-active').checked
+        });
+        hideBotButtonEditor();
+        await loadBotManagerData(true);
+        botManagerStatus(result.button ? 'Menyu tugmasi saqlandi. Keyingi /start xabarida ko‘rinadi.' : 'Menyu tugmasi saqlandi.', 'success');
+        showToast('Bot tugmasi saqlandi.');
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || 'Tugmani saqlab bo‘lmadi.', 'error');
+        playError();
+      } finally { button.disabled = false; }
+    });
+
+    $('bot-manager-command-save').addEventListener('click', async () => {
+      if (!ownerControlsVisible()) return;
+      const button = $('bot-manager-command-save');
+      button.disabled = true;
+      botManagerStatus('Komanda saqlanmoqda…');
+      try {
+        const id = $('bot-manager-command-id').value.trim();
+        const name = $('bot-manager-command-name').value.trim().replace(/^\/+/, '').toLowerCase();
+        const result = await callAPI({
+          action: 'save_bot_command',
+          ...(id ? { id } : {}),
+          command_name: name,
+          description: $('bot-manager-command-description').value.trim(),
+          response_type: $('bot-manager-command-response-type').value,
+          response_text: $('bot-manager-command-response-text').value.trim(),
+          media_url: $('bot-manager-command-media-url').value.trim(),
+          is_active: $('bot-manager-command-active').checked
+        });
+        hideBotCommandEditor();
+        await loadBotManagerData(true);
+        if (result.telegram_commands_synced === false) {
+          botManagerStatus(`/${name} saqlandi va javobi ishlaydi, lekin Telegram slash ro‘yxati sinxronlanmadi. ${result.telegram_commands_sync_error || ''}`.trim(), 'error');
+        } else {
+          botManagerStatus(`/${name} saqlandi. Telegram komandalar ro‘yxati yangilandi; mijozlar komandani yuborganda javob oladi.`, 'success');
+        }
+        showToast(`/${name} komandasi saqlandi.`);
+      } catch (error) {
+        botManagerStatus(uiError(error.message) || 'Komandani saqlab bo‘lmadi.', 'error');
+        playError();
+      } finally { button.disabled = false; }
+    });
+
+    // Also close the manager with Escape, without changing the existing chat Escape behavior.
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && botManagerPanel.classList.contains('open')) closeBotManagerPanel();
+    });
 
     function setToggle(id, value) { $(id).classList.toggle('on', !!value); $(id).setAttribute('aria-checked', String(!!value)); }
     function syncSoundToggles() { setToggle('sound-toggle', state.audioEnabled); setToggle('incoming-sound-toggle', state.soundSettings.receive); setToggle('error-sound-toggle', state.soundSettings.error); setToggle('send-sound-toggle', state.soundSettings.send); }
