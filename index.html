@@ -627,7 +627,7 @@
     }
 
     .bubble.sending {
-      opacity: .6
+      /* Task 2: no visual distinction while sending — message looks normal from first frame */
     }
 
     .bubble.failed {
@@ -3269,16 +3269,22 @@
       }
     }
 
-    /* Optimistic (locally-inserted) message entrance — snappier than the polled-arrival animation */
-    .msg-row.optimistic-enter .bubble {
-      transform-origin: bottom right;
-      animation: optimistic-enter 220ms cubic-bezier(.18, .72, .22, 1.04) both
+    /* Optimistic (locally-inserted) message entrance — fast upward slide from bottom */
+    .msg-row.optimistic-enter {
+      animation: optimistic-enter-row 180ms cubic-bezier(.25, .46, .45, .94) both
     }
 
-    @keyframes optimistic-enter {
-      0%  { opacity: 0; transform: translateY(8px) scale(.97); filter: blur(.5px) }
-      65% { opacity: 1; transform: translateY(-1px) scale(1.004); filter: blur(0) }
-      100%{ opacity: 1; transform: translateY(0) scale(1); filter: none }
+    @keyframes optimistic-enter-row {
+      0%   { opacity: 0; transform: translateY(14px) }
+      100% { opacity: 1; transform: translateY(0) }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .msg-row.optimistic-enter {
+        animation: none;
+        opacity: 1;
+        transform: none
+      }
     }
 
     /* Retry button inside failed bubble */
@@ -3982,6 +3988,55 @@
       }
     }
   </style>
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TASK 4 — SERVICE WORKER REGISTRATION
+       Registered as the very last thing in <head> so it never delays the
+       first paint.  The registration is non-blocking: the page renders
+       before the SW activates.
+       ═══════════════════════════════════════════════════════════════════ -->
+  <script>
+    (function registerSW() {
+      // Feature-detect: some older Telegram WebView builds (especially on
+      // Android < 8 or iOS < 11.3) do not support Service Workers.
+      if (!('serviceWorker' in navigator)) return;
+
+      // Service Workers require HTTPS (or localhost).  Telegram Mini Apps
+      // are always served over HTTPS in production, so this check is a
+      // safety net for local development.
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost') return;
+
+      // Register after the page has loaded so we don't compete with the
+      // first meaningful paint.
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .then(function (reg) {
+            // Ask the browser to keep the cache persistent (best-effort;
+            // silently rejected in WebViews that don't support it).
+            if (navigator.storage && navigator.storage.persist) {
+              navigator.storage.persist().catch(function () {});
+            }
+
+            // When a new SW is waiting, activate it straight away on the
+            // next page load rather than waiting for all tabs to close.
+            reg.addEventListener('updatefound', function () {
+              var newWorker = reg.installing;
+              if (!newWorker) return;
+              newWorker.addEventListener('statechange', function () {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // New version cached — it will take over on next launch.
+                  console.log('[SW] New version cached. Will activate on next launch.');
+                }
+              });
+            });
+          })
+          .catch(function (err) {
+            // Registration failures are non-fatal.  The app works normally
+            // without a Service Worker; it just won't have the shell cache.
+            console.warn('[SW] Registration failed:', err);
+          });
+      });
+    })();
+  </script>
 </head>
 
 <body>
@@ -4881,7 +4936,8 @@
     }
 
     function buildBubble(msg, isOut) {
-      const bubble = document.createElement('div'); bubble.className = 'bubble' + (msg._sending ? ' sending' : '') + (msg._failed ? ' failed' : '');
+      // Task 2: no 'sending' class — optimistic messages are styled identically to delivered ones
+      const bubble = document.createElement('div'); bubble.className = 'bubble' + (msg._failed ? ' failed' : '');
       const reply = buildReplyReference(msg); if (reply) bubble.appendChild(reply);
       const imageMessage = Boolean(msg.file_url && isImageMessage(msg));
       if (imageMessage) { bubble.classList.add('has-image'); bubble.appendChild(makeImageMessage(msg)); }
@@ -4889,16 +4945,16 @@
       if (msg.file_url && !imageMessage) bubble.appendChild(makeFileCard(msg));
       const meta = document.createElement('div'); meta.className = 'bubble-meta'; const time = document.createElement('span'); time.textContent = fmtTime(msg.created_at); meta.appendChild(time);
       if (msg.edited_at) { const tahrirlangan = document.createElement('span'); tahrirlangan.className = 'edited-mark'; tahrirlangan.textContent = 'tahrirlangan'; meta.appendChild(tahrirlangan); }
-      if (state.isOwner && msg.sender_type === 'owner' && !msg._sending && !msg._failed) {
+      // Task 2: guard only _failed (not _sending) so read-receipt shows immediately on optimistic messages
+      if (state.isOwner && msg.sender_type === 'owner' && !msg._failed) {
         const receipt = document.createElement('span'); receipt.className = 'message-read-receipt ' + (msg.read_at ? 'is-read' : 'is-unread');
         receipt.textContent = msg.read_at ? '✓✓ O‘qildi' : '✓ O‘qilmagan';
         receipt.title = msg.read_at ? `Foydalanuvchi ${fmtTime(msg.read_at)} da o‘qigan` : 'Foydalanuvchi chatni hali ochib, xabarni o‘qimagan';
         meta.appendChild(receipt);
       }
       if (msg.content_protected) { const protectedMark = document.createElement('span'); protectedMark.className = 'protection-badge'; protectedMark.textContent = '🔒 Himoyalangan'; protectedMark.title = 'Egasi nusxalash va saqlashni cheklagan'; meta.appendChild(protectedMark); }
-      if (msg._sending) {
-        const sending = document.createElement('span'); sending.textContent = 'Yuborilmoqda'; meta.appendChild(sending);
-      } else if (msg._failed) {
+      // Task 2: 'Yuborilmoqda' label removed — no pending indicator; _failed retry path preserved
+      if (msg._failed) {
         const fail = document.createElement('span'); fail.style.color = 'var(--danger)'; fail.textContent = 'Yuborilmadi'; meta.appendChild(fail);
         // Retry button — attached below the meta row, inside the bubble
         const retryBtn = document.createElement('button'); retryBtn.type = 'button'; retryBtn.className = 'bubble-retry-btn';
@@ -5187,44 +5243,125 @@
       renderMessages(state.messages, false);
       requestAnimationFrame(() => {
         const row = findMessageRow(tmpId);
-        if (row) { row.classList.add('optimistic-enter'); setTimeout(() => row.classList.remove('optimistic-enter'), 350); }
+        if (row) {
+          row.classList.add('optimistic-enter');
+          setTimeout(() => row.classList.remove('optimistic-enter'), 300);
+        }
       });
       return tmpMsg;
     }
 
     /**
-     * Replace a temporary message with the real server message.
-     * Handles the race where polling received the server message first.
+     * Task 3 — Replace a temporary message with the real server message.
+     *
+     * While the user stays in the same chat we do a SILENT in-place patch:
+     *   • The visible DOM row is kept exactly as-is (no flicker, no re-entrance).
+     *   • Only the data-message-id attribute is updated so edit/delete/reply
+     *     operations can find the row by its real server ID.
+     *   • state.messages and state.renderedMessageSignature are updated so the
+     *     next poll tick sees "nothing changed" and skips its own renderMessages.
+     *
+     * If the user has already left the chat the DOM row is gone anyway; we just
+     * update state so that loadMessages on re-entry shows the real message.
+     *
+     * Race: if polling received the server message before our send promise resolved,
+     * the polling loop will have already swapped the tmp entry for the real one and
+     * called renderMessages; in that case we simply clean up and do nothing extra.
      */
     function reconcileOptimisticMessage(tmpId, serverMsg) {
       state.optimisticMessages.delete(tmpId);
-      const tmpIdx = state.messages.findIndex(m => m.id === tmpId);
-      const existingIdx = state.messages.findIndex(m => m.id === serverMsg.id);
-      if (existingIdx >= 0) {
-        // Server message already arrived via polling — drop the tmp entry
+
+      const tmpIdx    = state.messages.findIndex(m => m.id === tmpId);
+      const existIdx  = state.messages.findIndex(m => m.id === serverMsg.id);
+
+      if (existIdx >= 0) {
+        // Polling already promoted the tmp entry to the real message.
+        // Drop any leftover tmp slot and ensure the real data is current.
         if (tmpIdx >= 0) state.messages.splice(tmpIdx, 1);
+        state.messages[state.messages.findIndex(m => m.id === serverMsg.id)] = serverMsg;
+      } else if (tmpIdx >= 0) {
+        // Normal path: swap the tmp object for the real server object in-state.
+        state.messages[tmpIdx] = serverMsg;
       } else {
-        if (tmpIdx >= 0) {
-          state.messages[tmpIdx] = serverMsg;
-        } else {
-          state.messages.push(serverMsg);
-        }
+        // The tmp entry was already removed (e.g. user switched chats).
+        state.messages.push(serverMsg);
       }
+
       state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-      state.animateMessageIds.add(String(serverMsg.id));
-      state.renderedMessageSignature = messageSignature(state.messages);
-      renderMessages(state.messages, true);
-      clearAnimatedMessageIds([serverMsg.id], 'animateMessageIds', 'message-arrive', 850);
+      // Update the signature baseline so polling's change-detection sees no diff.
+      state.renderedMessageSignature = messageSignature(
+        state.messages.filter(m => !String(m.id).startsWith('tmp_'))
+      );
+
+      // ── Surgical DOM patch — keep the visible bubble exactly as-is ──────────
+      // If the tmp row is still in the DOM the user is in the right chat.
+      // We only re-key the data-message-id attribute so that subsequent
+      // edit / delete / reply / context-menu operations find it by real server ID.
+      // Everything else — bubble text, background, opacity, position — is untouched.
+      const existingRow = findMessageRow(tmpId);
+      if (existingRow) {
+        existingRow.dataset.messageId = String(serverMsg.id);
+        // Re-bind interaction handlers with the real message object so that
+        // actions (edit, delete, reply) carry the correct server ID.
+        attachContextMenu(existingRow, serverMsg);
+        attachSwipeReply(existingRow, serverMsg);
+        return; // ← no renderMessages, no animation, no flicker
+      }
+
+      // User has left the chat — the DOM row is gone.  Nothing to patch visually;
+      // loadMessages will render the authoritative list when they return.
     }
 
-    /** Mark a temporary message as failed and re-render so the retry button appears. */
+    /**
+     * Task 3 — Mark a temporary message as failed.
+     *
+     * Surgically updates the existing DOM row (adds the red border + retry button)
+     * without calling renderMessages, so the bubble position and content are
+     * preserved and no re-entrance animation fires.
+     *
+     * If the row is gone (user switched chats) we still update state so that a
+     * hypothetical retry later works correctly.
+     */
     function markOptimisticFailed(tmpId) {
       const rec = state.optimisticMessages.get(tmpId);
       if (rec) rec.failed = true;
       const idx = state.messages.findIndex(m => m.id === tmpId);
       if (idx >= 0) { state.messages[idx]._sending = false; state.messages[idx]._failed = true; }
-      state.renderedMessageSignature = messageSignature(state.messages);
-      renderMessages(state.messages, true);
+      // Keep signature current so polling change-detection is not confused.
+      state.renderedMessageSignature = messageSignature(
+        state.messages.filter(m => !String(m.id).startsWith('tmp_'))
+      );
+
+      // ── Surgical DOM patch ────────────────────────────────────────────────────
+      const row = findMessageRow(tmpId);
+      if (!row) return; // User already left the chat — nothing to patch.
+
+      const bubble = row.querySelector('.bubble');
+      if (!bubble) return;
+
+      // Add the failed border (matches .bubble.failed CSS rule).
+      bubble.classList.add('failed');
+
+      // Append the meta failure label if not already there.
+      let meta = bubble.querySelector('.bubble-meta');
+      if (meta && !meta.querySelector('.fail-label')) {
+        const fail = document.createElement('span');
+        fail.className = 'fail-label';
+        fail.style.color = 'var(--danger)';
+        fail.textContent = 'Yuborilmadi';
+        meta.appendChild(fail);
+      }
+
+      // Append the retry button below the meta if not already there.
+      if (!bubble.querySelector('.bubble-retry-btn')) {
+        const retryBtn = document.createElement('button');
+        retryBtn.type = 'button';
+        retryBtn.className = 'bubble-retry-btn';
+        retryBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg> Qayta yuborish';
+        retryBtn.setAttribute('aria-label', 'Xabarni qayta yuborish');
+        retryBtn.addEventListener('click', e => { e.stopPropagation(); void retryOptimisticMessage(tmpId); });
+        bubble.appendChild(retryBtn);
+      }
     }
 
     /** Remove a tmp message entirely (used by retry before re-inserting). */
@@ -5448,12 +5585,21 @@
           }
           merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
-          // Compute signature against the merged list (excluding tmp entries) for change detection
+          // Compute signature against server-confirmed messages only (tmp entries excluded).
           const serverOnlySig = messageSignature(serverMessages);
           const changed = serverOnlySig !== state.renderedMessageSignature;
-          if (!changed && tmpMessages.length === 0) return;
 
-          // Determine truly new incoming messages (from other side, not our own sends)
+          // Task 3: Skip renderMessages entirely when:
+          //   • Server content hasn't changed (no new/edited/deleted messages), AND
+          //   • Any pending tmp entries still have live DOM rows (they look correct already).
+          // This prevents the full DOM rebuild that would flicker optimistic messages.
+          if (!changed) {
+            // Update state.messages to include any surviving tmp entries (keeps state tidy).
+            state.messages = merged;
+            return;
+          }
+
+          // Determine truly new incoming messages (from other side, not our own sends).
           const oldIds = new Set(state.messages.map(m => m.id));
           const incomingNew = serverMessages.filter(m =>
             !oldIds.has(m.id) &&
@@ -5461,7 +5607,7 @@
           );
 
           state.messages = merged;
-          if (changed) state.renderedMessageSignature = serverOnlySig;
+          state.renderedMessageSignature = serverOnlySig;
           for (const m of incomingNew) state.animateMessageIds.add(String(m.id));
           renderMessages(merged, true);
           if (incomingNew.length) {
@@ -6010,12 +6156,11 @@
 
       /* ── 10. Prevent horizontal scroll on message-list ───────────── */
       if (msgList) {
-        // Already handled via CSS overflow-x:hidden on bubbles; belt-and-suspenders.
+        
         msgList.style.overflowX = 'hidden';
       }
 
-      /* ── 11. Initial STB state ────────────────────────────────────── */
-      // When a chat is loaded and scrolled to bottom, button should be hidden.
+
       updateStbVisibility();
     })();
 
