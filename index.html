@@ -5152,6 +5152,79 @@
       isSendingBotMessage: false, botPendingRequest: null, botSendFeedback: null, botReturnFocus: null
     };
 
+    // Persist the single unresolved bot-send request across WebView reloads.
+    // Reusing its UUID is essential: the backend delivery ledger can then recover
+    // a confirmed send without sending a second Telegram message.
+    function getBotPendingStorageKey() {
+      if (!state.isOwner) return null;
+      const ownerId = normalizeTelegramUserId(
+        state.user?.id ?? state.myProfile?.telegram_user_id
+      );
+      return ownerId ? `messages.botPendingRequest.v1.${ownerId}` : null;
+    }
+
+    function persistBotPendingRequest() {
+      const key = getBotPendingStorageKey();
+      if (!key) return false;
+      try {
+        if (!state.botPendingRequest) {
+          localStorage.removeItem(key);
+          return true;
+        }
+        const pending = state.botPendingRequest;
+        localStorage.setItem(key, JSON.stringify({
+          request_id: pending.request_id,
+          customer_telegram_id: pending.customer_telegram_id,
+          content: pending.content,
+          status: pending.status,
+          error: pending.error || null,
+          updated_at: Date.now()
+        }));
+        return true;
+      } catch (error) {
+        console.warn('[bot-chat] Could not persist pending request safely:', error?.message || 'storage unavailable');
+        return false;
+      }
+    }
+
+    function restoreBotPendingRequest() {
+      const key = getBotPendingStorageKey();
+      if (!key) return;
+      try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        const customerId = normalizeTelegramUserId(saved?.customer_telegram_id);
+        const validStatus = ['sending', 'unknown', 'failed'].includes(saved?.status);
+        if (
+          !saved ||
+          !isUuidV4(saved.request_id) ||
+          !customerId ||
+          typeof saved.content !== 'string' ||
+          !saved.content.trim() ||
+          saved.content.length > 4000 ||
+          !validStatus
+        ) {
+          localStorage.removeItem(key);
+          return;
+        }
+        // A WebView reload can interrupt a request while the server is still
+        // processing it. Treat the restored state as uncertain; retrying uses
+        // the same UUID and the backend ledger decides whether it is safe.
+        state.botPendingRequest = {
+          request_id: saved.request_id,
+          customer_telegram_id: customerId,
+          content: saved.content,
+          status: saved.status === 'sending' ? 'unknown' : saved.status,
+          error: saved.error || null
+        };
+        if (saved.status === 'sending') persistBotPendingRequest();
+      } catch (error) {
+        console.warn('[bot-chat] Could not restore pending request:', error?.message || 'invalid storage');
+        try { localStorage.removeItem(key); } catch (_) {}
+      }
+    }
+
     function escapeHTML(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function safeHttpUrl(value) { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : null; } catch { return null; } }
     // Convert older saved Supabase signed/public avatar URLs back into their permanent Storage path.
@@ -6898,6 +6971,10 @@
 
     function botSendErrorIsAmbiguous(error) {
       if (error?.ambiguous === true || error?.status === 409) return true;
+      // The backend uses this exact response only when Telegram explicitly
+      // rejected sendMessage and the delivery ledger was marked `failed`.
+      // That case is safe to retry with the same request UUID.
+      if (error?.message === 'Telegram orqali xabar yuborilmadi') return false;
       if (!Number.isInteger(error?.status)) return true;
       return error.status >= 500;
     }
@@ -6936,12 +7013,23 @@
           error: null
         };
         state.botPendingRequest = pending;
+        if (!persistBotPendingRequest()) {
+          state.botPendingRequest = null;
+          state.botSendFeedback = {
+            type: 'error',
+            message: 'Xabar xavfsiz yuborish uchun so‘rov identifikatorini qurilmada saqlab bo‘lmadi. Brauzer xotirasi ruxsatini tekshiring va qayta urinib ko‘ring.'
+          };
+          renderBotDeliveryStatus();
+          updateBotComposerState();
+          return;
+        }
       }
 
       if (pending.customer_telegram_id !== customerTelegramId || !isUuidV4(pending.request_id)) return;
       state.isSendingBotMessage = true;
       pending.status = 'sending';
       pending.error = null;
+      persistBotPendingRequest();
       state.botSendFeedback = null;
       renderBotDeliveryStatus();
       updateBotComposerState();
@@ -6971,6 +7059,7 @@
           if (state.botMessages.length >= before) $('bot-message-list').scrollTop = $('bot-message-list').scrollHeight;
         }
         state.botPendingRequest = null;
+        persistBotPendingRequest();
         state.botSendFeedback = { type: 'success', message: result.duplicate_request ? 'Xabar avvalgi so‘rov bo‘yicha tasdiqlandi.' : 'Bot xabari muvaffaqiyatli yuborildi.' };
         if (state.activeBotCustomerTelegramId === customerTelegramId && $('bot-composer-input').value.trim() === pending.content) {
           $('bot-composer-input').value = '';
@@ -6981,6 +7070,7 @@
         if (state.botPendingRequest === pending) {
           pending.status = botSendErrorIsAmbiguous(error) ? 'unknown' : 'failed';
           pending.error = error?.message || 'Yuborish amalga oshmadi.';
+          persistBotPendingRequest();
         }
         if (pending.status === 'unknown') {
           // Do not resend automatically. The same request UUID is kept for a deliberate retry.
@@ -7009,6 +7099,7 @@
       if (pending.status === 'unknown' && !window.confirm('Telegram’dagi mijoz suhbatini tekshirib, xabar yetib bormaganiga ishonch hosil qildingizmi?')) return;
       const previous = pending;
       state.botPendingRequest = null;
+      persistBotPendingRequest();
       if (state.activeBotCustomerTelegramId === previous.customer_telegram_id && !$('bot-composer-input').value) {
         $('bot-composer-input').value = previous.content;
       }
@@ -7388,7 +7479,7 @@
       const initData = typeof tg.initData === 'string' ? tg.initData : ''; if (!initData) { showAuthError('Telegram seans ma’lumoti topilmadi. Oynani yoping va ilovani Telegram ichidan qayta oching.', true); return; } state.initData = initData; state.user = tg.initDataUnsafe?.user || null;
       if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY === 'YOUR_SUPABASE_PUBLISHABLE_KEY') { showAuthError('index.html fayliga Supabase Publishable kalitini kiriting va saytni qayta joylashtiring.', false); return; }
       try {
-        setLoadingText('Yuklanmoqda…'); const auth = await callAuth(initData); state.isOwner = Boolean(auth.is_owner ?? auth.isOwner); if (auth.user) state.user = auth.user; if (auth.profile) state.myProfile = auth.profile; try { const ownProfile = await callAPI({ action: 'get_my_profile' }); if (ownProfile.profile) state.myProfile = ownProfile.profile; } catch (profileError) { console.warn('Could not refresh own profile fields:', profileError?.message || 'unavailable'); } startMiniAppPresenceTracking(tg); syncOwnerSettingsVisibility(); const app = $('app'); app.classList.remove('hidden'); app.classList.add(state.isOwner ? 'owner-mode' : 'customer-mode'); $('loading-screen').classList.add('hidden');
+        setLoadingText('Yuklanmoqda…'); const auth = await callAuth(initData); state.isOwner = Boolean(auth.is_owner ?? auth.isOwner); if (auth.user) state.user = auth.user; if (auth.profile) state.myProfile = auth.profile; if (state.isOwner) restoreBotPendingRequest(); try { const ownProfile = await callAPI({ action: 'get_my_profile' }); if (ownProfile.profile) state.myProfile = ownProfile.profile; } catch (profileError) { console.warn('Could not refresh own profile fields:', profileError?.message || 'unavailable'); } startMiniAppPresenceTracking(tg); syncOwnerSettingsVisibility(); const app = $('app'); app.classList.remove('hidden'); app.classList.add(state.isOwner ? 'owner-mode' : 'customer-mode'); $('loading-screen').classList.add('hidden');
         if (state.isOwner) { $('sidebar').classList.add('mobile-open'); $('my-profile-btn').classList.remove('hidden'); await refreshOwnerList(true); state.ownerListTimer = setInterval(() => { if (document.visibilityState === 'visible') refreshOwnerList(false); }, 8000); }
         else { $('my-profile-btn').classList.add('hidden'); try { const data = await callAPI({ action: 'get_my_chat' }); state.myProfile = data.profile || state.myProfile; state.supportProfile = data.support_profile || null; const chat = data.chat; if (!chat?.id) throw new Error('Server shaxsiy suhbatni qaytarmadi.'); const supportName = personName(state.supportProfile, null, 'Yordam'); await openChat(chat.id, supportName, state.supportProfile?.avatar_url || null, state.supportProfile); $('header-name').textContent = supportName; $('header-status').textContent = getSupportLabel(state.supportProfile); state.supportProfileTimer = setInterval(async () => { if (document.visibilityState !== 'visible') return; try { const fresh = await callAPI({ action: 'get_my_chat' }); if (!fresh.support_profile) return; state.supportProfile = fresh.support_profile; state.activeChatProfile = fresh.support_profile; const freshName = personName(state.supportProfile, null, 'Yordam'); $('header-name').textContent = freshName; $('header-status').textContent = getSupportLabel(state.supportProfile); renderAvatar($('header-avatar'), freshName, state.supportProfile.avatar_url || null); if (profilePanel.classList.contains('open') && state.profileMode === 'readonly') { const avatarName = personName(state.supportProfile, null, 'Yordam'); renderAvatar($('profile-avatar-big'), avatarName, state.supportProfile.avatar_url || null); } } catch (error) { console.warn('Support profile refresh failed:', error?.message || 'unavailable'); } }, 30000); } catch (e) { showAuthError(`Shaxsiy suhbatingizni ochib bo‘lmadi. ${e.message || ''}`.trim(), true); } }
       } catch (e) { showAuthError(`Tasdiqlashda xatolik yuz berdi. ${e.message || 'Ilovani Telegram ichidan qayta oching.'}`, true); }
