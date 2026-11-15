@@ -4547,7 +4547,10 @@
       pendingAttachment: null, pendingAttachmentObjectUrl: null, pendingAttachmentQueue: [], viewerMessage: null, viewerUrl: null,
       animateMessageIds: new Set(), editedMessageIds: new Set(), isNavigatingBack: false,
       // Optimistic UI: keyed by tmp_ id → { tmpId, content, replyTo, chatId, retryPayload, failed }
-      optimisticMessages: new Map()
+      optimisticMessages: new Map(),
+      // Chat message cache: keyed by chatId → { messages, signature, loadedAt }
+      // Keeps the last-fetched message list per chat so switching feels instant.
+      chatCache: new Map()
     };
 
     function escapeHTML(value) { return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -5239,7 +5242,13 @@
         retryPayload: { action: 'send_message', chat_id: chatId, content, reply_to_message_id: replyId || undefined },
         failed: false
       });
-      state.renderedMessageSignature = messageSignature(state.messages);
+      // IMPORTANT: Keep the signature based on server-confirmed messages only (exclude tmp_).
+      // Polling compares against messageSignature(serverMessages) which never contains tmp_ IDs.
+      // If we include the tmp_ ID here, polling will always see a mismatch and call renderMessages,
+      // causing the optimistic bubble to flicker/disappear on every poll cycle.
+      state.renderedMessageSignature = messageSignature(
+        state.messages.filter(m => !String(m.id).startsWith('tmp_'))
+      );
       renderMessages(state.messages, false);
       requestAnimationFrame(() => {
         const row = findMessageRow(tmpId);
@@ -5289,9 +5298,18 @@
 
       state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
       // Update the signature baseline so polling's change-detection sees no diff.
-      state.renderedMessageSignature = messageSignature(
+      const _reconciledSig = messageSignature(
         state.messages.filter(m => !String(m.id).startsWith('tmp_'))
       );
+      state.renderedMessageSignature = _reconciledSig;
+
+      // Update chat cache with the now-confirmed server message so the next chat
+      // switch loads immediately without a spinner.
+      if (serverMsg.chat_id || state.activeChatId) {
+        const cid = serverMsg.chat_id || state.activeChatId;
+        const serverOnlyMessages = state.messages.filter(m => !String(m.id).startsWith('tmp_'));
+        state.chatCache.set(cid, { messages: serverOnlyMessages, signature: _reconciledSig, loadedAt: Date.now() });
+      }
 
       // ── Surgical DOM patch — keep the visible bubble exactly as-is ──────────
       // If the tmp row is still in the DOM the user is in the right chat.
@@ -5538,7 +5556,7 @@
         if (!put.ok) { const detail = await put.text().catch(() => ''); throw new Error(`Upload failed (${put.status})${detail ? ': ' + detail.slice(0, 120) : ''}`); }
         progress.textContent = 'Xabar saqlanmoqda…';
         const result = await callAPI({ action: 'send_message', chat_id: chatId, content: cleanCaption, file_url: signed.path, file_name: file.name, file_type: type, reply_to_message_id: replyId || undefined });
-        if (state.activeChatId === chatId) { const idx = state.messages.findIndex(m => m.id === result.message.id); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); state.animateMessageIds.add(String(result.message.id)); state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); clearAnimatedMessageIds([result.message.id], 'animateMessageIds', 'message-arrive', 850); scrollBottom(true); }
+        if (state.activeChatId === chatId) { const idx = state.messages.findIndex(m => m.id === result.message.id); if (idx >= 0) state.messages[idx] = result.message; else state.messages.push(result.message); state.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); state.animateMessageIds.add(String(result.message.id)); const _newSig = messageSignature(state.messages.filter(m => !String(m.id).startsWith('tmp_'))); state.renderedMessageSignature = _newSig; state.chatCache.set(chatId, { messages: state.messages.filter(m => !String(m.id).startsWith('tmp_')), signature: _newSig, loadedAt: Date.now() }); renderMessages(state.messages, false); clearAnimatedMessageIds([result.message.id], 'animateMessageIds', 'message-arrive', 850); scrollBottom(true); }
         if (replyId) { state.replyTo = null; $('reply-bar').classList.remove('visible'); }
         $('send-btn').classList.remove('send-button-press'); $('send-btn').classList.add('send-success-pop'); setTimeout(() => $('send-btn').classList.remove('send-success-pop'), 380); playSend(); if (state.isOwner) refreshOwnerList(false);
         if (fromPreview) closeAttachmentPreview(true);
@@ -5551,8 +5569,64 @@
     async function loadMessages(chatId) {
       // Clear any optimistic messages for this chat (a full reload supersedes them)
       for (const [tmpId, rec] of [...state.optimisticMessages.entries()]) { if (rec.chatId === chatId) state.optimisticMessages.delete(tmpId); }
-      const token = ++state.lastLoadToken; const list = $('message-list'); list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Xabarlar yuklanmoqda"></div></div>'; try { const markRead = !state.isOwner && getMiniAppForegroundState(); const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead }); if (token !== state.lastLoadToken || state.activeChatId !== chatId) return; state.messages = Array.isArray(data.messages) ? data.messages : []; state.renderedMessageSignature = messageSignature(state.messages); renderMessages(state.messages, false); }
-        catch (e) { if (token !== state.lastLoadToken) return; list.replaceChildren(); const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish'; btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap); showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.'); }
+      const token = ++state.lastLoadToken;
+      const list = $('message-list');
+
+      // ── Cache-first: if we already have messages for this chat, render them
+      // immediately without any loading spinner. A background fetch will
+      // silently update the view once the network responds.
+      const cached = state.chatCache.get(chatId);
+      if (cached && cached.loadedAt) {
+        // Restore cached messages into active state right away — no flicker, no spinner.
+        state.messages = [...cached.messages];
+        state.renderedMessageSignature = cached.signature;
+        renderMessages(state.messages, false);
+        // Now fetch fresh data in the background (silently — no spinner).
+        try {
+          const markRead = !state.isOwner && getMiniAppForegroundState();
+          const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead });
+          if (token !== state.lastLoadToken || state.activeChatId !== chatId) return;
+          const freshMessages = Array.isArray(data.messages) ? data.messages : [];
+          const freshSig = messageSignature(freshMessages);
+          // Merge: keep any in-flight optimistic messages for this chat
+          const tmpMessages = state.messages.filter(m => String(m.id).startsWith('tmp_'));
+          const serverIdSet = new Set(freshMessages.map(m => m.id));
+          const merged = [...freshMessages];
+          for (const tmp of tmpMessages) { if (!serverIdSet.has(tmp.id)) merged.push(tmp); }
+          merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          // Update cache always (keep it fresh for the next switch)
+          state.chatCache.set(chatId, { messages: freshMessages, signature: freshSig, loadedAt: Date.now() });
+          // Only re-render if something actually changed
+          if (freshSig !== state.renderedMessageSignature) {
+            state.messages = merged;
+            state.renderedMessageSignature = freshSig;
+            renderMessages(merged, true);
+          }
+        } catch {
+          // Background refresh failed — cached view stays; polling will retry shortly.
+        }
+        return;
+      }
+
+      // ── No cache: show spinner and do a blocking fetch ──────────────────────
+      list.innerHTML = '<div class="loading-inline"><div class="spinner" aria-label="Xabarlar yuklanmoqda"></div></div>';
+      try {
+        const markRead = !state.isOwner && getMiniAppForegroundState();
+        const data = await callAPI({ action: 'list_messages', chat_id: chatId, mark_read: markRead });
+        if (token !== state.lastLoadToken || state.activeChatId !== chatId) return;
+        state.messages = Array.isArray(data.messages) ? data.messages : [];
+        state.renderedMessageSignature = messageSignature(state.messages);
+        // Save to cache so the next visit is instant
+        state.chatCache.set(chatId, { messages: [...state.messages], signature: state.renderedMessageSignature, loadedAt: Date.now() });
+        renderMessages(state.messages, false);
+      } catch (e) {
+        if (token !== state.lastLoadToken) return;
+        list.replaceChildren();
+        const wrap = document.createElement('div'); wrap.className = 'empty-list'; wrap.textContent = 'Xabarlarni yuklab bo‘lmadi. ';
+        const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta urinish';
+        btn.addEventListener('click', () => loadMessages(chatId)); wrap.appendChild(btn); list.appendChild(wrap);
+        showToast(uiError(e.message) || 'Xabarlarni yuklab bo‘lmadi.');
+      }
     }
     function stopChatPolling() { if (state.pollingTimer) clearInterval(state.pollingTimer); state.pollingTimer = null; }
     function startChatPolling(chatId) {
@@ -5596,6 +5670,8 @@
           if (!changed) {
             // Update state.messages to include any surviving tmp entries (keeps state tidy).
             state.messages = merged;
+            // Keep the cache current even when nothing visually changed.
+            state.chatCache.set(chatId, { messages: serverMessages, signature: serverOnlySig, loadedAt: Date.now() });
             return;
           }
 
@@ -5608,6 +5684,8 @@
 
           state.messages = merged;
           state.renderedMessageSignature = serverOnlySig;
+          // Update cache with the latest server messages so the next chat switch is instant.
+          state.chatCache.set(chatId, { messages: serverMessages, signature: serverOnlySig, loadedAt: Date.now() });
           for (const m of incomingNew) state.animateMessageIds.add(String(m.id));
           renderMessages(merged, true);
           if (incomingNew.length) {
@@ -5625,7 +5703,38 @@
       const list = $('chat-list'); const active = state.activeChatId; list.replaceChildren(); if (!chats.length) { const empty = document.createElement('div'); empty.className = 'empty-list'; empty.textContent = 'Hozircha suhbatlar yo‘q'; list.appendChild(empty); return; }
       const sorted = [...chats].sort((a, b) => new Date(chatLatestMessage(b)?.created_at || b.created_at) - new Date(chatLatestMessage(a)?.created_at || a.created_at)); for (const chat of sorted) { const profile = getChatProfile(chat); const name = personName(profile, null, `Mijoz ${String(chat.id).slice(0, 6)}`); const latest = chatLatestMessage(chat); const item = document.createElement('div'); item.className = 'chat-item' + (chat.id === active ? ' active' : '') + (profile?.is_online ? ' is-online' : ''); item.dataset.chatId = chat.id; item.tabIndex = 0; item.setAttribute('role', 'button'); item.setAttribute('aria-label', `${name} bilan suhbatni ochish${profile?.is_online ? ', hozir onlayn' : `, oxirgi faollik ${fmtLastSeen(profile?.last_seen_at)}`}`); const avatar = document.createElement('div'); avatar.className = 'avatar' + (profile?.is_online ? ' is-online' : ''); avatar.title = profile?.is_online ? 'Onlayn' : `Oxirgi faollik: ${fmtLastSeen(profile?.last_seen_at)}`; renderAvatar(avatar, name, profile?.avatar_url); const body = document.createElement('div'); body.className = 'chat-item-body'; const top = document.createElement('div'); top.className = 'chat-item-top'; const nm = document.createElement('div'); nm.className = 'chat-item-name'; nm.textContent = name; const time = document.createElement('div'); time.className = 'chat-time'; time.textContent = latest ? fmtTime(latest.created_at) : ''; top.append(nm, time); const preview = document.createElement('div'); preview.className = 'chat-preview'; preview.textContent = latest ? messagePreview(latest) : 'Hozircha xabar yo‘q'; body.append(top, preview); item.append(avatar, body); const open = () => openChat(chat.id, name, profile?.avatar_url, profile); item.addEventListener('click', open); item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } }); list.appendChild(item); }
     }
-    async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); } if (state.activeChatId) { const active = chats.find(c => c.id === state.activeChatId); if (active) { state.activeChatProtection = Boolean(active.protect_owner_content); syncChatProtectionButton(); } const latestProfile = active ? getChatProfile(active) : null; if (latestProfile) { state.activeChatProfile = latestProfile; updateOwnerPresence(latestProfile); } } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Suhbatlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta yuklash'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
+    async function refreshOwnerList(force = true) { if (!state.isOwner) return; try { const data = await callAPI({ action: 'list_chats' }); const chats = Array.isArray(data.chats) ? data.chats : []; const sig = chatListSignature(chats); state.chats = chats; if (force || sig !== state.ownerListSignature) { state.ownerListSignature = sig; renderChatList(chats); $('search-wrap').classList.remove('hidden'); applySearch(); if (force) { void preloadAllChatMessages(chats); } } if (state.activeChatId) { const active = chats.find(c => c.id === state.activeChatId); if (active) { state.activeChatProtection = Boolean(active.protect_owner_content); syncChatProtectionButton(); } const latestProfile = active ? getChatProfile(active) : null; if (latestProfile) { state.activeChatProfile = latestProfile; updateOwnerPresence(latestProfile); } } } catch (e) { if (force) { $('chat-list').replaceChildren(); const el = document.createElement('div'); el.className = 'empty-list'; el.textContent = 'Suhbatlarni yuklab bo‘lmadi. '; const btn = document.createElement('button'); btn.type = 'button'; btn.style.color = 'var(--accent)'; btn.textContent = 'Qayta yuklash'; btn.addEventListener('click', () => refreshOwnerList(true)); el.appendChild(btn); $('chat-list').appendChild(el); } } }
+    // ── Background chat preloader ────────────────────────────────────────────
+    // After the chat list loads, silently fetch the first page of messages for
+    // every chat that is not yet in the cache.  Uses sequential fetching with a
+    // small gap between requests so we don't fire all requests in parallel.
+    // This runs only once per session (or whenever the cache is empty for a chat).
+    let _preloadRunning = false;
+    async function preloadAllChatMessages(chats) {
+      if (_preloadRunning) return;
+      _preloadRunning = true;
+      try {
+        for (const chat of chats) {
+          // Skip if already cached, or if user is currently viewing this chat
+          if (state.chatCache.has(chat.id)) continue;
+          if (state.activeChatId === chat.id) continue;
+          try {
+            const data = await callAPI({ action: 'list_messages', chat_id: chat.id });
+            const msgs = Array.isArray(data.messages) ? data.messages : [];
+            const sig = messageSignature(msgs);
+            state.chatCache.set(chat.id, { messages: msgs, signature: sig, loadedAt: Date.now() });
+          } catch {
+            // Preload for this individual chat failed — not fatal; it will show a
+            // spinner only the first time the user opens that chat.
+          }
+          // Small delay between requests to avoid hammering the edge function
+          await new Promise(resolve => setTimeout(resolve, 180));
+        }
+      } finally {
+        _preloadRunning = false;
+      }
+    }
+
     function applySearch() { const q = $('search-input').value.trim().toLowerCase(); document.querySelectorAll('.chat-item').forEach(item => { const n = item.querySelector('.chat-item-name')?.textContent.toLowerCase() || ''; const p = item.querySelector('.chat-preview')?.textContent.toLowerCase() || ''; item.style.display = (!q || n.includes(q) || p.includes(q)) ? '' : 'none'; }); }
     $('search-input').addEventListener('input', applySearch);
     async function openChat(chatId, name, avatarUrl, profile = null) { if (!chatId || state.isNavigatingBack) return; if (state.activeChatId === chatId) { hideSidebar(); return; } // Drop optimistic messages for the previous chat; they cannot be reconciled across a chat switch.
