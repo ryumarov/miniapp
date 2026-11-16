@@ -5638,7 +5638,7 @@
       botInboxOpen: false, botInboxConversations: [], botInboxActiveConversation: null, botInboxMessages: [],
       botInboxMessagesSignature: '', botInboxPollingTimer: null, botInboxPollingInFlight: false,
       botInboxRealtimeClient: null, botInboxRealtimeChannel: null, botInboxRealtimeStatus: 'CLOSED', botInboxRealtimeRefreshTimer: null,
-      botInboxSending: false, botInboxPending: null, botInboxButtons: [], botInboxMediaUpload: null, botInboxError: '', botInboxSendFeedback: ''
+      botInboxSending: false, botInboxPending: null, botInboxPendingArchive: [], botInboxButtons: [], botInboxMediaUpload: null, botInboxError: '', botInboxSendFeedback: ''
     };
 
     // Persist the single unresolved bot-send request across WebView reloads.
@@ -7816,22 +7816,44 @@
       const send = $('bot-inbox-send-btn');
       if (!input || !send) return;
       const conversation = state.botInboxActiveConversation;
-      const canSend = Boolean(state.isOwner && state.botInboxOpen && conversation && conversation.is_active !== false && !state.botInboxSending && !state.botInboxPending);
-      input.disabled = !canSend;
+      // An unresolved request must never make the textarea read-only. The user can
+      // continue composing; a new send gets its own UUID and the previous request
+      // is archived locally rather than retried or duplicated.
+      const canEdit = Boolean(state.isOwner && state.botInboxOpen && conversation && conversation.is_active !== false && !state.botInboxSending);
+      input.disabled = !canEdit;
       const mediaKind = $('bot-inbox-media-kind')?.value || 'text';
       const mediaUrl = $('bot-inbox-media-url')?.value.trim() || '';
       const hasPayload = Boolean(input.value.trim() || (mediaKind !== 'text' && (mediaUrl || state.botInboxMediaUpload?.path)));
-      send.disabled = !canSend || !hasPayload;
+      send.disabled = !canEdit || !hasPayload;
       input.placeholder = conversation?.is_active === false ? 'Bot bu chatdan chiqarilgan.' : (conversation ? 'Bot nomidan matn yoki caption yozing…' : 'Avval suhbatni tanlang');
       $('bot-inbox-counter').textContent = `${input.value.length}/4000`;
+    }
+    function normalizeBotInboxPending(pending) {
+      if (!pending || !isUuidV4(pending.request_id) || botInboxChatId(pending.telegram_chat_id) === null || typeof pending.content !== 'string') return null;
+      return {
+        request_id: pending.request_id,
+        telegram_chat_id: pending.telegram_chat_id,
+        content: pending.content,
+        media_type: ['text','photo','video'].includes(pending.media_type) ? pending.media_type : 'text',
+        media_url: typeof pending.media_url === 'string' ? pending.media_url : '',
+        media_path: typeof pending.media_path === 'string' ? pending.media_path : '',
+        media_mime_type: typeof pending.media_mime_type === 'string' ? pending.media_mime_type : '',
+        buttons: Array.isArray(pending.buttons) ? pending.buttons : [],
+        retryable: pending.retryable === true,
+        archived_at: typeof pending.archived_at === 'number' ? pending.archived_at : null,
+      };
     }
     function persistBotInboxPending() {
       try {
         const ownerId = normalizeTelegramUserId(state.user?.id ?? state.myProfile?.telegram_user_id);
         if (!ownerId) return;
         const key = `messages.botInboxPending.v1.${ownerId}`;
-        if (state.botInboxPending) localStorage.setItem(key, JSON.stringify(state.botInboxPending));
-        else localStorage.removeItem(key);
+        const archive = Array.isArray(state.botInboxPendingArchive) ? state.botInboxPendingArchive.slice(-10) : [];
+        if (state.botInboxPending || archive.length) {
+          localStorage.setItem(key, JSON.stringify({ version: 2, current: state.botInboxPending, archive }));
+        } else {
+          localStorage.removeItem(key);
+        }
       } catch (error) { console.warn('[bot-inbox] Pending send storage unavailable:', error?.message || 'unknown'); }
     }
     function restoreBotInboxPending() {
@@ -7840,19 +7862,15 @@
         if (!ownerId) return;
         const raw = localStorage.getItem(`messages.botInboxPending.v1.${ownerId}`);
         if (!raw) return;
-        const pending = JSON.parse(raw);
-        if (isUuidV4(pending?.request_id) && botInboxChatId(pending?.telegram_chat_id) !== null && typeof pending?.content === 'string') {
-          state.botInboxPending = {
-            request_id: pending.request_id,
-            telegram_chat_id: pending.telegram_chat_id,
-            content: pending.content,
-            media_type: ['text','photo','video'].includes(pending.media_type) ? pending.media_type : 'text',
-            media_url: typeof pending.media_url === 'string' ? pending.media_url : '',
-            media_path: typeof pending.media_path === 'string' ? pending.media_path : '',
-            media_mime_type: typeof pending.media_mime_type === 'string' ? pending.media_mime_type : '',
-            buttons: Array.isArray(pending.buttons) ? pending.buttons : [],
-            retryable: pending.retryable === true,
-          };
+        const saved = JSON.parse(raw);
+        // v2 envelope is used by this fix; a legacy single-request object is still accepted.
+        if (saved && saved.version === 2) {
+          state.botInboxPending = normalizeBotInboxPending(saved.current);
+          state.botInboxPendingArchive = (Array.isArray(saved.archive) ? saved.archive : [])
+            .map(normalizeBotInboxPending).filter(Boolean).slice(-10);
+        } else {
+          state.botInboxPending = normalizeBotInboxPending(saved);
+          state.botInboxPendingArchive = [];
         }
       } catch (error) { console.warn('[bot-inbox] Pending send restore failed:', error?.message || 'unknown'); }
     }
@@ -8217,7 +8235,12 @@
       if (useExisting) {
         if (!pending || String(pending.telegram_chat_id) !== String(telegramChatId)) return;
       } else {
-        if (pending) { botInboxStatus('Oldingi xabarning yetkazilishi hali hal qilinmagan. Avval shu holatni tekshiring.'); return; }
+        if (pending) {
+          state.botInboxPendingArchive = [...(state.botInboxPendingArchive || []), { ...pending, archived_at: Date.now() }].slice(-10);
+          state.botInboxPending = null;
+          persistBotInboxPending();
+          pending = null;
+        }
         const content = $('bot-inbox-input').value.trim();
         const media_type = $('bot-inbox-media-kind').value || 'text';
         const media_url = $('bot-inbox-media-url').value.trim();
