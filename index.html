@@ -10,6 +10,7 @@
   <meta name="theme-color" content="#ffffff">
   <title>Umarov — Xabarlar</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       color-scheme: light;
@@ -4747,6 +4748,9 @@
     .bot-inbox-topcopy { min-width:0; flex:1; display:flex; flex-direction:column; gap:2px; }
     .bot-inbox-topcopy strong { font-size:15px; font-weight:800; }
     .bot-inbox-topcopy span { color:var(--muted); font-size:10px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .bot-inbox-topcopy .bot-inbox-realtime-status { color:var(--muted); font-size:10px; }
+    .bot-inbox-topcopy .bot-inbox-realtime-status.connected { color:var(--success); }
+    .bot-inbox-topcopy .bot-inbox-realtime-status.error { color:var(--danger); }
     .bot-inbox-layout { display:flex; flex:1 1 auto; min-height:0; min-width:0; }
     .bot-inbox-sidebar { width:320px; min-width:270px; max-width:38%; display:flex; flex-direction:column; min-height:0; border-right:1px solid var(--border); background:var(--bg); }
     .bot-inbox-search-wrap { display:flex; align-items:center; gap:9px; margin:12px 12px 8px; padding:0 12px; min-height:42px; border-radius:13px; background:var(--surface); color:var(--muted); }
@@ -5114,7 +5118,7 @@
         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
       <div class="bot-inbox-brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21.8 2.2 14.7 21.3l-4.1-8-8.4-4.1 19.6-7Z"/><path d="m10.6 13.3 5.2-5.2"/></svg></div>
-      <div class="bot-inbox-topcopy"><strong>Telegram Bot</strong><span>Bot orqali kelgan barcha shaxsiy va guruh suhbatlari</span></div>
+      <div class="bot-inbox-topcopy"><strong>Telegram Bot</strong><span>Bot orqali kelgan barcha shaxsiy va guruh suhbatlari</span><span class="bot-inbox-realtime-status" id="bot-inbox-realtime-status">Real-time: ulanmoqda…</span></div>
       <button class="icon-btn" id="bot-inbox-refresh-btn" type="button" aria-label="Ro‘yxatni yangilash" title="Yangilash"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5"/><path d="M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 6M4 12l2 6a7 7 0 0 0 12.4-3"/></svg></button>
     </header>
     <div class="bot-inbox-layout" id="bot-inbox-layout">
@@ -5633,6 +5637,7 @@
       botManager: { loaded: false, loading: false, settings: null, buttons: [], commands: [] },
       botInboxOpen: false, botInboxConversations: [], botInboxActiveConversation: null, botInboxMessages: [],
       botInboxMessagesSignature: '', botInboxPollingTimer: null, botInboxPollingInFlight: false,
+      botInboxRealtimeClient: null, botInboxRealtimeChannel: null, botInboxRealtimeStatus: 'CLOSED', botInboxRealtimeRefreshTimer: null,
       botInboxSending: false, botInboxPending: null, botInboxButtons: [], botInboxMediaUpload: null, botInboxError: '', botInboxSendFeedback: ''
     };
 
@@ -7966,6 +7971,103 @@
       updateBotInboxComposer();
       await refreshBotInboxMessages(false);
     }
+    function setBotInboxRealtimeStatus(status, errorMessage = '') {
+      state.botInboxRealtimeStatus = status;
+      const el = $('bot-inbox-realtime-status');
+      if (el) {
+        el.classList.toggle('connected', status === 'SUBSCRIBED');
+        el.classList.toggle('error', status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'FAILED');
+        if (status === 'SUBSCRIBED') el.textContent = '● Real-time faol';
+        else if (status === 'CONNECTING' || status === 'CLOSED') el.textContent = 'Real-time: ulanmoqda…';
+        else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'FAILED') {
+          el.textContent = 'Real-time uzildi · zaxira yangilash faol';
+          if (errorMessage) el.title = errorMessage;
+        } else el.textContent = 'Real-time: ' + status;
+      }
+      if (state.botInboxOpen) startBotInboxFallbackPolling();
+    }
+
+    function startBotInboxFallbackPolling() {
+      if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
+      state.botInboxPollingTimer = null;
+      if (!state.botInboxOpen || document.visibilityState === 'hidden') return;
+      // Realtime delivers changes immediately. Keep a slower safety poll while
+      // subscribed; fall back to the prior short interval if the socket is down.
+      const delay = state.botInboxRealtimeStatus === 'SUBSCRIBED' ? 15000 : 3500;
+      state.botInboxPollingTimer = setInterval(() => {
+        if (!state.botInboxOpen || document.visibilityState !== 'visible') return;
+        void refreshBotInboxConversations(true);
+        if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
+      }, delay);
+    }
+
+    async function connectBotInboxRealtime() {
+      if (!state.isOwner || !state.botInboxOpen) return false;
+      if (state.botInboxRealtimeChannel && state.botInboxRealtimeStatus === 'SUBSCRIBED') return true;
+      setBotInboxRealtimeStatus('CONNECTING');
+      try {
+        if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+          throw new Error('Supabase Realtime SDK yuklanmadi');
+        }
+        const channelData = await callAPI({ action: 'get_bot_inbox_realtime_channel' });
+        const topic = typeof channelData.topic === 'string' ? channelData.topic : '';
+        if (!/^bot-inbox-[0-9a-f-]{36}$/i.test(topic)) throw new Error('Realtime kanal identifikatori noto‘g‘ri');
+
+        if (!state.botInboxRealtimeClient) {
+          state.botInboxRealtimeClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY,
+            { realtime: { params: { eventsPerSecond: 10 } } }
+          );
+        }
+        if (state.botInboxRealtimeChannel) {
+          const oldChannel = state.botInboxRealtimeChannel;
+          state.botInboxRealtimeChannel = null;
+          await state.botInboxRealtimeClient.removeChannel(oldChannel);
+        }
+
+        const channel = state.botInboxRealtimeClient
+          .channel(topic, { config: { private: false, broadcast: { self: false } } })
+          .on('broadcast', { event: 'bot-inbox-update' }, () => {
+            if (!state.botInboxOpen || document.visibilityState !== 'visible') return;
+            if (state.botInboxRealtimeRefreshTimer) clearTimeout(state.botInboxRealtimeRefreshTimer);
+            state.botInboxRealtimeRefreshTimer = setTimeout(() => {
+              state.botInboxRealtimeRefreshTimer = null;
+              void refreshBotInboxConversations(true);
+              if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
+            }, 120);
+          });
+        state.botInboxRealtimeChannel = channel;
+        channel.subscribe((status, error) => {
+          if (state.botInboxRealtimeChannel !== channel) return;
+          if (status === 'SUBSCRIBED') {
+            setBotInboxRealtimeStatus('SUBSCRIBED');
+            console.info('[bot-inbox] Supabase Realtime connected');
+          } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+            setBotInboxRealtimeStatus(status === 'CLOSED' ? 'FAILED' : status, error?.message || 'Realtime channel error');
+            console.warn('[bot-inbox] Realtime status:', status, error?.message || '');
+          }
+        });
+        return true;
+      } catch (error) {
+        setBotInboxRealtimeStatus('FAILED', error?.message || 'Realtime connection failed');
+        console.warn('[bot-inbox] Realtime connection failed; polling fallback enabled:', error?.message || error);
+        return false;
+      }
+    }
+
+    async function disconnectBotInboxRealtime() {
+      if (state.botInboxRealtimeRefreshTimer) clearTimeout(state.botInboxRealtimeRefreshTimer);
+      state.botInboxRealtimeRefreshTimer = null;
+      const channel = state.botInboxRealtimeChannel;
+      state.botInboxRealtimeChannel = null;
+      if (channel && state.botInboxRealtimeClient) {
+        try { await state.botInboxRealtimeClient.removeChannel(channel); }
+        catch (error) { console.warn('[bot-inbox] Realtime channel cleanup failed:', error?.message || error); }
+      }
+      state.botInboxRealtimeStatus = 'CLOSED';
+    }
+
     async function openBotInbox() {
       if (!ownerControlsVisible()) { showToast('Telegram Bot inbox faqat owner uchun.'); return; }
       if (state.botChatOpen) closeBotChat();
@@ -7980,18 +8082,15 @@
       state.botInboxMessagesSignature = '';
       restoreBotInboxPending();
       await refreshBotInboxConversations(false);
-      if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
-      state.botInboxPollingTimer = setInterval(() => {
-        if (!state.botInboxOpen || document.visibilityState !== 'visible') return;
-        void refreshBotInboxConversations(true);
-        if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
-      }, 3500);
+      startBotInboxFallbackPolling();
+      void connectBotInboxRealtime();
     }
     function closeBotInbox() {
       if (!state.botInboxOpen) return;
       state.botInboxOpen = false;
       if (state.botInboxPollingTimer) clearInterval(state.botInboxPollingTimer);
       state.botInboxPollingTimer = null;
+      void disconnectBotInboxRealtime();
       $('bot-inbox-panel').classList.add('hidden');
       $('bot-inbox-panel').setAttribute('aria-hidden', 'true');
       $('bot-inbox-layout').classList.remove('has-active-chat');
@@ -8706,12 +8805,8 @@
         } else {
           void refreshBotInboxConversations(true);
           if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
-          if (!state.botInboxPollingTimer) state.botInboxPollingTimer = setInterval(() => {
-            if (state.botInboxOpen && document.visibilityState === 'visible') {
-              void refreshBotInboxConversations(true);
-              if (state.botInboxActiveConversation) void refreshBotInboxMessages(true);
-            }
-          }, 3500);
+          startBotInboxFallbackPolling();
+          if (state.botInboxRealtimeStatus !== 'SUBSCRIBED') void connectBotInboxRealtime();
         }
       }
       if (document.visibilityState === 'visible' && state.activeChatId) {
